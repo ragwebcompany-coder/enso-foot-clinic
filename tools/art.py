@@ -319,6 +319,16 @@ def hero_dark():
 </svg>"""
 
 
+def enso_badge():
+    """The mark alone, square and centred, for the phone cover where it stands as
+    a badge above the wordmark."""
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400"
+  role="img" aria-label="Το σήμα ensō του Ensō Foot Clinic">
+  {enso_mark(200, 202, 140, 44, "B", seed=13, texture=0.8)}
+  {foot_outline(dx=155, dy=118, scale=0.5, fill="none", stroke=TEAL, sw=3)}
+</svg>"""
+
+
 def clinic_banner():
     """The full four-line lockup the clinic uses, on its own ground."""
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 700" width="1600" height="700"
@@ -756,6 +766,7 @@ def main():
     made.append(w("favicon.svg", favicon()))
     made.append(w("hero-enso.svg", hero()))
     made.append(w("hero-enso-dark.svg", hero_dark()))
+    made.append(w("enso-badge.svg", enso_badge()))
     made.append(w("clinic-enso.svg", clinic_banner()))
     made.append(w("elpiniki-christodoulou.svg", portrait()))
     for stem, fn in GALLERY_ART.items():

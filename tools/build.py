@@ -550,12 +550,14 @@ def build_home():
     creds_html = "".join(
         f'<li><b data-count="{a}">{a}</b><span>{b}</span></li>' for a, b in creds)
 
-    # On a phone the front page stops being a statement and becomes triage. This
-    # index is rendered at every width but only shown under 720px, where the
-    # slogan steps back to a signature underneath it.
-    index_links = "".join(
-        f'<a href="pathiseis/{c["slug"]}/"><span>{c["title"]}</span>{I["right"]}</a>'
-        for c in CONDITIONS)
+    # The phone cover: rendered at every width, shown only under 720px. Three
+    # pillars stand in for the nav, each pointing at a real condition page.
+    PILLARS = [("pathiseis/diavitiko-podi/", "Διαβητικό<br>πόδι", "foot"),
+               ("ypiresies/iatriki-podologia/", "Ιατρική<br>ποδολογία", "tool"),
+               ("ypiresies/orthonychia-narthikes/", "Ορθονυχία<br>&amp; νύχια", "nail")]
+    pillars = "".join(
+        f'<a href="{href}">{I["pil_" + icon]}<span>{label}</span></a>'
+        for href, label, icon in PILLARS)
 
     body = f"""<section class="hero hero--deep">
   <div class="hero__aurora" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -563,12 +565,23 @@ def build_home():
   <div class="wrap hero__grid">
     <div class="hero__copy">
       <p class="eyebrow">Ποδολογικό ιατρείο · Περαία, Θεσσαλονίκη</p>
-      <p class="hero__ask">Τι σας φέρνει εδώ;</p>
-      <nav class="hero__index" aria-label="Παθήσεις">
-        {index_links}
-        <a class="hero__index__all" href="odigos-symptomaton/">
-          <span>Δεν ξέρω πώς λέγεται</span>{I['right']}</a>
-      </nav>
+      <div class="hero__cover">
+        {img("enso-badge.svg", "Το σήμα ensō του Ensō Foot Clinic", 400, 400, 0,
+             cls="hero__badge-mark")}
+        <p class="hero__wordmark">Ensō <span>Foot Clinic</span></p>
+        <p class="hero__rule"><span>Ποδολογία · Ποδιατρική</span></p>
+        <div class="hero__pillars">{pillars}</div>
+        <p class="hero__pitch"><span class="qm">«</span>Η βαρύτητα μπορεί να γίνει ο
+          <em>καλύτερός σου σύμμαχος</em> αφού πρώτα κάνεις τον ποδίατρο
+          <em>καλύτερό σου φίλο</em>.<span class="qm">»</span></p>
+        <p class="hero__sign">{PRACTITIONER['name']}</p>
+        <div class="hero__cover-cta">
+          <button class="btn" data-book-open>Κλείστε ραντεβού</button>
+          <a class="btn btn--ghost" href="ypiresies/">Οι υπηρεσίες μας</a>
+        </div>
+        <a class="hero__scroll" href="#odigos" aria-label="Δείτε περισσότερα">
+          <span class="hero__scroll-mouse"></span>{I['down']}</a>
+      </div>
       <h1 class="slogan"><span class="qm">«</span>{PRACTITIONER['quote']}<span class="qm">»</span></h1>
       <p class="slogan__by">{PRACTITIONER['name']}</p>
       <p class="lede">Κάλοι, ραγάδες, νύχια που εισφρύουν, διαβητικό πόδι. Αν δεν ξέρετε

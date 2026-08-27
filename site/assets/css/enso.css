@@ -1236,80 +1236,116 @@ body:has(.cookies.is-shown) .totop { bottom: 15rem; }
   .hero__pane { max-width: 420px; }
 }
 
-/* The desktop hero is a statement. On a phone that same statement — one huge
-   bold sentence on a glowing gradient — is the most generic thing a screen can
-   be, and it is not what the visitor needs: they are standing somewhere with a
-   foot that hurts. So under 720px the front page becomes triage.
-
-   Where we are → what hurts (tap it) → book. The clinic's line stays, but as a
-   signature underneath rather than a billboard, and the glow and grid come off
-   so the screen reads as a clinic index instead of a landing page. */
-.hero__ask, .hero__index { display: none; }
-/* The guide is the desktop hero's call; on a phone the index already offers it,
-   so the button there is the booking instead. */
-.hero__act--phone { display: none; }
+/* The desktop hero is a statement. On a phone it becomes a cover: the mark as a
+   badge, the name under it, three pillars, the clinic's line, two actions and a
+   scroll cue — centred, on paper rather than on the deep ground. A dark hero
+   behind a glowing headline is the most generic thing a phone screen can be;
+   this reads as a practice. */
+.hero__cover { display: none; }
 
 @media (max-width: 720px) {
   .page--home .hero--deep .hero__figure,
   .page--home .hero--deep .hero__mesh,
-  .page--home .hero--deep .lede { display: none; }
-  .page--home .hero--deep .hero__aurora { opacity: .22; filter: blur(90px); }
+  .page--home .hero--deep .hero__aurora,
+  .page--home .hero--deep .eyebrow,
+  .page--home .hero--deep .slogan,
+  .page--home .hero--deep .slogan__by,
+  .page--home .hero--deep .lede,
+  .page--home .hero--deep .hero__actions,
+  .page--home .hero--deep .hero__note { display: none; }
+
   .page--home .hero--deep {
-    padding-block: calc(var(--header-h) + 1.5rem) 2.25rem;
-    background: linear-gradient(178deg, var(--abyss), #0e3441 70%, var(--abyss));
+    background: linear-gradient(180deg, var(--paper) 0%, var(--mist-2) 62%, var(--mist) 100%);
+    padding-block: calc(var(--header-h) + .5rem) 2.5rem;
+    color: var(--ink);
   }
   .page--home .hero--deep .hero__grid { gap: 0; }
-  .page--home .hero--deep .hero__copy {
-    gap: 0; justify-items: stretch; width: 100%;
-  }
-  .page--home .hero--deep .eyebrow { order: 1; font-size: .68rem; letter-spacing: .11em; }
+  .page--home .hero--deep .hero__copy { gap: 0; justify-items: stretch; }
 
-  .page--home .hero--deep .hero__ask {
-    order: 2; display: block;
-    margin-top: 1.5rem;
-    /* GFS Didot ships a single weight — say so, rather than inheriting body's 380
-       and leaving the browser to pick. */
+  .hero__cover { display: grid; justify-items: center; text-align: center; width: 100%; }
+
+  .hero__badge-mark { width: min(58vw, 232px); height: auto; margin-inline: auto; }
+  .hero__wordmark {
     font-family: var(--display); font-weight: 400;
-    font-size: 1.85rem; line-height: 1.15; color: #fff;
+    font-size: clamp(2.1rem, 1.2rem + 4.4vw, 2.8rem);
+    line-height: 1.05; color: var(--deep); margin-top: -.35rem;
+  }
+  .hero__wordmark span { color: var(--teal); }
+
+  /* Name, then a ruled descriptor — the divider the reference sets beneath it. */
+  .hero__rule {
+    display: flex; align-items: center; gap: .85rem;
+    width: 100%; margin-top: .85rem;
+    font-size: .68rem; font-weight: 600; letter-spacing: .22em;
+    text-transform: uppercase; color: var(--ink-3);
+  }
+  .hero__rule::before, .hero__rule::after {
+    content: ""; height: 1px; flex: 1; background: var(--line);
   }
 
-  /* An index, not a card deck: hairlines, generous rows, one chevron each. */
-  .page--home .hero--deep .hero__index {
-    order: 3; display: block; margin-top: 1.35rem;
-    border-top: 1px solid rgba(165,211,222,.22);
+  .hero__pillars {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    width: 100%; margin-top: 1.9rem;
   }
-  .page--home .hero--deep .hero__index a {
-    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-    min-height: 58px; padding: .9rem 0;
-    border-bottom: 1px solid rgba(165,211,222,.22);
-    color: #fff; text-decoration: none; font-size: 1.02rem; font-weight: 480;
-    transition: color .2s var(--ease), padding-left .2s var(--ease);
+  .hero__pillars a {
+    display: grid; justify-items: center; gap: .7rem; padding: .25rem .4rem;
+    text-decoration: none; color: var(--ink-2);
+    border-left: 1px solid var(--line);
   }
-  .page--home .hero--deep .hero__index a svg { flex: none; color: var(--teal-300); }
-  .page--home .hero--deep .hero__index a:active { color: var(--teal-300); padding-left: .3rem; }
-  .page--home .hero--deep .hero__index__all { color: var(--teal-300) !important; }
+  .hero__pillars a:first-child { border-left: 0; }
+  .hero__pillars svg { color: var(--teal); }
+  .hero__pillars span {
+    font-size: .69rem; font-weight: 600; letter-spacing: .1em;
+    text-transform: uppercase; line-height: 1.5;
+  }
+  .hero__pillars a:active span { color: var(--teal); }
 
-  .page--home .hero--deep .hero__actions {
-    order: 4; display: grid; gap: .6rem; margin-top: 1.6rem; width: 100%;
+  .hero__pitch {
+    margin-top: 2rem; font-size: 1.06rem; line-height: 1.62;
+    color: var(--ink-2); max-width: 34ch;
   }
-  .page--home .hero--deep .hero__actions .btn { width: 100%; justify-content: center; }
-  .page--home .hero--deep .hero__act--desk { display: none; }
-  .page--home .hero--deep .hero__act--phone { display: inline-flex; }
+  .hero__pitch em { font-style: normal; color: var(--teal); font-weight: 560; }
+  .hero__pitch .qm { color: var(--teal-300); }
+  .hero__sign {
+    margin-top: .85rem; font-size: .68rem; font-weight: 600;
+    letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3);
+  }
 
-  /* The slogan, signed. Small, ruled, quiet — the opposite of a billboard. */
-  .page--home .hero--deep .slogan {
-    order: 5; margin-top: 2rem; padding-top: 1.6rem;
-    border-top: 1px solid rgba(165,211,222,.22);
-    font-size: 1.02rem; font-weight: 450; line-height: 1.62;
-    letter-spacing: 0; color: #b6d5de; max-width: none;
+  .hero__cover-cta { display: grid; gap: .7rem; width: 100%; margin-top: 1.9rem; }
+  .hero__cover-cta .btn {
+    width: 100%; justify-content: center; letter-spacing: .1em;
+    text-transform: uppercase; font-size: .8rem; font-weight: 600;
   }
-  .page--home .hero--deep .slogan .qm { color: var(--teal-300); }
-  .page--home .hero--deep .slogan__by {
-    order: 6; margin-top: .7rem; font-size: .68rem; letter-spacing: .14em;
-  }
-  .page--home .hero--deep .slogan__by::before { width: 1.25rem; }
-  .page--home .hero--deep .hero__note { order: 7; display: none; }
 
-  .creds__list--deep { margin-top: 2rem; padding-top: 1.35rem; }
-}
+  .hero__scroll {
+    display: grid; justify-items: center; gap: .5rem;
+    margin-top: 2.1rem; color: var(--teal); text-decoration: none;
+  }
+  .hero__scroll-mouse {
+    width: 22px; height: 34px; border: 1.5px solid currentColor;
+    border-radius: 12px; position: relative;
+  }
+  .hero__scroll-mouse::after {
+    content: ""; position: absolute; left: 50%; top: 7px; translate: -50% 0;
+    width: 3px; height: 7px; border-radius: 2px; background: currentColor;
+    animation: scroll-hint 1.8s var(--ease) infinite;
+  }
+  @keyframes scroll-hint { 0%,100% { top: 7px; opacity: 1 } 60% { top: 17px; opacity: .25 } }
+
+  /* The header sits on paper here, so it drops the over-dark treatment, and the
+     brand steps aside while the badge below is doing that job. */
+  .page--home .header:not(.is-stuck) { background: rgba(251,253,253,.86); }
+  .page--home .header:not(.is-stuck) .brand__light { display: none; }
+  .page--home .header:not(.is-stuck) .brand { opacity: 0; pointer-events: none; }
+  .page--home .header:not(.is-stuck) .icon-btn,
+  .page--home .header:not(.is-stuck) .lang { color: var(--ink); }
+  .page--home .header:not(.is-stuck) .lang { border-color: var(--line); }
+  .page--home .header:not(.is-stuck) .burger span { background: var(--ink); }
+  .page--home .header:not(.is-stuck) .btn--sm { background: var(--deep); color: #fff; }
+
+  /* The numbers strip follows the cover onto paper. */
+  .creds__list--deep { border-top-color: var(--line); margin-top: 2.4rem; padding-top: 1.5rem; }
+  .creds__list--deep li { border-right-color: var(--line); }
+  .creds__list--deep b { color: var(--deep); }
+  .creds__list--deep span { color: var(--ink-2); }
 }
