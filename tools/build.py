@@ -21,7 +21,7 @@ from data import (SITE, PRACTITIONER, CONDITIONS, TREATMENTS, ARTICLES, GUIDE_ST
                   SEMINAR_NOTIFY)
 from pagecopy import COPY
 import parts
-from parts import (I, rel, head, header, footer, book_dialog, overlays,
+from parts import (I, rel, head, header, footer, overlays,
                    anatomy_block, asset)
 
 OUT = os.path.abspath(os.environ.get("ENSO_OUT") or os.path.join(ROOT, "site"))
@@ -192,7 +192,7 @@ def page(*, path, title, desc, depth, body, active="", jsonld=None, lang="el",
               + f'\n<div class="progress" aria-hidden="true"></div>\n'
               + header(depth, active, lang, over_dark=over_dark)
               + f'\n<main id="main">\n{body}\n</main>\n'
-              + footer(depth, lang) + "\n" + book_dialog(depth, lang) + "\n" + overlays(depth, lang)
+              + footer(depth, lang) + "\n" + overlays(depth, lang)
               + (f'\n<script>{extra_js}</script>' if extra_js else "")
               + f'\n<script src="{asset(depth, "assets/js/enso.js")}" defer></script>\n</body>\n</html>\n')
     write(path + "index.html" if path.endswith("/") or path == "" else path, markup)
@@ -350,11 +350,11 @@ def cta_band(depth):
         <h2>Δείξτε μας το πόδι σας πριν το λύσετε μόνοι σας.</h2>
         <p class="lede">Θα το εξετάσουμε, θα σας πούμε τι βλέπουμε και τι το προκαλεί, και θα
           φύγετε με γραπτό πλάνο — συμπεριλαμβανομένης της περίπτωσης που δεν χρειάζεται να
-          κάνετε τίποτα.</p>
+          κάνετε τίποτα. Τα ραντεβού κλείνονται τηλεφωνικά.</p>
       </div>
       <div class="stack" style="justify-items:stretch">
-        <button class="btn btn--light btn--block" data-book-open>Ζητήστε ραντεβού</button>
-        <a class="btn btn--outline-light btn--block" href="tel:{SITE['phone_href']}">{I['phone']} {SITE['phone']}</a>
+        <a class="btn btn--light btn--block" href="tel:{SITE['phone_href']}">{I['phone']} Θεσσαλονίκη · {SITE['phone']}</a>
+        <a class="btn btn--outline-light btn--block" href="tel:{SITE['phone_alt_href']}">{I['phone']} Αθήνα · {SITE['phone_alt']}</a>
         <p class="tiny" style="color:#8fb8c3">{SITE['address']}, {SITE['postcode']}
           {SITE['locality']}, {SITE['region']}</p>
       </div>
@@ -576,7 +576,7 @@ def build_home():
           <em>καλύτερό σου φίλο</em>.<span class="qm">»</span></p>
         <p class="hero__sign">{PRACTITIONER['name']}</p>
         <div class="hero__cover-cta">
-          <button class="btn" data-book-open>Κλείστε ραντεβού</button>
+          <a class="btn" href="tel:{SITE['phone_href']}">Κλείστε ραντεβού</a>
           <a class="btn btn--ghost" href="ypiresies/">Οι υπηρεσίες μας</a>
         </div>
         <a class="hero__scroll" href="#odigos" aria-label="Δείτε περισσότερα">
@@ -588,7 +588,7 @@ def build_home():
         πώς να περιγράψετε αυτό που νιώθετε, ξεκινήστε από τον οδηγό.</p>
       <div class="hero__actions">
         <a class="btn btn--light hero__act--desk" href="#odigos">Ξεκινήστε τον οδηγό</a>
-        <button class="btn btn--light hero__act--phone" data-book-open>Ζητήστε ραντεβού</button>
+        <a class="btn btn--light hero__act--phone" href="tel:{SITE['phone_href']}">Ζητήστε ραντεβού</a>
         <a class="btn btn--outline-light" href="tel:{SITE['phone_href']}">{I['phone']} {SITE['phone']}</a>
       </div>
       <p class="hero__note">{I['lock']} Οι απαντήσεις σας μένουν στη συσκευή σας.</p>
@@ -776,8 +776,8 @@ def aside_cta(depth):
     return f"""<div class="card" style="background:var(--mist-2);border-color:transparent">
   <h3 style="font-size:1.05rem">Έχετε ερώτηση;</h3>
   <p class="small">Δεν χρειάζεται να ξέρετε τι να ρωτήσετε. Πείτε μας τι νιώθετε.</p>
-  <button class="btn btn--sm btn--block" data-book-open>Ζητήστε ραντεβού</button>
-  <a class="btn btn--ghost btn--sm btn--block" href="tel:{SITE['phone_href']}">{SITE['phone']}</a>
+  <a class="btn btn--sm btn--block" href="tel:{SITE['phone_href']}">{I['phone']} {SITE['phone']}</a>
+  <a class="btn btn--ghost btn--sm btn--block" href="tel:{SITE['phone_alt_href']}">Αθήνα · {SITE['phone_alt']}</a>
 </div>"""
 
 
@@ -1495,8 +1495,8 @@ def build_contact():
          "διαθεσιμότητα και τόπο συνάντησης.</p>"),
         ("Χρειάζομαι ραντεβού ή μπορώ να περάσω;",
          f"<p>Χρειάζεται ραντεβού — το ιατρείο λειτουργεί κατόπιν συνεννόησης. Καλέστε στο "
-         f"{SITE['phone']} ή στείλτε αίτημα από αυτή τη σελίδα και απαντάμε την ίδια ή την "
-         "επόμενη εργάσιμη.</p>"),
+         f"{SITE['phone']}. Τα ραντεβού κλείνονται μόνο τηλεφωνικά — έτσι ξέρετε "
+         "αμέσως τι ώρα υπάρχει, χωρίς αναμονή για απάντηση.</p>"),
         ("Τι να φέρω μαζί μου στο πρώτο ραντεβού;",
          "<p>Τα <b>παπούτσια που φοράτε καθημερινά</b> — όχι τα «καλά». Είναι η πιο χρήσιμη "
          "πληροφορία που μπορείτε να δώσετε. Επίσης τη λίστα των φαρμάκων σας, και αν έχετε "
@@ -1513,8 +1513,8 @@ def build_contact():
     <div class="sec-head sec-head--split" style="margin-bottom:0">
       <div class="stack"><p class="eyebrow">Επικοινωνία · Περαία, Θεσσαλονίκη</p>
         <h1>Ρωμανού 11, Περαία — 3ος όροφος.</h1></div>
-      <p class="lede">Τηλεφωνήστε, γράψτε μας ή στείλτε αίτημα ραντεβού. Απαντάμε την ίδια
-        ή την επόμενη εργάσιμη. Ραντεβού υπάρχουν και στην Αθήνα.</p>
+      <p class="lede">Τα ραντεβού κλείνονται τηλεφωνικά. Καλέστε μας και θα βρούμε
+        ώρα μαζί — υπάρχουν ραντεβού και στην Αθήνα.</p>
     </div>
   </div>
 </section>
@@ -1533,7 +1533,7 @@ def build_contact():
           <li>{I['mail']}<div><b>Email</b><a href="mailto:{SITE['email']}">{SITE['email']}</a></div></li>
           <li>{I['clock']}<div style="width:100%"><b>Ωράριο</b><div style="margin-top:.35rem">{hours}</div></div></li>
         </ul>
-        <button class="btn btn--block" data-book-open>Ζητήστε ραντεβού</button>
+        <a class="btn btn--block" href="tel:{SITE['phone_href']}">{I['phone']} Καλέστε για ραντεβού</a>
         <div class="pill-row">
           <a class="chip" href="{SITE['map_full']}" target="_blank" rel="noopener">{I['pin']} Google Maps</a>
           <a class="chip" href="{SITE['waze']}" target="_blank" rel="noopener">Waze</a>

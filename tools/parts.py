@@ -79,17 +79,6 @@ T = {
         ck_body="Κρατάμε μόνο ό,τι χρειάζεται για να λειτουργεί ο ιστότοπος. Τα υπόλοιπα τα αποφασίζετε εσείς.",
         ck_need="Απαραίτητα", ck_stats="Στατιστικά χρήσης", ck_always="Πάντα ενεργά",
         ck_save="Αποθήκευση επιλογών", ck_min="Μόνο τα απαραίτητα",
-        bk_title="Ζητήστε ραντεβού", bk_sub="Απαντάμε την ίδια ή την επόμενη εργάσιμη.",
-        bk_name="Ονοματεπώνυμο", bk_name_err="Συμπληρώστε το όνομά σας.",
-        bk_phone="Τηλέφωνο", bk_phone_err="Χρειαζόμαστε έναν τρόπο να σας βρούμε.",
-        bk_email="Email", bk_optional="Προαιρετικό.",
-        bk_topic="Τι θα θέλατε να συζητήσουμε;", bk_unsure="Δεν είμαι σίγουρος/η",
-        bk_date="Προτιμώμενη ημερομηνία", bk_sunday="Την Κυριακή είμαστε κλειστά.",
-        bk_time="Προτιμώμενη ώρα", bk_note="Θέλετε να μας πείτε κάτι ακόμη;",
-        bk_note_ph="Ό,τι νομίζετε ότι μας βοηθά να προετοιμαστούμε.",
-        bk_consent="Συμφωνώ να χρησιμοποιήσετε τα στοιχεία μου για να επικοινωνήσετε μαζί μου. Διάβασα τους",
-        bk_consent_link="όρους & την πολιτική απορρήτου", bk_consent_err="Χρειαζόμαστε τη συγκατάθεσή σας.",
-        bk_nostore="Τίποτα δεν αποθηκεύεται εδώ.", bk_cancel="Άκυρο", bk_send="Αποστολή",
         madeby="Made by",
     ),
     "en": dict(
@@ -109,17 +98,6 @@ T = {
         ck_body="We keep only what the site needs to work. The rest is up to you.",
         ck_need="Essential", ck_stats="Usage statistics", ck_always="Always on",
         ck_save="Save choices", ck_min="Essential only",
-        bk_title="Request an appointment", bk_sub="We reply the same or next working day.",
-        bk_name="Full name", bk_name_err="Please tell us your name.",
-        bk_phone="Phone", bk_phone_err="We need a way to reach you.",
-        bk_email="Email", bk_optional="Optional.",
-        bk_topic="What would you like to discuss?", bk_unsure="I am not sure",
-        bk_date="Preferred date", bk_sunday="We are closed on Sundays.",
-        bk_time="Preferred time", bk_note="Anything else we should know?",
-        bk_note_ph="Whatever helps us prepare for your visit.",
-        bk_consent="I agree that you may use my details to contact me. I have read the",
-        bk_consent_link="terms & privacy policy", bk_consent_err="We need your consent.",
-        bk_nostore="Nothing is stored on this site.", bk_cancel="Cancel", bk_send="Send",
         madeby="Made by",
     ),
 }
@@ -285,7 +263,7 @@ def header(depth, active="", lang="el", over_dark=False):
     <div class="header__tools">
       <button class="icon-btn" data-search-open aria-label="{t['search']}">{I['search']}</button>
       {lang_link}
-      <button class="btn btn--sm" data-book-open>{t['book']}</button>
+      <a class="btn btn--sm" href="tel:{SITE['phone_href']}">{t['book']}</a>
       <button class="icon-btn burger" aria-label="{t['menu']}" aria-expanded="false" aria-controls="drawer">
         <span></span><span></span><span></span></button>
     </div>
@@ -347,85 +325,6 @@ def footer(depth, lang="el"):
 </footer>"""
 
 
-def book_dialog(depth=0, lang="el"):
-    """The topic list is the four conditions plus the five services — nothing else."""
-    b, t = rel(depth), T[lang]
-    if lang == "en":
-        topics = [t["bk_unsure"]] + [n for _s, n in EN_NAV[1:]]
-    else:
-        topics = ([t["bk_unsure"]]
-                  + [c["title"] for c in CONDITIONS]
-                  + [x["title"] for x in TREATMENTS])
-    opts = "".join(f'<option value="{x}">{x}</option>' for x in topics)
-    slots = "".join(f'<button type="button" class="slot" aria-pressed="false">{h}:00</button>'
-                    for h in ["09", "10", "11", "12", "13", "16", "17", "18"])
-    return f"""<dialog class="book" id="book" data-email="{SITE['email']}" data-phone="{SITE['phone_href']}"
-  data-lang="{lang}" aria-labelledby="book-title">
-  <form class="book__panel" novalidate>
-    <div class="book__head">
-      <div>
-        <h3 id="book-title">{t['bk_title']}</h3>
-        <p class="small muted" style="margin-top:.2rem">{t['bk_sub']}</p>
-      </div>
-      <button type="button" class="icon-btn" data-book-close aria-label="{t['close']}">{I['close']}</button>
-    </div>
-    <div class="book__body">
-      <div class="fields-2">
-        <div class="field">
-          <label for="book-name">{t['bk_name']}</label>
-          <input id="book-name" name="name" required autocomplete="name">
-          <span class="field__err">{t['bk_name_err']}</span>
-        </div>
-        <div class="field">
-          <label for="book-phone">{t['bk_phone']}</label>
-          <input id="book-phone" name="phone" type="tel" required autocomplete="tel">
-          <span class="field__err">{t['bk_phone_err']}</span>
-        </div>
-      </div>
-      <div class="field">
-        <label for="book-email">{t['bk_email']}</label>
-        <input id="book-email" name="email" type="email" autocomplete="email">
-        <span class="field__hint">{t['bk_optional']}</span>
-      </div>
-      <div class="field">
-        <label for="book-topic">{t['bk_topic']}</label>
-        <select id="book-topic" name="topic">{opts}</select>
-      </div>
-      <div class="fields-2">
-        <div class="field">
-          <label for="book-date">{t['bk_date']}</label>
-          <input id="book-date" name="date" type="date">
-          <span class="field__hint" data-day-warn hidden>{t['bk_sunday']}</span>
-        </div>
-        <div class="field">
-          <label id="slot-label">{t['bk_time']}</label>
-          <div class="slotgrid" data-slots role="group" aria-labelledby="slot-label">{slots}</div>
-          <input type="hidden" id="book-slot" name="slot">
-        </div>
-      </div>
-      <div class="field">
-        <label for="book-note">{t['bk_note']}</label>
-        <textarea id="book-note" name="note" placeholder="{t['bk_note_ph']}"></textarea>
-      </div>
-      <div class="field">
-        <label class="consent">
-          <input type="checkbox" name="consent" required>
-          <span>{t['bk_consent']} <a href="{b}oroi-chrisis/">{t['bk_consent_link']}</a>.</span>
-        </label>
-        <span class="field__err">{t['bk_consent_err']}</span>
-      </div>
-    </div>
-    <div class="book__foot">
-      <span class="tiny muted" style="display:flex;align-items:center;gap:.4rem">{I['lock']} {t['bk_nostore']}</span>
-      <span style="display:flex;gap:.6rem">
-        <button type="button" class="btn btn--ghost btn--sm" data-book-close>{t['bk_cancel']}</button>
-        <button type="submit" class="btn btn--sm">{t['bk_send']}</button>
-      </span>
-    </div>
-  </form>
-</dialog>"""
-
-
 def overlays(depth=0, lang="el"):
     t = T[lang]
     return f"""<div class="lightbox" role="dialog" aria-modal="true" aria-label="{t['view']}" aria-hidden="true">
@@ -464,8 +363,7 @@ def overlays(depth=0, lang="el"):
 <button class="totop" aria-label="{t['top']}">{I['up']}</button>
 
 <div class="actionbar">
-  <a class="btn btn--ghost btn--sm" href="tel:{SITE['phone_href']}">{I['phone']} {t['call']}</a>
-  <button class="btn btn--sm" data-book-open>{t['book']}</button>
+  <a class="btn btn--sm btn--block" href="tel:{SITE['phone_href']}">{I['phone']} {t['book']} · {SITE['phone']}</a>
 </div>"""
 
 

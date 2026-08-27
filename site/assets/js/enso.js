@@ -367,10 +367,10 @@
           data.phone + " και θα βρούμε ραντεβού σύντομα.</span></div>";
       }
 
-      html += '<div class="guide__foot"><button type="button" class="btn btn--ghost btn--sm" data-restart>Ξεκινήστε ξανά</button>' +
-        '<span style="display:flex;gap:.6rem;flex-wrap:wrap">' +
-        '<a class="btn btn--ghost btn--sm" href="tel:' + data.phoneHref + '">' + data.phone + "</a>" +
-        '<button type="button" class="btn btn--sm" data-book>Κλείστε ραντεβού</button></span></div></div>';
+      html += '<div class="guide__foot">' +
+        '<button type="button" class="btn btn--ghost btn--sm" data-restart>Ξεκινήστε ξανά</button>' +
+        '<a class="btn btn--sm" href="tel:' + data.phoneHref + '">Καλέστε ' + data.phone + '</a>' +
+        '</div></div>';
 
       body.innerHTML = html;
       requestAnimationFrame(function () {
@@ -378,18 +378,6 @@
       });
       $("[data-restart]", body).addEventListener("click", function () {
         step = 0; answers = {}; renderStep();
-      });
-      var bookBtn = $("[data-book]", body);
-      bookBtn && bookBtn.addEventListener("click", function () {
-        var dlg = $("#book");
-        if (dlg) {
-          var sel = $("#book-topic", dlg);
-          if (sel && ranked.length) {
-            var want = data.conditions[ranked[0].id].title;
-            $$("option", sel).forEach(function (o) { if (o.textContent === want) sel.value = o.value; });
-          }
-          dlg.showModal();
-        }
       });
     }
     renderStep();
@@ -720,96 +708,6 @@
   }
 
   /* ── Booking dialog ────────────────────────────────────────────────── */
-  function booking() {
-    var dlg = $("#book");
-    if (!dlg) return;
-    $$("[data-book-open]").forEach(function (b) {
-      b.addEventListener("click", function (e) { e.preventDefault(); dlg.showModal(); });
-    });
-    $$("[data-book-close]", dlg).forEach(function (b) {
-      b.addEventListener("click", function () { dlg.close(); });
-    });
-    dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
-
-    var dateEl = $("#book-date", dlg);
-    if (dateEl) {
-      var t = new Date(); t.setDate(t.getDate() + 1);
-      dateEl.min = t.toISOString().slice(0, 10);
-      var max = new Date(); max.setMonth(max.getMonth() + 4);
-      dateEl.max = max.toISOString().slice(0, 10);
-    }
-    var slotWrap = $("[data-slots]", dlg);
-    var slotInput = $("#book-slot", dlg);
-    $$(".slot", slotWrap).forEach(function (s) {
-      s.addEventListener("click", function () {
-        $$(".slot", slotWrap).forEach(function (o) { o.setAttribute("aria-pressed", o === s); });
-        slotInput.value = s.textContent.trim();
-      });
-    });
-    // Saturday closes at 15:00; Sunday is closed.
-    dateEl && dateEl.addEventListener("change", function () {
-      var d = new Date(dateEl.value + "T12:00:00").getDay();
-      var warn = $("[data-day-warn]", dlg);
-      warn.hidden = d !== 0;
-      $$(".slot", slotWrap).forEach(function (s) {
-        var hour = parseInt(s.textContent, 10);
-        var closed = d === 0 || (d === 6 && hour >= 15);
-        s.disabled = closed;
-        s.style.opacity = closed ? ".35" : "";
-        if (closed && s.getAttribute("aria-pressed") === "true") {
-          s.setAttribute("aria-pressed", "false"); slotInput.value = "";
-        }
-      });
-    });
-
-    var form = $("form", dlg);
-    form.addEventListener("submit", function (e) {
-      e.preventDefault();
-      var ok = true;
-      $$(".field", form).forEach(function (f) {
-        var input = $("input, select, textarea", f);
-        if (!input || !input.required) return;
-        var valid = input.checkValidity();
-        f.classList.toggle("is-invalid", !valid);
-        if (!valid && ok) { input.focus(); ok = false; }
-      });
-      if (!ok) return;
-
-      var d = new FormData(form);
-      var lines = [
-        "Αίτημα ραντεβού από το ensofootclinic.gr", "",
-        "Ονοματεπώνυμο: " + (d.get("name") || "—"),
-        "Τηλέφωνο: " + (d.get("phone") || "—"),
-        "Email: " + (d.get("email") || "—"),
-        "Θέμα: " + (d.get("topic") || "—"),
-        "Προτιμώμενη ημερομηνία: " + (d.get("date") || "—"),
-        "Προτιμώμενη ώρα: " + (d.get("slot") || "—"), "",
-        "Σημείωση:", (d.get("note") || "—")
-      ].join("\n");
-
-      var mail = "mailto:" + dlg.getAttribute("data-email") +
-        "?subject=" + encodeURIComponent("Αίτημα ραντεβού — " + (d.get("name") || "")) +
-        "&body=" + encodeURIComponent(lines);
-
-      $(".book__body", dlg).innerHTML =
-        '<div class="stack" style="justify-items:stretch">' +
-        '<h3>Το αίτημά σας είναι έτοιμο</h3>' +
-        '<p class="muted small">Το πρόγραμμα email σας θα ανοίξει με τα στοιχεία συμπληρωμένα. Αν δεν ανοίξει, αντιγράψτε το κείμενο ή καλέστε μας.</p>' +
-        '<pre style="white-space:pre-wrap;background:var(--mist-2);padding:1rem;border-radius:var(--r-sm);font:inherit;font-size:.86rem;margin:0">' +
-        lines.replace(/[<>&]/g, "") + "</pre></div>";
-      $(".book__foot", dlg).innerHTML =
-        '<button type="button" class="btn btn--ghost btn--sm" data-copy>Αντιγραφή κειμένου</button>' +
-        '<span style="display:flex;gap:.6rem"><a class="btn btn--ghost btn--sm" href="tel:' + dlg.getAttribute("data-phone") + '">Καλέστε</a>' +
-        '<a class="btn btn--sm" href="' + mail + '">Άνοιγμα email</a></span>';
-      $("[data-copy]", dlg).addEventListener("click", function (e) {
-        navigator.clipboard && navigator.clipboard.writeText(lines).then(function () {
-          e.target.textContent = "Αντιγράφηκε ✓";
-        });
-      });
-      location.href = mail;
-    });
-  }
-
   /* ── Chrome: to-top, action bar ────────────────────────────────────── */
   function chrome() {
     var top = $(".totop"), bar = $(".actionbar");
@@ -843,7 +741,7 @@
 
   function init() {
     header(); reveal(); counters(); search(); guide(); anatomy(); compare();
-    tracker(); faq(); doc(); gallery(); articleFilter(); booking(); chrome(); cookies();
+    tracker(); faq(); doc(); gallery(); articleFilter(); chrome(); cookies();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
