@@ -11,7 +11,8 @@ enso-new/
 │   ├── assets/{css,js,img}
 │   ├── search-index.json  ευρετήριο αναζήτησης (παράγεται)
 │   ├── sitemap.xml · robots.txt
-│   └── _redirects · .htaccess · vercel.json   ← 301 από τα παλιά URL
+│   └── _redirects · .htaccess   ← 301 για Netlify / Apache
+├── vercel.json           ← ρίζα! outputDirectory + redirects + headers
 ├── content/
 │   ├── data.py           ← δομή, στοιχεία επικοινωνίας, μενού, υπηρεσίες
 │   ├── pagecopy.py       ← συγκεντρώνει όλα τα κείμενα σε ένα dict
@@ -36,6 +37,23 @@ python3 enso-new/tools/build.py   # ~1 δευτερόλεπτο, ξαναγρά�
 find enso-new/site -mindepth 1 -maxdepth 1 -not -name assets -exec rm -rf {} +
 python3 enso-new/tools/build.py
 ```
+
+## Deploy
+
+### Vercel
+
+Το `vercel.json` βρίσκεται στη **ρίζα του repo** — όχι μέσα στο `site/`. Το Vercel
+διαβάζει vercel.json μόνο από τη ρίζα, και επειδή το `index.html` ζει ένα επίπεδο
+πιο κάτω, το `outputDirectory: "site"` είναι αυτό που εμποδίζει το deployment να
+βγάλει 404 στο `/`.
+
+Import το repo και μην αλλάξετε τίποτα στις ρυθμίσεις — το vercel.json τα ορίζει
+όλα (output directory, trailing slash, τα 11 redirects, cache & security headers).
+
+### Netlify / Apache / άλλο static host
+
+Ανεβάζετε **μόνο τον φάκελο `site/`**. Εκεί μέσα υπάρχουν τα `_redirects`
+(Netlify/Cloudflare) και το `.htaccess` (Apache) με τα ίδια 301.
 
 ## Τοπική προεπισκόπηση
 

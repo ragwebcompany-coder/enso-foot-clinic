@@ -174,6 +174,12 @@ def write(path, markup):
     open(full, "w", encoding="utf-8").write(markup)
 
 
+def write_root(path, markup):
+    """Repo-level config, not site output. Vercel only reads vercel.json from the
+    root of the repository — a copy inside site/ is never seen."""
+    open(os.path.join(ROOT, path), "w", encoding="utf-8").write(markup)
+
+
 def page(*, path, title, desc, depth, body, active="", jsonld=None, lang="el",
          alt=None, og_image="assets/img/og-enso.png", extra_js="", body_class="",
          over_dark=False):
@@ -1796,8 +1802,14 @@ def build_redirects():
     ht.append("ErrorDocument 404 /404.html")
     write(".htaccess", "\n".join(ht) + "\n")
 
-    write("vercel.json", json.dumps({
+    # Vercel reads this from the repository root, and the site lives one level
+    # down, so `outputDirectory` is what stops the deployment 404-ing at /. The
+    # no-op build command keeps that setting unambiguous for the zero-config
+    # static pipeline.
+    write_root("vercel.json", json.dumps({
         "$schema": "https://openapi.vercel.sh/vercel.json",
+        "buildCommand": "echo 'static site — nothing to build'",
+        "outputDirectory": "site",
         "trailingSlash": True,
         "cleanUrls": False,
         # trailingSlash normalises the path before redirects are matched, so the
