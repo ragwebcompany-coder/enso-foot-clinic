@@ -21,9 +21,12 @@ from data import (SITE, PRACTITIONER, CONDITIONS, TREATMENTS, ARTICLES, GUIDE_ST
                   SEMINAR_NOTIFY)
 from pagecopy import COPY
 import parts
-from parts import I, rel, head, header, footer, book_dialog, overlays, anatomy_block
+from parts import (I, rel, head, header, footer, book_dialog, overlays,
+                   anatomy_block, asset)
 
 OUT = os.path.abspath(os.environ.get("ENSO_OUT") or os.path.join(ROOT, "site"))
+# parts.asset() hashes files from here.
+parts.ASSET_ROOT = OUT
 TODAY = datetime.date.today().isoformat()
 
 CONDS = {c["slug"]: c for c in CONDITIONS}
@@ -191,7 +194,7 @@ def page(*, path, title, desc, depth, body, active="", jsonld=None, lang="el",
               + f'\n<main id="main">\n{body}\n</main>\n'
               + footer(depth, lang) + "\n" + book_dialog(depth, lang) + "\n" + overlays(depth, lang)
               + (f'\n<script>{extra_js}</script>' if extra_js else "")
-              + f'\n<script src="{rel(depth)}assets/js/enso.js" defer></script>\n</body>\n</html>\n')
+              + f'\n<script src="{asset(depth, "assets/js/enso.js")}" defer></script>\n</body>\n</html>\n')
     write(path + "index.html" if path.endswith("/") or path == "" else path, markup)
     return markup
 
@@ -309,16 +312,17 @@ def seo_title(text, suffix=" | Ensō Foot Clinic", cap=70):
 
 def img(name, alt, w, h, depth, *, cls="", loading="lazy", priority=False):
     """SVG is served as-is; raster art gets a WebP source with the original as fallback."""
-    b = rel(depth) + "assets/img/"
     stem, ext = name.rsplit(".", 1)
     extra = ' fetchpriority="high"' if priority else ""
     load = "" if priority else f' loading="{loading}" decoding="async"'
     klass = f' class="{cls}"' if cls else ""
+    src = asset(depth, "assets/img/" + name)
     if ext.lower() == "svg":
-        return (f'<img src="{b}{name}" alt="{alt}" width="{w}" height="{h}"'
+        return (f'<img src="{src}" alt="{alt}" width="{w}" height="{h}"'
                 f'{load}{extra}{klass}>')
-    return (f'<picture><source srcset="{b}{stem}.webp" type="image/webp">'
-            f'<img src="{b}{name}" alt="{alt}" width="{w}" height="{h}"'
+    webp = asset(depth, f"assets/img/{stem}.webp")
+    return (f'<picture><source srcset="{webp}" type="image/webp">'
+            f'<img src="{src}" alt="{alt}" width="{w}" height="{h}"'
             f'{load}{extra}{klass}></picture>')
 
 
@@ -1831,12 +1835,17 @@ def build_redirects():
         "redirects": [{"source": a if a.endswith("/") else a + "/",
                        "destination": b, "permanent": True} for a, b in rules],
         "headers": [
-            {"source": "/assets/(img|docs)/(.*)",
+            # Every asset URL carries a ?v=<content hash>, so a changed file is a
+            # new URL and this cache can never serve stale CSS against new HTML.
+            # Without the hash, `must-revalidate` would not help: it only applies
+            # once max-age has expired, so a day-old stylesheet stays "fresh".
+            {"source": "/assets/(.*)",
              "headers": [{"key": "Cache-Control",
                           "value": "public, max-age=31536000, immutable"}]},
-            {"source": "/assets/(css|js)/(.*)",
+            # HTML must always be revalidated, or the versioned URLs never arrive.
+            {"source": "/((?!assets/).*)",
              "headers": [{"key": "Cache-Control",
-                          "value": "public, max-age=86400, must-revalidate"}]},
+                          "value": "public, max-age=0, must-revalidate"}]},
             {"source": "/(.*)", "headers": [
                 {"key": "X-Content-Type-Options", "value": "nosniff"},
                 {"key": "Referrer-Policy", "value": "strict-origin-when-cross-origin"},

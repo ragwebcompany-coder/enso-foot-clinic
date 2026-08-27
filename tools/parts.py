@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Shared markup: head, header, drawer, footer, overlays, icons, foot diagram."""
-import json, sys, os, html as _html
+import json, sys, os, hashlib, html as _html
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "content"))
 from data import SITE, CONDITIONS, TREATMENTS, PRACTITIONER
 
@@ -26,6 +26,31 @@ I = {
 
 def rel(depth):
     return "../" * depth if depth else ""
+
+
+# Asset filenames are stable (enso.css, logo.svg…), so a long cache on them means
+# a returning browser renders NEW html against OLD css — the page arrives with
+# markup its stylesheet has never heard of. Appending a content hash makes every
+# change a new URL, which is what lets the far-future cache be correct instead of
+# dangerous. build.py points ASSET_ROOT at the output directory before rendering.
+ASSET_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "site")
+_VER = {}
+
+
+def ver(path):
+    if path not in _VER:
+        try:
+            with open(os.path.join(ASSET_ROOT, path), "rb") as f:
+                _VER[path] = hashlib.sha256(f.read()).hexdigest()[:10]
+        except OSError:
+            _VER[path] = ""
+    return _VER[path]
+
+
+def asset(depth, path):
+    """Relative URL for an asset, carrying its content hash."""
+    v = ver(path)
+    return rel(depth) + path + (f"?v={v}" if v else "")
 
 
 # UI strings. The clinical copy stays in Greek; the shell speaks the page's language.
@@ -133,13 +158,13 @@ def head(title, desc, depth, canonical, *, lang="el", alt=None, jsonld=None,
 <meta property="business:contact_data:country_name" content="Greece">
 <meta property="business:contact_data:phone_number" content="{SITE['phone_href']}">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="{b}assets/img/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="{b}assets/img/favicon-144.png" sizes="144x144">
-<link rel="apple-touch-icon" href="{b}assets/img/favicon-144.png">
+<link rel="icon" href="{asset(depth, "assets/img/favicon.svg")}" type="image/svg+xml">
+<link rel="icon" href="{asset(depth, "assets/img/favicon-144.png")}" sizes="144x144">
+<link rel="apple-touch-icon" href="{asset(depth, "assets/img/favicon-144.png")}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300..700&amp;family=GFS+Didot&amp;display=swap">
-<link rel="stylesheet" href="{b}assets/css/enso.css">
+<link rel="stylesheet" href="{asset(depth, "assets/css/enso.css")}">
 <script>document.documentElement.className+=" js";</script>
 {ld}</head>"""
 
@@ -242,9 +267,9 @@ def header(depth, active="", lang="el", over_dark=False):
 
     # Over a deep hero the header floats transparent, so it carries the light
     # lockup as well and CSS swaps them as the page scrolls into the solid bar.
-    brand_img = f'<img class="brand__dark" src="{b}assets/img/logo.svg" alt="{SITE["name"]}" width="174" height="42">'
+    brand_img = f'<img class="brand__dark" src="{asset(depth, "assets/img/logo.svg")}" alt="{SITE["name"]}" width="174" height="42">'
     if over_dark:
-        brand_img += (f'<img class="brand__light" src="{b}assets/img/logo-light.svg" '
+        brand_img += (f'<img class="brand__light" src="{asset(depth, "assets/img/logo-light.svg")}" '
                       f'alt="" aria-hidden="true" width="174" height="42">')
     return f"""<a class="skip" href="#main">{t['skip']}</a>
 <header class="header">
@@ -281,7 +306,7 @@ def footer(depth, lang="el"):
   <div class="wrap">
     <div class="footer__grid">
       <div class="footer__brand">
-        <img src="{b}assets/img/logo-light.svg" alt="{SITE['name']}" width="196" height="61" loading="lazy">
+        <img src="{asset(depth, "assets/img/logo-light.svg")}" alt="{SITE['name']}" width="196" height="61" loading="lazy">
         <p class="small" style="margin-top:1.1rem;max-width:34ch;color:#9cc3ce">{t['tagline']}</p>
         <div class="socials" style="margin-top:1.5rem">
           <a href="{SITE['social']['facebook']}" rel="noopener" target="_blank" aria-label="Facebook">{I['fb']}</a>
