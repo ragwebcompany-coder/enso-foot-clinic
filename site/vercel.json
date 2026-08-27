@@ -1,0 +1,99 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "trailingSlash": true,
+  "cleanUrls": false,
+  "redirects": [
+    {
+      "source": "/about/",
+      "destination": "/elpiniki-christodoulou/",
+      "permanent": true
+    },
+    {
+      "source": "/services/",
+      "destination": "/ypiresies/",
+      "permanent": true
+    },
+    {
+      "source": "/services/ΔΙΑΒΗΤΙΚΟ-ΠΟΔΙ/",
+      "destination": "/pathiseis/diavitiko-podi/",
+      "permanent": true
+    },
+    {
+      "source": "/services/%CE%94%CE%99%CE%91%CE%92%CE%97%CE%A4%CE%99%CE%9A%CE%9F-%CE%A0%CE%9F%CE%94%CE%99/",
+      "destination": "/pathiseis/diavitiko-podi/",
+      "permanent": true
+    },
+    {
+      "source": "/contact/",
+      "destination": "/epikoinonia/",
+      "permanent": true
+    },
+    {
+      "source": "/seminars/",
+      "destination": "/seminaria/",
+      "permanent": true
+    },
+    {
+      "source": "/seminars/freeseminar/",
+      "destination": "/seminaria/1o-seminario-podologias/",
+      "permanent": true
+    },
+    {
+      "source": "/terms/",
+      "destination": "/oroi-chrisis/",
+      "permanent": true
+    },
+    {
+      "source": "/privacy/",
+      "destination": "/oroi-chrisis/",
+      "permanent": true
+    },
+    {
+      "source": "/Διαδικτυακά-Μαθήματα/",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/%CE%94%CE%B9%CE%B1%CE%B4%CE%B9%CE%BA%CF%84%CF%85%CE%B1%CE%BA%CE%AC-%CE%9C%CE%B1%CE%B8%CE%AE%CE%BC%CE%B1%CF%84%CE%B1/",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(img|docs)/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(css|js)/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=86400, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "geolocation=(), microphone=(), camera=()"
+        }
+      ]
+    }
+  ]
+}

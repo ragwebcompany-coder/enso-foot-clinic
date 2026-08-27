@@ -1,0 +1,13 @@
+RewriteEngine On
+RewriteRule ^about/?$ /elpiniki-christodoulou/ [R=301,L,NE]
+RewriteRule ^services/?$ /ypiresies/ [R=301,L,NE]
+RewriteRule ^services/ΔΙΑΒΗΤΙΚΟ-ΠΟΔΙ/?$ /pathiseis/diavitiko-podi/ [R=301,L,NE]
+RewriteRule ^services/%CE%94%CE%99%CE%91%CE%92%CE%97%CE%A4%CE%99%CE%9A%CE%9F-%CE%A0%CE%9F%CE%94%CE%99/?$ /pathiseis/diavitiko-podi/ [R=301,L,NE]
+RewriteRule ^contact/?$ /epikoinonia/ [R=301,L,NE]
+RewriteRule ^seminars/?$ /seminaria/ [R=301,L,NE]
+RewriteRule ^seminars/freeseminar/?$ /seminaria/1o-seminario-podologias/ [R=301,L,NE]
+RewriteRule ^terms/?$ /oroi-chrisis/ [R=301,L,NE]
+RewriteRule ^privacy/?$ /oroi-chrisis/ [R=301,L,NE]
+RewriteRule ^Διαδικτυακά-Μαθήματα/?$ / [R=301,L,NE]
+RewriteRule ^%CE%94%CE%B9%CE%B1%CE%B4%CE%B9%CE%BA%CF%84%CF%85%CE%B1%CE%BA%CE%AC-%CE%9C%CE%B1%CE%B8%CE%AE%CE%BC%CE%B1%CF%84%CE%B1/?$ / [R=301,L,NE]
+ErrorDocument 404 /404.html

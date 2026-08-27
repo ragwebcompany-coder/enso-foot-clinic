@@ -1,0 +1,570 @@
+# -*- coding: utf-8 -*-
+"""Shared markup: head, header, drawer, footer, overlays, icons, foot diagram."""
+import json, sys, os, html as _html
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "content"))
+from data import SITE, CONDITIONS, TREATMENTS, PRACTITIONER
+
+I = {
+ "search": '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+ "chev": '<svg class="nav__chev" width="11" height="11" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2.5 4.5L6 8l3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+ "phone": '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 3h3.5l1.7 4.2-2.1 1.5a12.5 12.5 0 006.2 6.2l1.5-2.1L20 14.5V18a2 2 0 01-2.2 2A16.8 16.8 0 013 6.2 2 2 0 015 3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>',
+ "mail": '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M4 7l8 5.5L20 7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
+ "pin": '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s7-5.6 7-11a7 7 0 10-14 0c0 5.4 7 11 7 11z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="10" r="2.6" stroke="currentColor" stroke-width="1.7"/></svg>',
+ "clock": '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/><path d="M12 7.5V12l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+ "lock": '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2.5" stroke="currentColor" stroke-width="1.8"/><path d="M8 10V7a4 4 0 018 0v3" stroke="currentColor" stroke-width="1.8"/></svg>',
+ "play": '<svg width="46" height="46" viewBox="0 0 46 46" fill="none" aria-hidden="true"><circle cx="23" cy="23" r="21" stroke="currentColor" stroke-width="1.6" opacity=".8"/><path d="M19 15.5l12 7.5-12 7.5z" fill="currentColor"/></svg>',
+ "pdf": '<svg width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8l-5-5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M14 3v5h5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>',
+ "up": '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 19V6M6 11l6-6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+ "close": '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+ "left": '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.5 5L8 12l6.5 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+ "right": '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9.5 5L16 12l-6.5 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+ "fb": '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.25-1.5 1.55-1.5h1.65V3.6c-.29-.04-1.27-.12-2.41-.12-2.39 0-4.02 1.46-4.02 4.13v2.3H7.5V13h2.77v8h3.23z"/></svg>',
+ "tiktok": '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 5.82A4.28 4.28 0 0115.54 3h-3.1v12.4a2.59 2.59 0 01-2.59 2.5 2.59 2.59 0 01-2.6-2.58 2.59 2.59 0 013.1-2.54v-3.1a5.66 5.66 0 00-.5-.03A5.68 5.68 0 004.17 15.4a5.68 5.68 0 005.68 5.68 5.68 5.68 0 005.69-5.68V9.4a7.35 7.35 0 004.29 1.37V7.7a4.28 4.28 0 01-3.23-1.88z"/></svg>',
+ "shield": '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l7.5 3v5.5c0 4.6-3.1 8.5-7.5 9.5-4.4-1-7.5-4.9-7.5-9.5V6L12 3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>',
+}
+
+
+def rel(depth):
+    return "../" * depth if depth else ""
+
+
+# UI strings. The clinical copy stays in Greek; the shell speaks the page's language.
+T = {
+    "el": dict(
+        skip="Μετάβαση στο περιεχόμενο", nav_label="Κύρια πλοήγηση",
+        clinic="Το ιατρείο", conditions="Παθήσεις", treatments="Υπηρεσίες",
+        both="Παθήσεις & υπηρεσίες", guide="Οδηγός συμπτωμάτων",
+        tracker="Φροντίδα ποδιών", seminars="Σεμινάρια",
+        articles="Άρθρα", gallery="Εικονογραφήσεις", contact="Επικοινωνία",
+        book="Ραντεβού", search="Αναζήτηση (Ctrl+K)", menu="Μενού", other_lang="EN",
+        all_conditions="Όλες οι παθήσεις", compare="Σύγκριση υπηρεσιών",
+        search_ph="Πάθηση, υπηρεσία ή άρθρο…", search_hint="Γράψτε τουλάχιστον 2 χαρακτήρες.",
+        hours="Ωράριο", terms="Όροι χρήσης & απόρρητο", other_lang_full="English",
+        tagline="Ποδολογικό ιατρείο στην Περαία Θεσσαλονίκης, από το 2002. "
+                "Θεραπεία και φροντίδα του άκρου ποδός.",
+        call="Κλήση", top="Επιστροφή στην κορυφή", close="Κλείσιμο",
+        prev="Προηγούμενο", next="Επόμενο", view="Προβολή",
+        ck_title="Cookies",
+        ck_body="Κρατάμε μόνο ό,τι χρειάζεται για να λειτουργεί ο ιστότοπος. Τα υπόλοιπα τα αποφασίζετε εσείς.",
+        ck_need="Απαραίτητα", ck_stats="Στατιστικά χρήσης", ck_always="Πάντα ενεργά",
+        ck_save="Αποθήκευση επιλογών", ck_min="Μόνο τα απαραίτητα",
+        bk_title="Ζητήστε ραντεβού", bk_sub="Απαντάμε την ίδια ή την επόμενη εργάσιμη.",
+        bk_name="Ονοματεπώνυμο", bk_name_err="Συμπληρώστε το όνομά σας.",
+        bk_phone="Τηλέφωνο", bk_phone_err="Χρειαζόμαστε έναν τρόπο να σας βρούμε.",
+        bk_email="Email", bk_optional="Προαιρετικό.",
+        bk_topic="Τι θα θέλατε να συζητήσουμε;", bk_unsure="Δεν είμαι σίγουρος/η",
+        bk_date="Προτιμώμενη ημερομηνία", bk_sunday="Την Κυριακή είμαστε κλειστά.",
+        bk_time="Προτιμώμενη ώρα", bk_note="Θέλετε να μας πείτε κάτι ακόμη;",
+        bk_note_ph="Ό,τι νομίζετε ότι μας βοηθά να προετοιμαστούμε.",
+        bk_consent="Συμφωνώ να χρησιμοποιήσετε τα στοιχεία μου για να επικοινωνήσετε μαζί μου. Διάβασα τους",
+        bk_consent_link="όρους & την πολιτική απορρήτου", bk_consent_err="Χρειαζόμαστε τη συγκατάθεσή σας.",
+        bk_nostore="Τίποτα δεν αποθηκεύεται εδώ.", bk_cancel="Άκυρο", bk_send="Αποστολή",
+        madeby="Made by",
+    ),
+    "en": dict(
+        skip="Skip to content", nav_label="Main navigation",
+        clinic="The clinic", conditions="Conditions", treatments="Services",
+        both="Conditions & services", guide="Symptom guide",
+        tracker="Foot care", seminars="Seminars",
+        articles="Articles", gallery="Illustrations", contact="Contact",
+        book="Book", search="Search (Ctrl+K)", menu="Menu", other_lang="ΕΛ",
+        all_conditions="All conditions", compare="Compare services",
+        search_ph="Condition, service or article…", search_hint="Type at least 2 characters.",
+        hours="Opening hours", terms="Terms & privacy", other_lang_full="Ελληνικά",
+        tagline="Podology clinic in Peraia, Thessaloniki, practising since 2002.",
+        call="Call", top="Back to top", close="Close",
+        prev="Previous", next="Next", view="View",
+        ck_title="Cookies",
+        ck_body="We keep only what the site needs to work. The rest is up to you.",
+        ck_need="Essential", ck_stats="Usage statistics", ck_always="Always on",
+        ck_save="Save choices", ck_min="Essential only",
+        bk_title="Request an appointment", bk_sub="We reply the same or next working day.",
+        bk_name="Full name", bk_name_err="Please tell us your name.",
+        bk_phone="Phone", bk_phone_err="We need a way to reach you.",
+        bk_email="Email", bk_optional="Optional.",
+        bk_topic="What would you like to discuss?", bk_unsure="I am not sure",
+        bk_date="Preferred date", bk_sunday="We are closed on Sundays.",
+        bk_time="Preferred time", bk_note="Anything else we should know?",
+        bk_note_ph="Whatever helps us prepare for your visit.",
+        bk_consent="I agree that you may use my details to contact me. I have read the",
+        bk_consent_link="terms & privacy policy", bk_consent_err="We need your consent.",
+        bk_nostore="Nothing is stored on this site.", bk_cancel="Cancel", bk_send="Send",
+        madeby="Made by",
+    ),
+}
+
+
+def head(title, desc, depth, canonical, *, lang="el", alt=None, jsonld=None,
+         og_image="assets/img/og-enso.png"):
+    b = rel(depth)
+    ld = "".join('<script type="application/ld+json">%s</script>'
+                 % json.dumps(x, ensure_ascii=False, separators=(",", ":")) for x in (jsonld or []))
+    alt_links = ""
+    if alt:
+        alt_links = '<link rel="alternate" hreflang="%s" href="%s/%s">' % (
+            alt[0], SITE["domain"], alt[1].lstrip("/"))
+    return f"""<!doctype html>
+<html lang="{lang}" data-base="{b or './'}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{title}</title>
+<meta name="description" content="{desc}">
+<link rel="canonical" href="{SITE['domain']}/{canonical.lstrip('/')}">
+<link rel="alternate" hreflang="{lang}" href="{SITE['domain']}/{canonical.lstrip('/')}">{alt_links}
+<meta name="theme-color" content="#63aabc">
+<meta name="geo.region" content="{SITE['region_iso']}">
+<meta name="geo.placename" content="{SITE['locality']}, {SITE['region']}">
+<meta name="geo.position" content="{SITE['lat']};{SITE['lng']}">
+<meta name="ICBM" content="{SITE['lat']}, {SITE['lng']}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{SITE['name']}">
+<meta property="og:locale" content="{'el_GR' if lang == 'el' else 'en_GB'}">
+<meta property="og:title" content="{title}">
+<meta property="og:description" content="{desc}">
+<meta property="og:url" content="{SITE['domain']}/{canonical.lstrip('/')}">
+<meta property="og:image" content="{SITE['domain']}/{og_image}">
+<meta property="og:image:alt" content="{SITE['name']} — ποδολογικό ιατρείο, Περαία Θεσσαλονίκης">
+<meta property="place:location:latitude" content="{SITE['lat']}">
+<meta property="place:location:longitude" content="{SITE['lng']}">
+<meta property="business:contact_data:locality" content="{SITE['locality']}">
+<meta property="business:contact_data:region" content="{SITE['region']}">
+<meta property="business:contact_data:postal_code" content="{SITE['postcode']}">
+<meta property="business:contact_data:country_name" content="Greece">
+<meta property="business:contact_data:phone_number" content="{SITE['phone_href']}">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="{b}assets/img/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="{b}assets/img/favicon-144.png" sizes="144x144">
+<link rel="apple-touch-icon" href="{b}assets/img/favicon-144.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300..700&amp;family=GFS+Didot&amp;display=swap">
+<link rel="stylesheet" href="{b}assets/css/enso.css">
+<script>document.documentElement.className+=" js";</script>
+{ld}</head>"""
+
+
+def search_overlay(lang="el"):
+    t = T[lang]
+    return f"""<div class="search" role="dialog" aria-modal="true" aria-label="{t['search']}" aria-hidden="true">
+  <div class="search__panel">
+    <div class="search__field">{I['search']}
+      <label class="vh" for="search-input">{t['search']}</label>
+      <input id="search-input" type="search" placeholder="{t['search_ph']}" autocomplete="off">
+      <button class="search__kbd" data-search-close>ESC</button>
+    </div>
+    <div class="search__results" id="search-results">
+      <p class="search__empty">{t['search_hint']}</p>
+    </div>
+  </div>
+</div>"""
+
+
+EN_NAV = [("the-clinic", "The Clinic"), ("diabetic-foot-care", "Diabetic Foot Care"),
+          ("calluses-and-corns", "Calluses & Corns"), ("dry-cracked-heels", "Dry & Cracked Heels"),
+          ("ingrown-toenail", "Ingrown Toenail"), ("medical-pedicure", "Medical Pedicure")]
+
+
+def drawer(depth, lang="el"):
+    b, t = rel(depth), T[lang]
+    if lang == "en":
+        links = "".join(f'<div class="drawer__group"><a class="drawer__top" href="{b}en/{s}/">{n}</a></div>'
+                        for s, n in EN_NAV)
+        return f"""<div class="drawer" id="drawer">
+  <div class="drawer__group"><a class="drawer__top" href="{b}en/">{SITE['name']}</a></div>
+  {links}
+  <div class="drawer__group"><a class="drawer__top" href="{b}">{t['other_lang_full']}</a></div>
+  <div class="drawer__cta">
+    <a class="btn btn--block" href="tel:{SITE['phone_href']}">{I['phone']} {SITE['phone']}</a>
+    <a class="btn btn--ghost btn--block" href="mailto:{SITE['email']}">{I['mail']} {SITE['email']}</a>
+  </div>
+</div>"""
+    conds = "".join(f'<a href="{b}pathiseis/{c["slug"]}/">{c["title"]}</a>' for c in CONDITIONS)
+    treats = "".join(f'<a href="{b}ypiresies/{x["slug"]}/">{x["title"]}</a>' for x in TREATMENTS)
+    return f"""<div class="drawer" id="drawer">
+  <div class="drawer__group"><a class="drawer__top" href="{b}to-iatreio/">{t['clinic']}</a></div>
+  <div class="drawer__group">
+    <button class="drawer__top" aria-expanded="false">{t['conditions']} {I['chev']}</button>
+    <div class="drawer__panel"><a href="{b}pathiseis/">{t['all_conditions']}</a>{conds}</div>
+  </div>
+  <div class="drawer__group">
+    <button class="drawer__top" aria-expanded="false">{t['treatments']} {I['chev']}</button>
+    <div class="drawer__panel"><a href="{b}ypiresies/">{t['compare']}</a>{treats}</div>
+  </div>
+  <div class="drawer__group"><a class="drawer__top" href="{b}odigos-symptomaton/">{t['guide']}</a></div>
+  <div class="drawer__group"><a class="drawer__top" href="{b}frontida-podion/">{t['tracker']}</a></div>
+  <div class="drawer__group"><a class="drawer__top" href="{b}seminaria/">{t['seminars']}</a></div>
+  <div class="drawer__group"><a class="drawer__top" href="{b}arthra/">{t['articles']}</a></div>
+  <div class="drawer__group"><a class="drawer__top" href="{b}gallery/">{t['gallery']}</a></div>
+  <div class="drawer__group"><a class="drawer__top" href="{b}epikoinonia/">{t['contact']}</a></div>
+  <div class="drawer__group"><a class="drawer__top" href="{b}en/">{t['other_lang_full']}</a></div>
+  <div class="drawer__cta">
+    <a class="btn btn--block" href="tel:{SITE['phone_href']}">{I['phone']} {SITE['phone']}</a>
+    <a class="btn btn--ghost btn--block" href="mailto:{SITE['email']}">{I['mail']} {SITE['email']}</a>
+  </div>
+</div>"""
+
+
+def header(depth, active="", lang="el", over_dark=False):
+    b, t = rel(depth), T[lang]
+    cur = lambda k: ' aria-current="page"' if active == k else ""
+    if lang == "en":
+        items = "".join(
+            f'<div class="nav__item"><a class="nav__link" href="{b}en/{s}/"{cur(s)}>{n}</a></div>'
+            for s, n in EN_NAV[:4])
+        nav = f"""<nav class="nav" aria-label="{t['nav_label']}">
+        <div class="nav__item"><a class="nav__link" href="{b}en/"{cur('home')}>{SITE['name']}</a></div>
+        {items}
+      </nav>"""
+        lang_link = f'<a class="lang" href="{b}" hreflang="el">{t["other_lang"]}</a>'
+    else:
+        conds = "".join(
+            f'<a class="mega__link" href="{b}pathiseis/{c["slug"]}/"><b>{c["title"]}</b>'
+            f'<span>{c["plain"]}</span></a>' for c in CONDITIONS)
+        treats = "".join(
+            f'<a class="mega__link" href="{b}ypiresies/{x["slug"]}/"><b>{x["title"]}</b>'
+            f'<span>{x["short"]}</span></a>' for x in TREATMENTS)
+        nav = f"""<nav class="nav" aria-label="{t['nav_label']}">
+        <div class="nav__item"><a class="nav__link" href="{b}to-iatreio/"{cur('clinic')}>{t['clinic']}</a></div>
+        <div class="nav__item" data-mega>
+          <button class="nav__link" aria-expanded="false">{t['both']} {I['chev']}</button>
+          <div class="mega">
+            <div class="mega__col"><p class="mega__title">{t['conditions']}</p>{conds}</div>
+            <div class="mega__col"><p class="mega__title">{t['treatments']}</p>{treats}</div>
+          </div>
+        </div>
+        <div class="nav__item"><a class="nav__link" href="{b}odigos-symptomaton/"{cur('guide')}>{t['guide']}</a></div>
+        <div class="nav__item"><a class="nav__link" href="{b}seminaria/"{cur('seminars')}>{t['seminars']}</a></div>
+        <div class="nav__item nav__item--optional"><a class="nav__link" href="{b}arthra/"{cur('articles')}>{t['articles']}</a></div>
+        <div class="nav__item"><a class="nav__link" href="{b}epikoinonia/"{cur('contact')}>{t['contact']}</a></div>
+      </nav>"""
+        lang_link = f'<a class="lang" href="{b}en/" hreflang="en">{t["other_lang"]}</a>'
+
+    # Over a deep hero the header floats transparent, so it carries the light
+    # lockup as well and CSS swaps them as the page scrolls into the solid bar.
+    brand_img = f'<img class="brand__dark" src="{b}assets/img/logo.svg" alt="{SITE["name"]}" width="174" height="42">'
+    if over_dark:
+        brand_img += (f'<img class="brand__light" src="{b}assets/img/logo-light.svg" '
+                      f'alt="" aria-hidden="true" width="174" height="42">')
+    return f"""<a class="skip" href="#main">{t['skip']}</a>
+<header class="header">
+  <div class="wrap header__bar">
+    <a class="brand" href="{(b + 'en/') if lang == 'en' else (b or './')}">{brand_img}</a>
+    {nav}
+    <div class="header__tools">
+      <button class="icon-btn" data-search-open aria-label="{t['search']}">{I['search']}</button>
+      {lang_link}
+      <button class="btn btn--sm" data-book-open>{t['book']}</button>
+      <button class="icon-btn burger" aria-label="{t['menu']}" aria-expanded="false" aria-controls="drawer">
+        <span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+{drawer(depth, lang)}
+{search_overlay(lang)}"""
+
+
+def footer(depth, lang="el"):
+    b, t = rel(depth), T[lang]
+    rows = SITE["hours_en"] if lang == "en" else SITE["hours"]
+    hours = "".join(f"<div><span>{a}</span><span>{c}</span></div>" for a, c in rows)
+    if lang == "en":
+        col1 = "".join(f'<li><a href="{b}en/{s}/">{n}</a></li>' for s, n in EN_NAV[1:4])
+        col2 = "".join(f'<li><a href="{b}en/{s}/">{n}</a></li>' for s, n in EN_NAV[4:])
+        addr = SITE["address_en"]
+    else:
+        col1 = "".join(f'<li><a href="{b}pathiseis/{c["slug"]}/">{c["title"]}</a></li>' for c in CONDITIONS)
+        col2 = "".join(f'<li><a href="{b}ypiresies/{x["slug"]}/">{x["title"]}</a></li>' for x in TREATMENTS)
+        addr = SITE["address"]
+    h1, h2 = t["conditions"], t["treatments"]
+    return f"""<footer class="footer">
+  <div class="wrap">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <img src="{b}assets/img/logo-light.svg" alt="{SITE['name']}" width="196" height="61" loading="lazy">
+        <p class="small" style="margin-top:1.1rem;max-width:34ch;color:#9cc3ce">{t['tagline']}</p>
+        <div class="socials" style="margin-top:1.5rem">
+          <a href="{SITE['social']['facebook']}" rel="noopener" target="_blank" aria-label="Facebook">{I['fb']}</a>
+          <a href="{SITE['social']['tiktok']}" rel="noopener" target="_blank" aria-label="TikTok">{I['tiktok']}</a>
+        </div>
+      </div>
+      <div><h4>{h1}</h4><ul>{col1}</ul></div>
+      <div><h4>{h2}</h4><ul>{col2}</ul></div>
+      <div>
+        <h4>{t['contact']}</h4>
+        <ul style="margin-bottom:1.6rem">
+          <li><a href="{SITE['map']}" rel="noopener" target="_blank">{addr}, {SITE['postcode']}</a></li>
+          <li><a href="tel:{SITE['phone_href']}">{SITE['phone']}</a></li>
+          <li><a href="tel:{SITE['phone_alt_href']}">{SITE['phone_alt']}</a></li>
+          <li><a href="mailto:{SITE['email']}">{SITE['email']}</a></li>
+        </ul>
+        <h4>{t['hours']}</h4>
+        <div class="footer__hours">{hours}</div>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>© {SITE['founded']}–2026 {SITE['name']} · {SITE['locality']}, {SITE['region']}</span>
+      <span style="display:flex;gap:1.25rem;flex-wrap:wrap;align-items:center">
+        <a href="{b}seminaria/">{t['seminars']}</a>
+        <a href="{b}oroi-chrisis/">{t['terms']}</a>
+        <a href="{(b + 'en/') if lang == 'el' else b}">{t['other_lang_full']}</a>
+        <a class="credit" href="{_html.escape(SITE['credit']['url'], quote=True)}" target="_blank" rel="noopener noreferrer">
+          {t['madeby']} <b>{SITE['credit']['name']}</b></a>
+      </span>
+    </div>
+  </div>
+</footer>"""
+
+
+def book_dialog(depth=0, lang="el"):
+    """The topic list is the four conditions plus the five services — nothing else."""
+    b, t = rel(depth), T[lang]
+    if lang == "en":
+        topics = [t["bk_unsure"]] + [n for _s, n in EN_NAV[1:]]
+    else:
+        topics = ([t["bk_unsure"]]
+                  + [c["title"] for c in CONDITIONS]
+                  + [x["title"] for x in TREATMENTS])
+    opts = "".join(f'<option value="{x}">{x}</option>' for x in topics)
+    slots = "".join(f'<button type="button" class="slot" aria-pressed="false">{h}:00</button>'
+                    for h in ["09", "10", "11", "12", "13", "16", "17", "18"])
+    return f"""<dialog class="book" id="book" data-email="{SITE['email']}" data-phone="{SITE['phone_href']}"
+  data-lang="{lang}" aria-labelledby="book-title">
+  <form class="book__panel" novalidate>
+    <div class="book__head">
+      <div>
+        <h3 id="book-title">{t['bk_title']}</h3>
+        <p class="small muted" style="margin-top:.2rem">{t['bk_sub']}</p>
+      </div>
+      <button type="button" class="icon-btn" data-book-close aria-label="{t['close']}">{I['close']}</button>
+    </div>
+    <div class="book__body">
+      <div class="fields-2">
+        <div class="field">
+          <label for="book-name">{t['bk_name']}</label>
+          <input id="book-name" name="name" required autocomplete="name">
+          <span class="field__err">{t['bk_name_err']}</span>
+        </div>
+        <div class="field">
+          <label for="book-phone">{t['bk_phone']}</label>
+          <input id="book-phone" name="phone" type="tel" required autocomplete="tel">
+          <span class="field__err">{t['bk_phone_err']}</span>
+        </div>
+      </div>
+      <div class="field">
+        <label for="book-email">{t['bk_email']}</label>
+        <input id="book-email" name="email" type="email" autocomplete="email">
+        <span class="field__hint">{t['bk_optional']}</span>
+      </div>
+      <div class="field">
+        <label for="book-topic">{t['bk_topic']}</label>
+        <select id="book-topic" name="topic">{opts}</select>
+      </div>
+      <div class="fields-2">
+        <div class="field">
+          <label for="book-date">{t['bk_date']}</label>
+          <input id="book-date" name="date" type="date">
+          <span class="field__hint" data-day-warn hidden>{t['bk_sunday']}</span>
+        </div>
+        <div class="field">
+          <label id="slot-label">{t['bk_time']}</label>
+          <div class="slotgrid" data-slots role="group" aria-labelledby="slot-label">{slots}</div>
+          <input type="hidden" id="book-slot" name="slot">
+        </div>
+      </div>
+      <div class="field">
+        <label for="book-note">{t['bk_note']}</label>
+        <textarea id="book-note" name="note" placeholder="{t['bk_note_ph']}"></textarea>
+      </div>
+      <div class="field">
+        <label class="consent">
+          <input type="checkbox" name="consent" required>
+          <span>{t['bk_consent']} <a href="{b}oroi-chrisis/">{t['bk_consent_link']}</a>.</span>
+        </label>
+        <span class="field__err">{t['bk_consent_err']}</span>
+      </div>
+    </div>
+    <div class="book__foot">
+      <span class="tiny muted" style="display:flex;align-items:center;gap:.4rem">{I['lock']} {t['bk_nostore']}</span>
+      <span style="display:flex;gap:.6rem">
+        <button type="button" class="btn btn--ghost btn--sm" data-book-close>{t['bk_cancel']}</button>
+        <button type="submit" class="btn btn--sm">{t['bk_send']}</button>
+      </span>
+    </div>
+  </form>
+</dialog>"""
+
+
+def overlays(depth=0, lang="el"):
+    t = T[lang]
+    return f"""<div class="lightbox" role="dialog" aria-modal="true" aria-label="{t['view']}" aria-hidden="true">
+  <div class="lightbox__stage-wrap" style="width:min(1100px,100%)">
+    <div class="lightbox__bar">
+      <span class="small" data-lb-caption></span>
+      <span style="display:flex;gap:.5rem">
+        <span class="lightbox__nav">
+          <button type="button" data-lb-prev aria-label="{t['prev']}">{I['left']}</button>
+          <button type="button" data-lb-next aria-label="{t['next']}">{I['right']}</button>
+        </span>
+        <button type="button" class="lightbox__close" aria-label="{t['close']}">{I['close']}</button>
+      </span>
+    </div>
+    <div class="lightbox__stage"></div>
+  </div>
+</div>
+
+<div class="cookies" role="region" aria-label="{t['ck_title']}">
+  <div>
+    <h4 style="margin-bottom:.4rem;text-transform:none;letter-spacing:0;font-size:1rem">{t['ck_title']}</h4>
+    <p class="small muted">{t['ck_body']}</p>
+  </div>
+  <div style="display:grid;gap:.65rem">
+    <div class="cookies__toggle"><span>{t['ck_need']}</span>
+      <label class="switch"><input type="checkbox" checked disabled><i></i><span class="vh">{t['ck_always']}</span></label></div>
+    <div class="cookies__toggle"><span>{t['ck_stats']}</span>
+      <label class="switch"><input type="checkbox" id="cookie-analytics"><i></i><span class="vh">{t['ck_stats']}</span></label></div>
+  </div>
+  <div class="cookies__row">
+    <button class="btn btn--sm" data-cookie-accept>{t['ck_save']}</button>
+    <button class="btn btn--ghost btn--sm" data-cookie-reject>{t['ck_min']}</button>
+  </div>
+</div>
+
+<button class="totop" aria-label="{t['top']}">{I['up']}</button>
+
+<div class="actionbar">
+  <a class="btn btn--ghost btn--sm" href="tel:{SITE['phone_href']}">{I['phone']} {t['call']}</a>
+  <button class="btn btn--sm" data-book-open>{t['book']}</button>
+</div>"""
+
+
+# ── Foot diagram ─────────────────────────────────────────────────────────────
+# A schematic lateral view of the right foot, drawn for this site. The toes are
+# on the left, the heel on the right, the leg cut off above the ankle. The
+# forefoot pad and the heel pad meet the ground; the arch lifts between them.
+#
+# Each zone is a focusable hotspot. The «Με πρόβλημα» toggle fades in what each
+# of the four conditions actually looks like — a keratin plaque with a core
+# under the forefoot, fissures across the heel pad, a nail edge curling into the
+# fold, and the pressure points a neuropathic foot no longer feels.
+FOOT_SVG = """<svg class="anatomy__svg" viewBox="0 0 680 560" role="img"
+  aria-label="Σχηματική πλάγια τομή του άκρου ποδός: νύχι μεγάλου δακτύλου, πρόσθιο πέλμα, πτέρνα, δέρμα με τα νεύρα και τα αγγεία του">
+  <defs>
+    <linearGradient id="tissue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#e6f3f6"/><stop offset="1" stop-color="#c3dfe7"/>
+    </linearGradient>
+    <linearGradient id="skinGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fdf1e8"/><stop offset="1" stop-color="#f6e0d1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Leg above the ankle, cut off, sitting behind the foot. -->
+  <path d="M404 168h88v168h-88z" fill="#eef7f9"/>
+  <path d="M404 168v150M492 168v152" fill="none" stroke="#dbeaef" stroke-width="2"/>
+
+  <!-- The foot itself: dorsum from the toe up to the ankle, down the achilles,
+       round the heel, then along the sole with the arch lifting in the middle. -->
+  <path id="foot-skin"
+        d="M150 384C176 376 244 350 300 314C346 284 382 246 396 200
+           C400 186 400 178 400 170H496C496 196 498 262 502 306
+           C506 348 508 380 504 402C500 424 486 434 466 434
+           L400 434C356 434 336 396 296 392C256 388 238 424 200 432
+           L132 432C108 432 92 418 94 400C96 384 118 376 150 384Z"
+        fill="url(#skinGrad)" stroke="#e0c6b3" stroke-width="2"/>
+
+  <!-- Ground and skeletal hints. -->
+  <path d="M62 440h556" stroke="#d5e5ea" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#e6f0f3" stroke-width="9" stroke-linecap="round" fill="none">
+    <path d="M196 408l108-58"/><path d="M214 416l104-50"/><path d="M238 420l96-42"/>
+  </g>
+  <ellipse cx="452" cy="392" rx="46" ry="34" fill="#f2e2d4" opacity=".7"/>
+
+  <!-- Nail of the great toe. -->
+  <g class="hot" id="g-nail" data-zone="nail" tabindex="0" role="button"
+     aria-label="Νύχι μεγάλου δακτύλου — είσφρηση όνυχος">
+    <g class="organ">
+      <ellipse class="hot__shape" cx="118" cy="392" rx="22" ry="12"
+               transform="rotate(-24 118 392)" fill="url(#tissue)"
+               stroke="#8fb6c2" stroke-width="1.8"/>
+    </g>
+    <g class="flaw">
+      <path d="M132 400c8 6 12 13 12 20" fill="none" stroke="#c2544f"
+            stroke-width="4.5" stroke-linecap="round"/>
+      <ellipse cx="140" cy="414" rx="16" ry="11" fill="#c2544f" opacity=".26"/>
+    </g>
+    <path class="hot__lead" d="M108 376V118h44" fill="none"/>
+    <text class="hot__label" x="160" y="122">Νύχι μεγάλου δακτύλου</text>
+    <rect class="hot__hit" x="84" y="362" width="84" height="72"/>
+  </g>
+
+  <!-- Forefoot pad: the metatarsal heads, where calluses and corns build up. -->
+  <g class="hot" id="g-forefoot" data-zone="forefoot" tabindex="0" role="button"
+     aria-label="Πρόσθιο πέλμα — σκληρύνσεις, κάλοι και τύλοι">
+    <g class="organ">
+      <path class="hot__shape" d="M142 424h74" fill="none"
+            stroke="url(#tissue)" stroke-width="17" stroke-linecap="round"/>
+    </g>
+    <g class="flaw">
+      <path d="M150 424h60" fill="none" stroke="#d9a066" stroke-width="15" stroke-linecap="round"/>
+      <path d="M182 418l-7-32h14z" fill="#b57433"/>
+      <circle cx="182" cy="382" r="6" fill="#c2544f" opacity=".55"/>
+    </g>
+    <path class="hot__lead" d="M182 446v42h56" fill="none"/>
+    <text class="hot__label" x="246" y="493">Πρόσθιο πέλμα</text>
+    <rect class="hot__hit" x="128" y="400" width="106" height="48"/>
+  </g>
+
+  <!-- Heel pad: where dryness and fissures happen. -->
+  <g class="hot" id="g-heel" data-zone="heel" tabindex="0" role="button"
+     aria-label="Πτέρνα — ξηροδερμία πελμάτων και ραγάδες">
+    <g class="organ">
+      <path class="hot__shape" d="M404 426h62" fill="none"
+            stroke="url(#tissue)" stroke-width="19" stroke-linecap="round"/>
+    </g>
+    <g class="flaw">
+      <path d="M404 424h62" fill="none" stroke="#d9a066" stroke-width="15" stroke-linecap="round"/>
+      <path d="M412 410v26M428 406v30M444 408v28M460 412v22" fill="none"
+            stroke="#a53c33" stroke-width="3.6" stroke-linecap="round"/>
+    </g>
+    <path class="hot__lead" d="M508 420h54" fill="none"/>
+    <text class="hot__label" x="570" y="425">Πτέρνα</text>
+    <rect class="hot__hit" x="392" y="398" width="112" height="50"/>
+  </g>
+
+  <!-- Skin, nerves and vessels: the diabetic foot lives here. -->
+  <g class="hot" id="g-circulation" data-zone="circulation" tabindex="0" role="button"
+     aria-label="Δέρμα, νεύρα και αγγεία — διαβητικό πόδι">
+    <g class="organ">
+      <path class="hot__shape" d="M448 186c-6 62-30 112-70 150-40 38-96 62-166 74"
+            fill="none" stroke="url(#tissue)" stroke-width="8" stroke-linecap="round"/>
+      <path d="M448 186c-6 62-30 112-70 150-40 38-96 62-166 74"
+            fill="none" stroke="#8fb6c2" stroke-width="1.4" opacity=".6" stroke-dasharray="5 7"/>
+    </g>
+    <g class="flaw">
+      <path d="M330 356c-36 30-76 48-118 54" fill="none" stroke="#c2544f"
+            stroke-width="9" stroke-linecap="round" opacity=".32"/>
+      <g fill="none" stroke="#c2544f" stroke-width="3">
+        <circle cx="182" cy="424" r="14"/><circle cx="434" cy="424" r="14"/>
+        <circle cx="122" cy="392" r="14"/>
+      </g>
+    </g>
+    <path class="hot__lead" d="M436 250h126" fill="none"/>
+    <text class="hot__label" x="570" y="255">Νεύρα &amp; αγγεία</text>
+    <rect class="hot__hit" x="300" y="188" width="164" height="150"/>
+  </g>
+
+  <text class="hot__label" x="618" y="462" text-anchor="end" fill="#6f8d96">Έδαφος</text>
+</svg>"""
+
+
+def anatomy_block(depth):
+    return f"""<div class="anatomy" id="anatomy" data-default="nail">
+  <div class="anatomy__stage">
+    <div class="anatomy__toggle" role="group" aria-label="Κατάσταση διαγράμματος">
+      <button type="button" data-state="normal" aria-pressed="true">Φυσιολογικό</button>
+      <button type="button" data-state="affected" aria-pressed="false">Με πρόβλημα</button>
+    </div>
+    {FOOT_SVG}
+  </div>
+  <div class="anatomy__panel" aria-live="polite"></div>
+</div>"""
