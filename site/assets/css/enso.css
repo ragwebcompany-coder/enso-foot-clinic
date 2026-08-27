@@ -1236,34 +1236,80 @@ body:has(.cookies.is-shown) .totop { bottom: 15rem; }
   .hero__pane { max-width: 420px; }
 }
 
-/* On a phone the glass panel costs most of the first screen and repeats what the
-   mark in the header already says. Below 720px the hero drops it entirely and
-   becomes typographic: the slogan runs large across the full column, and the
-   aurora and grid carry the atmosphere on their own. */
+/* The desktop hero is a statement. On a phone that same statement — one huge
+   bold sentence on a glowing gradient — is the most generic thing a screen can
+   be, and it is not what the visitor needs: they are standing somewhere with a
+   foot that hurts. So under 720px the front page becomes triage.
+
+   Where we are → what hurts (tap it) → book. The clinic's line stays, but as a
+   signature underneath rather than a billboard, and the glow and grid come off
+   so the screen reads as a clinic index instead of a landing page. */
+.hero__ask, .hero__index { display: none; }
+/* The guide is the desktop hero's call; on a phone the index already offers it,
+   so the button there is the booking instead. */
+.hero__act--phone { display: none; }
+
 @media (max-width: 720px) {
-  .page--home .hero--deep .hero__figure { display: none; }
+  .page--home .hero--deep .hero__figure,
+  .page--home .hero--deep .hero__mesh,
+  .page--home .hero--deep .lede { display: none; }
+  .page--home .hero--deep .hero__aurora { opacity: .22; filter: blur(90px); }
   .page--home .hero--deep {
-    padding-block: calc(var(--header-h) + 1.75rem) 2.75rem;
+    padding-block: calc(var(--header-h) + 1.5rem) 2.25rem;
+    background: linear-gradient(178deg, var(--abyss), #0e3441 70%, var(--abyss));
   }
   .page--home .hero--deep .hero__grid { gap: 0; }
-  .page--home .hero--deep .hero__copy { gap: 1.15rem; }
-  .page--home .hero--deep .eyebrow { font-size: .68rem; letter-spacing: .11em; }
-  .page--home .hero--deep .slogan {
-    font-size: clamp(1.78rem, 1.05rem + 3.9vw, 2.4rem);
-    line-height: 1.22;
-    letter-spacing: -.018em;
-    max-width: none;
+  .page--home .hero--deep .hero__copy {
+    gap: 0; justify-items: stretch; width: 100%;
   }
-  .page--home .hero--deep .slogan__by { font-size: .72rem; letter-spacing: .13em; }
-  .page--home .hero--deep .slogan__by::before { width: 1.5rem; }
-  .page--home .hero--deep .lede { font-size: .97rem; line-height: 1.62; }
-  /* Two taps side by side instead of a stacked pair that pushes the fold down. */
-  .page--home .hero--deep .hero__actions { display: grid; gap: .6rem; width: 100%; }
+  .page--home .hero--deep .eyebrow { order: 1; font-size: .68rem; letter-spacing: .11em; }
+
+  .page--home .hero--deep .hero__ask {
+    order: 2; display: block;
+    margin-top: 1.5rem;
+    /* GFS Didot ships a single weight — say so, rather than inheriting body's 380
+       and leaving the browser to pick. */
+    font-family: var(--display); font-weight: 400;
+    font-size: 1.85rem; line-height: 1.15; color: #fff;
+  }
+
+  /* An index, not a card deck: hairlines, generous rows, one chevron each. */
+  .page--home .hero--deep .hero__index {
+    order: 3; display: block; margin-top: 1.35rem;
+    border-top: 1px solid rgba(165,211,222,.22);
+  }
+  .page--home .hero--deep .hero__index a {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    min-height: 58px; padding: .9rem 0;
+    border-bottom: 1px solid rgba(165,211,222,.22);
+    color: #fff; text-decoration: none; font-size: 1.02rem; font-weight: 480;
+    transition: color .2s var(--ease), padding-left .2s var(--ease);
+  }
+  .page--home .hero--deep .hero__index a svg { flex: none; color: var(--teal-300); }
+  .page--home .hero--deep .hero__index a:active { color: var(--teal-300); padding-left: .3rem; }
+  .page--home .hero--deep .hero__index__all { color: var(--teal-300) !important; }
+
+  .page--home .hero--deep .hero__actions {
+    order: 4; display: grid; gap: .6rem; margin-top: 1.6rem; width: 100%;
+  }
   .page--home .hero--deep .hero__actions .btn { width: 100%; justify-content: center; }
-  .page--home .hero--deep .hero__note { font-size: .78rem; }
-  /* The numbers become a two-column grid rather than four squeezed columns. */
-  .creds__list--deep { margin-top: 2.25rem; padding-top: 1.5rem; }
+  .page--home .hero--deep .hero__act--desk { display: none; }
+  .page--home .hero--deep .hero__act--phone { display: inline-flex; }
+
+  /* The slogan, signed. Small, ruled, quiet — the opposite of a billboard. */
+  .page--home .hero--deep .slogan {
+    order: 5; margin-top: 2rem; padding-top: 1.6rem;
+    border-top: 1px solid rgba(165,211,222,.22);
+    font-size: 1.02rem; font-weight: 450; line-height: 1.62;
+    letter-spacing: 0; color: #b6d5de; max-width: none;
+  }
+  .page--home .hero--deep .slogan .qm { color: var(--teal-300); }
+  .page--home .hero--deep .slogan__by {
+    order: 6; margin-top: .7rem; font-size: .68rem; letter-spacing: .14em;
+  }
+  .page--home .hero--deep .slogan__by::before { width: 1.25rem; }
+  .page--home .hero--deep .hero__note { order: 7; display: none; }
+
+  .creds__list--deep { margin-top: 2rem; padding-top: 1.35rem; }
 }
-@media (max-width: 460px) {
-  .page--home .hero--deep .slogan { font-size: clamp(1.68rem, 1rem + 4.6vw, 2.1rem); }
 }

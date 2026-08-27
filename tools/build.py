@@ -546,18 +546,32 @@ def build_home():
     creds_html = "".join(
         f'<li><b data-count="{a}">{a}</b><span>{b}</span></li>' for a, b in creds)
 
+    # On a phone the front page stops being a statement and becomes triage. This
+    # index is rendered at every width but only shown under 720px, where the
+    # slogan steps back to a signature underneath it.
+    index_links = "".join(
+        f'<a href="pathiseis/{c["slug"]}/"><span>{c["title"]}</span>{I["right"]}</a>'
+        for c in CONDITIONS)
+
     body = f"""<section class="hero hero--deep">
   <div class="hero__aurora" aria-hidden="true"><i></i><i></i><i></i></div>
   <div class="hero__mesh" aria-hidden="true"></div>
   <div class="wrap hero__grid">
     <div class="hero__copy">
       <p class="eyebrow">Ποδολογικό ιατρείο · Περαία, Θεσσαλονίκη</p>
+      <p class="hero__ask">Τι σας φέρνει εδώ;</p>
+      <nav class="hero__index" aria-label="Παθήσεις">
+        {index_links}
+        <a class="hero__index__all" href="odigos-symptomaton/">
+          <span>Δεν ξέρω πώς λέγεται</span>{I['right']}</a>
+      </nav>
       <h1 class="slogan"><span class="qm">«</span>{PRACTITIONER['quote']}<span class="qm">»</span></h1>
       <p class="slogan__by">{PRACTITIONER['name']}</p>
       <p class="lede">Κάλοι, ραγάδες, νύχια που εισφρύουν, διαβητικό πόδι. Αν δεν ξέρετε
         πώς να περιγράψετε αυτό που νιώθετε, ξεκινήστε από τον οδηγό.</p>
       <div class="hero__actions">
-        <a class="btn btn--light" href="#odigos">Ξεκινήστε τον οδηγό</a>
+        <a class="btn btn--light hero__act--desk" href="#odigos">Ξεκινήστε τον οδηγό</a>
+        <button class="btn btn--light hero__act--phone" data-book-open>Ζητήστε ραντεβού</button>
         <a class="btn btn--outline-light" href="tel:{SITE['phone_href']}">{I['phone']} {SITE['phone']}</a>
       </div>
       <p class="hero__note">{I['lock']} Οι απαντήσεις σας μένουν στη συσκευή σας.</p>
