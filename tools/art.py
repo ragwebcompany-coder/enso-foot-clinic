@@ -374,10 +374,11 @@ def hero_dark():
 
 def enso_badge():
     """The mark alone, square and centred, for the phone cover where it stands as
-    a badge above the wordmark."""
+    a badge above the wordmark. The cover is on paper, not on the deep ground the
+    desktop hero uses, so this one keeps the pigment's own colour."""
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400"
   role="img" aria-label="Το σήμα ensō του Ensō Foot Clinic">
-  {mark_image(200, 200, 356, light=True, px=460)}
+  {mark_image(200, 200, 356, px=460)}
   {foot_outline(dx=155, dy=118, scale=0.5, fill="none", stroke=TEAL, sw=3)}
 </svg>"""
 
