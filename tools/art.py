@@ -12,7 +12,7 @@ Writes into site/assets/img/:
 Everything is drawn here, from scratch, in the clinic's palette. Nothing is
 traced from a photograph and nothing depicts a real patient.
 """
-import os, sys, math
+import os, sys, math, io, base64
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -44,6 +44,67 @@ FONT = ('font-family="Commissioner,-apple-system,BlinkMacSystemFont,'
 def w(name, body):
     open(os.path.join(IMG, name), "w", encoding="utf-8").write(body)
     return name
+
+
+# ── The clinic's own mark ────────────────────────────────────────────────────
+# brand/enso-mark.png is the clinic's watercolour ensō, cut out of the scan it
+# arrived as (brand/enso-mark-source.jpg): the grey paper, its drop shadow and
+# the export watermark are gone, the pigment is not touched. The mark is no
+# longer drawn here — only the lockups around it are.
+MARK = os.path.join(ROOT, "brand", "enso-mark.png")
+_MARK = {}
+
+
+def hex_rgb(h):
+    h = h.lstrip("#")
+    return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
+
+
+def mark_png(px, light=False):
+    """The mark at `px` square. `light=True` walks the pigment up to the pale end
+    of the palette, so on the deep ground it reads the way the white wordmark
+    beside it does instead of sinking into the navy."""
+    from PIL import Image
+    import numpy as np
+    key = (px, light)
+    if key in _MARK:
+        return _MARK[key]
+    im = Image.open(MARK).convert("RGBA").resize((px, px), Image.LANCZOS)
+    if light:
+        a = np.asarray(im).astype(np.float32)
+        rgb, al = a[..., :3], a[..., 3]
+        lum = 0.2126 * rgb[..., 0] + 0.7152 * rgb[..., 1] + 0.0722 * rgb[..., 2]
+        dens = np.clip(1 - (lum - 40) / 175, 0, 1)[..., None]
+        pale = np.array([hex_rgb(TEAL300)], "float32")
+        im = Image.fromarray(
+            np.dstack([pale + (255 - pale) * dens, al]).astype("uint8"), "RGBA")
+    _MARK[key] = im
+    return im
+
+
+def _mark_b64(px, light):
+    """Quantised to 128 colours: the granulation survives, the bytes roughly
+    third — which matters, because every lockup carries its own copy inline."""
+    from PIL import Image
+    key = ("b64", px, light)
+    if key not in _MARK:
+        q = mark_png(px, light).quantize(colors=128, method=Image.FASTOCTREE,
+                                         dither=Image.FLOYDSTEINBERG)
+        buf = io.BytesIO()
+        q.save(buf, "PNG", optimize=True)
+        _MARK[key] = base64.b64encode(buf.getvalue()).decode()
+    return _MARK[key]
+
+
+def mark_image(cx, cy, size, *, light=False, px=None):
+    """The mark centred on (cx, cy) in a `size` square. Embedded rather than
+    linked: these SVGs are loaded through <img>, where an external reference
+    would never resolve."""
+    px = px or max(96, min(720, int(size * 1.3)))
+    h = size / 2
+    return (f'<image x="{cx - h:.1f}" y="{cy - h:.1f}" '
+            f'width="{size:.1f}" height="{size:.1f}" '
+            f'href="data:image/png;base64,{_mark_b64(px, light)}"/>')
 
 
 # ── Palette of the mark ──────────────────────────────────────────────────────
@@ -245,18 +306,12 @@ def logo(light=False, descriptor=None):
     name = "#ffffff" if light else DEEP
     second = TEAL300 if light else TEAL
     desc = TEAL300 if light else INK3
-    uid = "L" if light else "D"
     h = 124 if descriptor else 96
     cy = 62 if descriptor else 48
-    # At header size the mark renders about 40px across, where a full watercolour
-    # range washes out to nothing. The dark lockup therefore keeps the texture but
-    # compresses the palette into its deeper half, and drops the soft outer halo.
-    mark = enso_mark(60, cy, 40, 15, uid, wash=light,
-                     texture=0.55 if descriptor else 0.42,
-                     deep=(TEAL if light else INK_DEEP),
-                     mid=(INK_SOFT if light else INK_DEEP),
-                     soft=(TEAL300 if light else INK_MID),
-                     pale=("#d6ecf2" if light else INK_SOFT))
+    # At header size the mark lands about 40px across, so it is embedded at 208px
+    # — enough for a 2× screen, and the whole file still weighs less than the
+    # drawn mark it replaced.
+    mark = mark_image(58, cy, 96, light=light, px=208)
     tail = (f'\n  <text x="128" y="95" {FONT} font-size="12.5" font-weight="500" '
             f'letter-spacing="4.2" fill="{desc}">PODOLOGY · PODIATRY</text>'
             if descriptor else "")
@@ -273,8 +328,7 @@ def favicon():
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64"
   role="img" aria-label="Ensō Foot Clinic">
   <rect width="64" height="64" rx="14" fill="{DEEP}"/>
-  {enso_mark(32, 33, 20, 7.6, "F", deep=INK_SOFT, mid=TEAL300, soft="#c4e4ec",
-             pale="#e4f4f8", wash=False, texture=0.3)}
+  {mark_image(32, 33, 52, light=True, px=128)}
 </svg>"""
 
 
@@ -288,7 +342,7 @@ def hero():
     </linearGradient>
   </defs>
   <rect width="500" height="620" fill="url(#hbg)"/>
-  {enso_mark(250, 300, 168, 54, "H", seed=3)}
+  {mark_image(250, 300, 400, px=520)}
   {foot_outline(dx=168, dy=148, scale=0.82, fill="#ffffff", stroke=TEAL300, sw=2.4)}
   <g fill="none" stroke="{TEAL}" stroke-width="2" opacity=".5" stroke-linecap="round">
     <path d="M212 388c26 7 52 8 78 3"/>
@@ -306,8 +360,7 @@ def hero_dark():
     glows rather than sinks."""
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 620" width="500" height="620"
   role="img" aria-label="Το υδατογραφικό σήμα ensō του ιατρείου με σχηματικό περίγραμμα πέλματος">
-  {enso_mark(250, 300, 168, 54, "HD", deep=TEAL, mid=INK_SOFT, soft=TEAL300,
-             pale="#d9eef4", seed=3)}
+  {mark_image(250, 300, 400, light=True, px=520)}
   {foot_outline(dx=168, dy=148, scale=0.82, fill="none", stroke="#ffffff", sw=2.6)}
   <g fill="none" stroke="{TEAL300}" stroke-width="2" opacity=".65" stroke-linecap="round">
     <path d="M212 388c26 7 52 8 78 3"/>
@@ -324,7 +377,7 @@ def enso_badge():
     a badge above the wordmark."""
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400"
   role="img" aria-label="Το σήμα ensō του Ensō Foot Clinic">
-  {enso_mark(200, 202, 140, 44, "B", seed=13, texture=0.8)}
+  {mark_image(200, 200, 356, light=True, px=460)}
   {foot_outline(dx=155, dy=118, scale=0.5, fill="none", stroke=TEAL, sw=3)}
 </svg>"""
 
@@ -342,8 +395,7 @@ def clinic_banner():
   <g opacity=".10" fill="none" stroke="{BRAND}" stroke-width="1.4">
     {"".join(f'<circle cx="1170" cy="350" r="{r}"/>' for r in range(60, 640, 42))}
   </g>
-  {enso_mark(1170, 350, 212, 70, "C", deep=TEAL, mid=INK_SOFT, soft=TEAL300,
-             pale="#d9eef4", seed=11)}
+  {mark_image(1170, 350, 500, light=True, px=560)}
   {foot_outline(dx=1084, dy=180, scale=0.9, fill="none", stroke="#ffffff", sw=2.6)}
   <text x="120" y="292" {FONT} font-size="76" fill="#ffffff">
     <tspan font-weight="600">Ensō</tspan><tspan font-weight="300" fill="{TEAL300}"> Foot Clinic</tspan></text>
@@ -732,8 +784,8 @@ def rasterise():
     ico = Image.new("RGBA", (s, s), (0, 0, 0, 0))
     d = ImageDraw.Draw(ico)
     d.rounded_rectangle([0, 0, s, s], radius=int(s * 0.22), fill=hexrgb(DEEP))
-    draw_enso(d, s / 2, s * 0.515, s * 0.30, s * 0.115,
-              (hexrgb(INK_SOFT), hexrgb(TEAL300), hexrgb("#dcf0f5")))
+    m = mark_png(int(s * 0.74), light=True)
+    ico.alpha_composite(m, ((s - m.width) // 2, int(s * 0.515 - m.height / 2)))
     ico.resize((144, 144), Image.LANCZOS).save(os.path.join(IMG, "favicon-144.png"))
 
     # og-enso.png — 1200×630 share card
@@ -744,8 +796,8 @@ def rasterise():
         k = y / H
         a, b = hexrgb(DEEP), hexrgb(ABYSS)
         d.line([(0, y), (W, y)], fill=tuple(int(a[i] + (b[i] - a[i]) * k) for i in range(3)))
-    draw_enso(d, W * 0.755, H * 0.5, H * 0.335, H * 0.115,
-              (hexrgb(TEAL), hexrgb(INK_SOFT), hexrgb(TEAL300)))
+    m = mark_png(int(H * 0.80), light=True)
+    og.paste(m, (int(W * 0.755 - m.width / 2), int(H * 0.5 - m.height / 2)), m)
     d.text((150, 400), "Ensō", font=font(190), fill=(255, 255, 255))
     d.text((156, 640), "F O O T   C L I N I C", font=font(74), fill=hexrgb(TEAL300))
     d.text((160, 748), "P O D O L O G Y   ·   P O D I A T R Y", font=font(40),
@@ -754,7 +806,9 @@ def rasterise():
            fill=hexrgb(TEAL300))
     d.text((156, 946), "Χριστοδούλου Ελπινίκη · από το 2002", font=font(56),
            fill=hexrgb(BRAND))
-    og.resize((1200, 630), Image.LANCZOS).save(os.path.join(IMG, "og-enso.png"), optimize=True)
+    (og.resize((1200, 630), Image.LANCZOS)
+       .quantize(colors=256, method=Image.FASTOCTREE, dither=Image.FLOYDSTEINBERG)
+       .save(os.path.join(IMG, "og-enso.png"), optimize=True))
     return 2
 
 
