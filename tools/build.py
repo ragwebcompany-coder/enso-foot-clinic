@@ -595,7 +595,7 @@ def build_home():
     </div>
     <div class="hero__figure" data-reveal="120">
       <div class="hero__pane">
-        {img("hero-enso-dark.svg", "Το σήμα ensō του ιατρείου με σχηματικό περίγραμμα πέλματος", 500, 620, 0, priority=True)}
+        {img("hero-enso-dark.svg", "Το σήμα ensō του ιατρείου", 500, 620, 0, priority=True)}
       </div>
       <div class="hero__badge">
         <b>{SITE['founded']}</b>
@@ -1714,7 +1714,7 @@ def build_en_home():
       </div>
     </div>
     <div class="hero__figure">
-      {img("hero-enso.svg", "The clinic's ensō mark with a schematic foot outline", 500, 620, d, priority=True)}
+      {img("hero-enso.svg", "The clinic's ensō mark", 500, 620, d, priority=True)}
       <div class="hero__badge"><b>{SITE['founded']}</b><span>Practising on the same question ever since: why does this foot hurt</span></div>
     </div>
   </div>

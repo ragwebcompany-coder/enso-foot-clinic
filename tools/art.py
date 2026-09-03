@@ -335,22 +335,14 @@ def favicon():
 # ── Hero / clinic / portrait panels ──────────────────────────────────────────
 def hero():
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 620" width="500" height="620"
-  role="img" aria-label="Το υδατογραφικό σήμα ensō του ιατρείου με σχηματικό περίγραμμα πέλματος">
+  role="img" aria-label="Το υδατογραφικό σήμα ensō του ιατρείου">
   <defs>
     <linearGradient id="hbg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="{MIST2}"/><stop offset="1" stop-color="{MIST}"/>
     </linearGradient>
   </defs>
   <rect width="500" height="620" fill="url(#hbg)"/>
-  {mark_image(250, 300, 400, px=520)}
-  {foot_outline(dx=168, dy=148, scale=0.82, fill="#ffffff", stroke=TEAL300, sw=2.4)}
-  <g fill="none" stroke="{TEAL}" stroke-width="2" opacity=".5" stroke-linecap="round">
-    <path d="M212 388c26 7 52 8 78 3"/>
-    <path d="M204 300c14-8 30-12 46-12"/>
-  </g>
-  <circle cx="250" cy="470" r="5" fill="{BRAND}"/>
-  <circle cx="228" cy="352" r="5" fill="{BRAND}"/>
-  <circle cx="272" cy="252" r="5" fill="{BRAND}"/>
+  {mark_image(250, 310, 400, px=520)}
 </svg>"""
 
 
@@ -359,16 +351,8 @@ def hero_dark():
     glass panel behind it shows through, and the ink shifted up the palette so it
     glows rather than sinks."""
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 620" width="500" height="620"
-  role="img" aria-label="Το υδατογραφικό σήμα ensō του ιατρείου με σχηματικό περίγραμμα πέλματος">
-  {mark_image(250, 300, 400, light=True, px=520)}
-  {foot_outline(dx=168, dy=148, scale=0.82, fill="none", stroke="#ffffff", sw=2.6)}
-  <g fill="none" stroke="{TEAL300}" stroke-width="2" opacity=".65" stroke-linecap="round">
-    <path d="M212 388c26 7 52 8 78 3"/>
-    <path d="M204 300c14-8 30-12 46-12"/>
-  </g>
-  <circle cx="250" cy="470" r="5" fill="#ffffff"/>
-  <circle cx="228" cy="352" r="5" fill="#ffffff"/>
-  <circle cx="272" cy="252" r="5" fill="#ffffff"/>
+  role="img" aria-label="Το υδατογραφικό σήμα ensō του ιατρείου">
+  {mark_image(250, 310, 400, light=True, px=520)}
 </svg>"""
 
 
@@ -397,7 +381,6 @@ def clinic_banner():
     {"".join(f'<circle cx="1170" cy="350" r="{r}"/>' for r in range(60, 640, 42))}
   </g>
   {mark_image(1170, 350, 500, light=True, px=560)}
-  {foot_outline(dx=1084, dy=180, scale=0.9, fill="none", stroke="#ffffff", sw=2.6)}
   <text x="120" y="292" {FONT} font-size="76" fill="#ffffff">
     <tspan font-weight="600">Ensō</tspan><tspan font-weight="300" fill="{TEAL300}"> Foot Clinic</tspan></text>
   <text x="124" y="352" {FONT} font-size="30" font-weight="500" letter-spacing="7"
