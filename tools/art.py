@@ -291,24 +291,6 @@ def lead(d, colour=INK3, dash="4 5"):
             f'stroke-dasharray="{dash}"/>')
 
 
-# The brush leaves the ring's opening low and right of the mark's own centre —
-# at (0.600, 0.555) of the box, radius 0.265 — so anything set inside the ring
-# has to follow the opening, not the box. Measured off brand/enso-mark.png.
-MARK_HOLE = (0.600, 0.555, 0.265)
-_FOOT_BOX = (31.0, 6.0, 123.0, 286.0)   # the foot outline's own extent
-
-
-def foot_in_hole(cx, cy, size, *, fit=0.72, fill="none", stroke=TEAL, sw=3):
-    """The foot outline centred in the opening of a mark drawn at (cx, cy, size),
-    scaled to `fit` of the opening's diameter."""
-    hx, hy, hr = MARK_HOLE
-    fx, fy, fw, fh = _FOOT_BOX
-    s = 2 * hr * size * fit / fh
-    return foot_outline(dx=cx - size / 2 + hx * size - (fx + fw / 2) * s,
-                        dy=cy - size / 2 + hy * size - (fy + fh / 2) * s,
-                        scale=s, fill=fill, stroke=stroke, sw=sw)
-
-
 # ── Logo ─────────────────────────────────────────────────────────────────────
 # The clinic's own lockup stacks «Ensō» over «Foot Clinic» over the practitioner's
 # name and «Podology - Podiatry». A site header cannot carry four lines, so the
@@ -392,12 +374,12 @@ def hero_dark():
 
 def enso_badge():
     """The mark alone, square and centred, for the phone cover where it stands as
-    a badge above the wordmark. The cover is on paper, not on the deep ground the
-    desktop hero uses, so this one keeps the pigment's own colour."""
+    a badge above the wordmark — nothing set inside the ring, the brush carries
+    it. The cover is on paper, not on the deep ground the desktop hero uses, so
+    this one keeps the pigment's own colour."""
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400"
   role="img" aria-label="Το σήμα ensō του Ensō Foot Clinic">
   {mark_image(200, 200, 356, px=460)}
-  {foot_in_hole(200, 200, 356)}
 </svg>"""
 
 
