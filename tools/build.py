@@ -616,8 +616,8 @@ def build_home():
 <section class="section section--mist">
   <div class="wrap">
     <div class="split split--wide-left">
-      <div class="frame" data-reveal>
-        {img("elpiniki-christodoulou.svg", "Ensō Foot Clinic — Ελπινίκη Χριστοδούλου, Ποδολόγος", 900, 900, 0)}
+      <div class="frame frame--photo" data-reveal>
+        {img("photo-walk.jpg", "Σκίτσο με δύο πόδια που περπατούν με αθλητικά παπούτσια", 1078, 1082, 0)}
       </div>
       <div class="stack">
         <p class="eyebrow">Το ποδολογικό κέντρο · Θεσσαλονίκη &amp; Αθήνα</p>
@@ -1130,6 +1130,24 @@ def build_conditions_hub():
   </div>
 </section>
 <section class="section section--tight"><div class="wrap"><div class="grid grid--2">{cards}</div></div></section>
+<section class="section section--tight section--mist">
+  <div class="wrap">
+    <div class="split split--wide-left">
+      <figure class="frame frame--photo" data-reveal>
+        {img("photo-foot-map.jpg", "Δύο πέλματα με σημειωμένες τις συχνότερες εστίες πόνου: κάλοι, ραγάδες πτέρνας, είσφρηση όνυχος, μεταταρσαλγία", 1088, 966, d)}
+        <figcaption>Οι συχνότερες εστίες πόνου στο πέλμα.</figcaption>
+      </figure>
+      <div class="stack">
+        <p class="eyebrow">Πού πονάει</p>
+        <h2>Κάθε σημείο του πέλματος λέει τη δική του ιστορία.</h2>
+        <p class="lede">Η πτέρνα, το πρόσθιο πέλμα, τα νύχια και τα δάχτυλα έχουν το καθένα
+          τα δικά του προβλήματα και τις δικές του αιτίες. Στην εξέταση δεν κοιτάμε μόνο
+          το σημείο που πονάει — κοιτάμε πώς πατάτε, πώς φοράτε, πώς περπατάτε.</p>
+        <p><a class="link-more" href="{rel(d)}odigos-symptomaton/">Βρείτε το δικό σας σημείο στον οδηγό</a></p>
+      </div>
+    </div>
+  </div>
+</section>
 {anatomy_section(d)}
 {guide_section(d)}
 {cta_band(d)}"""
@@ -1233,9 +1251,10 @@ def build_clinic():
 
 <section class="section section--tight">
   <div class="wrap">
-    <div class="frame" data-reveal>
-      {img("clinic-enso.svg", "Το σήμα ensō του ποδολογικού κέντρου σε πλήρες πλάτος", 1600, 700, d)}
-    </div>
+    <figure class="frame frame--photo" data-reveal>
+      {img("photo-podologos.jpg", "Βέλος ζωγραφισμένο στην άσφαλτο με τη λέξη «ΠΟΔΟΛΟΓΟΣ» και δύο πόδια με αθλητικά παπούτσια", 1054, 559, d)}
+      <figcaption>Από εδώ ξεκινά. Ένα βήμα, μία κατεύθυνση.</figcaption>
+    </figure>
   </div>
 </section>
 

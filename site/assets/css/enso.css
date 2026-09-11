@@ -1248,3 +1248,11 @@ body:has(.cookies.is-shown) .totop { bottom: 15rem; }
 /* The homepage starts straight on the conditions, right under the header. */
 .page--home #pathiseis { padding-top: clamp(2.5rem, 6vw, 5rem); }
 .page--home #pathiseis h1 { font-size: clamp(2rem, 1.4rem + 2.6vw, 3.4rem); }
+
+/* Photographs. A figure with a caption under it; the frame stays the same. */
+.frame--photo { margin: 0; background: var(--white); }
+.frame--photo picture, .frame--photo img { display: block; width: 100%; height: auto; }
+.frame--photo figcaption {
+  padding: .8rem 1.1rem; font-size: .8rem; color: var(--ink-3);
+  border-top: 1px solid var(--line-soft);
+}
