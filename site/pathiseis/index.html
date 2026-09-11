@@ -34,7 +34,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;400;500;700&amp;display=swap">
-<link rel="stylesheet" href="../assets/css/enso.css?v=e4bb4d7220">
+<link rel="stylesheet" href="../assets/css/enso.css?v=30073411b5">
 <script>document.documentElement.className+=" js";</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Αρχική","item":"https://www.ensofootclinic.gr/"},{"@type":"ListItem","position":2,"name":"Παθήσεις"}]}</script></head>
 <body>
@@ -148,132 +148,90 @@
   <div class="wrap">
     <div class="sec-head sec-head--split">
       <div class="stack">
-        <p class="eyebrow">Η ανατομία, χωρίς μυστήρια</p>
-        <h2>Τέσσερις ζώνες, ένα πόδι που τις μοιράζεται.</h2>
+        <p class="eyebrow">Το αποτύπωμα</p>
+        <h2>Τέσσερα σημεία του πέλματος, τέσσερις απαντήσεις.</h2>
       </div>
-      <p class="lede">Το νύχι, το πρόσθιο πέλμα, η πτέρνα και το δέρμα με τα νεύρα του
-        φορτίζονται μαζί σε κάθε βήμα. Δείτε πού εμφανίζεται τι — και γιατί.</p>
+      <p class="lede">Το αποτύπωμα δείχνει πού φορτίζεται το πόδι σε κάθε βήμα: στα δάχτυλα,
+        στο πρόσθιο πέλμα, στην πτέρνα — και σε όλο το δέρμα, εκεί που περνούν τα νεύρα και
+        τα αγγεία. Επιλέξτε ένα σημείο.</p>
     </div>
     <div class="anatomy" id="anatomy" data-default="nail">
   <div class="anatomy__stage">
-    <div class="anatomy__toggle" role="group" aria-label="Κατάσταση διαγράμματος">
-      <button type="button" data-state="normal" aria-pressed="true">Φυσιολογικό</button>
-      <button type="button" data-state="affected" aria-pressed="false">Με πρόβλημα</button>
-    </div>
-    <svg class="anatomy__svg" viewBox="0 0 680 560" role="img"
-  aria-label="Σχηματική πλάγια τομή του άκρου ποδός: νύχι μεγάλου δακτύλου, πρόσθιο πέλμα, πτέρνα, δέρμα με τα νεύρα και τα αγγεία του">
+    <svg class="anatomy__svg" viewBox="40 60 640 540" role="img"
+  aria-label="Αποτύπωμα πέλματος με τέσσερα σημεία: νύχι μεγάλου δακτύλου, πρόσθιο πέλμα, νεύρα και αγγεία, πτέρνα">
   <defs>
-    <linearGradient id="tissue" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#e8f2fb"/><stop offset="1" stop-color="#c5dcf0"/>
-    </linearGradient>
-    <linearGradient id="skinGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#fdf1e8"/><stop offset="1" stop-color="#f6e0d1"/>
-    </linearGradient>
+    <clipPath id="fp-clip"><path d="M112 235C130 190 200 170 250 195C290 218 292 275 280 320C268 365 250 400 252 445C254 490 245 540 205 555C165 570 120 545 112 500C104 450 106 390 104 330C102 290 100 262 112 235Z"/><ellipse cx="258" cy="128" rx="36" ry="44" transform="rotate(-8 258 128)"/><ellipse cx="196" cy="108" rx="20" ry="27" transform="rotate(-6 196 108)"/><ellipse cx="150" cy="122" rx="18" ry="24" transform="rotate(-4 150 122)"/><ellipse cx="112" cy="145" rx="16" ry="21" transform="rotate(0 112 145)"/><ellipse cx="82" cy="175" rx="15" ry="19" transform="rotate(6 82 175)"/></clipPath>
+    <radialGradient id="fp-heel" cx="168" cy="505" r="95" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1673bd" stop-opacity=".55"/><stop offset="1" stop-color="#1673bd" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="fp-ball" cx="190" cy="245" r="110" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1673bd" stop-opacity=".5"/><stop offset="1" stop-color="#1673bd" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="fp-toe" cx="258" cy="130" r="55" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1673bd" stop-opacity=".45"/><stop offset="1" stop-color="#1673bd" stop-opacity="0"/>
+    </radialGradient>
   </defs>
 
-  <!-- Leg above the ankle, cut off, sitting behind the foot. -->
-  <path d="M404 168h88v168h-88z" fill="#eef5fc"/>
-  <path d="M404 168v150M492 168v152" fill="none" stroke="#dae7f3" stroke-width="2"/>
-
-  <!-- The foot itself: dorsum from the toe up to the ankle, down the achilles,
-       round the heel, then along the sole with the arch lifting in the middle. -->
-  <path id="foot-skin"
-        d="M150 384C176 376 244 350 300 314C346 284 382 246 396 200
-           C400 186 400 178 400 170H496C496 196 498 262 502 306
-           C506 348 508 380 504 402C500 424 486 434 466 434
-           L400 434C356 434 336 396 296 392C256 388 238 424 200 432
-           L132 432C108 432 92 418 94 400C96 384 118 376 150 384Z"
-        fill="url(#skinGrad)" stroke="#e0c6b3" stroke-width="2"/>
-
-  <!-- Ground and skeletal hints. -->
-  <path d="M62 440h556" stroke="#d2e4f2" stroke-width="4" stroke-linecap="round"/>
-  <g stroke="#e6eef7" stroke-width="9" stroke-linecap="round" fill="none">
-    <path d="M196 408l108-58"/><path d="M214 416l104-50"/><path d="M238 420l96-42"/>
+  <!-- The print: a light wash, then the pressure pooling where the foot loads. -->
+  <g clip-path="url(#fp-clip)">
+    <rect x="40" y="60" width="290" height="530" fill="#a3d9f4" opacity=".55"/>
+    <rect x="40" y="60" width="290" height="530" fill="url(#fp-heel)"/>
+    <rect x="40" y="60" width="290" height="530" fill="url(#fp-ball)"/>
+    <rect x="40" y="60" width="290" height="530" fill="url(#fp-toe)"/>
   </g>
-  <ellipse cx="452" cy="392" rx="46" ry="34" fill="#f2e2d4" opacity=".7"/>
-
-  <!-- Nail of the great toe. -->
-  <g class="hot" id="g-nail" data-zone="nail" tabindex="0" role="button"
-     aria-label="Νύχι μεγάλου δακτύλου — είσφρηση όνυχος">
-    <g class="organ">
-      <ellipse class="hot__shape" cx="118" cy="392" rx="22" ry="12"
-               transform="rotate(-24 118 392)" fill="url(#tissue)"
-               stroke="#8fb0d0" stroke-width="1.8"/>
-    </g>
-    <g class="flaw">
-      <path d="M132 400c8 6 12 13 12 20" fill="none" stroke="#c2544f"
-            stroke-width="4.5" stroke-linecap="round"/>
-      <ellipse cx="140" cy="414" rx="16" ry="11" fill="#c2544f" opacity=".26"/>
-    </g>
-    <path class="hot__lead" d="M108 376V118h44" fill="none"/>
-    <text class="hot__label" x="160" y="122">Νύχι μεγάλου δακτύλου</text>
-    <rect class="hot__hit" x="84" y="362" width="84" height="72"/>
+  <g fill="none" stroke="#1673bd" stroke-opacity=".35" stroke-width="1.5">
+    <path d="M112 235C130 190 200 170 250 195C290 218 292 275 280 320C268 365 250 400 252 445C254 490 245 540 205 555C165 570 120 545 112 500C104 450 106 390 104 330C102 290 100 262 112 235Z"/><ellipse cx="258" cy="128" rx="36" ry="44" transform="rotate(-8 258 128)"/><ellipse cx="196" cy="108" rx="20" ry="27" transform="rotate(-6 196 108)"/><ellipse cx="150" cy="122" rx="18" ry="24" transform="rotate(-4 150 122)"/><ellipse cx="112" cy="145" rx="16" ry="21" transform="rotate(0 112 145)"/><ellipse cx="82" cy="175" rx="15" ry="19" transform="rotate(6 82 175)"/>
   </g>
 
-  <!-- Forefoot pad: the metatarsal heads, where calluses and corns build up. -->
-  <g class="hot" id="g-forefoot" data-zone="forefoot" tabindex="0" role="button"
-     aria-label="Πρόσθιο πέλμα — σκληρύνσεις, κάλοι και τύλοι">
-    <g class="organ">
-      <path class="hot__shape" d="M142 424h74" fill="none"
-            stroke="url(#tissue)" stroke-width="17" stroke-linecap="round"/>
-    </g>
-    <g class="flaw">
-      <path d="M150 424h60" fill="none" stroke="#d9a066" stroke-width="15" stroke-linecap="round"/>
-      <path d="M182 418l-7-32h14z" fill="#b57433"/>
-      <circle cx="182" cy="382" r="6" fill="#c2544f" opacity=".55"/>
-    </g>
-    <path class="hot__lead" d="M182 446v42h56" fill="none"/>
-    <text class="hot__label" x="246" y="493">Πρόσθιο πέλμα</text>
-    <rect class="hot__hit" x="128" y="400" width="106" height="48"/>
+  <g class="hot" data-zone="nail" tabindex="0" role="button"
+     aria-label="Νύχι μεγάλου δακτύλου: Είσφρηση όνυχος (ονυχοκρύπτωση)">
+    <path class="hot__lead" d="M272 118H386" fill="none"/>
+    <circle class="hot__ring" cx="258" cy="118" r="22" fill="none"/>
+    <circle class="hot__shape" cx="258" cy="118" r="13"/>
+    <text class="hot__num" x="258" y="122.5">1</text>
+    <text class="hot__label" x="400" y="116">Νύχι μεγάλου δακτύλου</text>
+    <text class="hot__sub" x="400" y="133">Είσφρηση όνυχος (ονυχοκρύπτωση)</text>
+    <rect class="hot__hit" x="232" y="92" width="392" height="52"/>
   </g>
-
-  <!-- Heel pad: where dryness and fissures happen. -->
-  <g class="hot" id="g-heel" data-zone="heel" tabindex="0" role="button"
-     aria-label="Πτέρνα — ξηροδερμία πελμάτων και ραγάδες">
-    <g class="organ">
-      <path class="hot__shape" d="M404 426h62" fill="none"
-            stroke="url(#tissue)" stroke-width="19" stroke-linecap="round"/>
-    </g>
-    <g class="flaw">
-      <path d="M404 424h62" fill="none" stroke="#d9a066" stroke-width="15" stroke-linecap="round"/>
-      <path d="M412 410v26M428 406v30M444 408v28M460 412v22" fill="none"
-            stroke="#a53c33" stroke-width="3.6" stroke-linecap="round"/>
-    </g>
-    <path class="hot__lead" d="M508 420h54" fill="none"/>
-    <text class="hot__label" x="570" y="425">Πτέρνα</text>
-    <rect class="hot__hit" x="392" y="398" width="112" height="50"/>
+  <g class="hot" data-zone="forefoot" tabindex="0" role="button"
+     aria-label="Πρόσθιο πέλμα: Σκληρύνσεις, κάλοι & τύλοι">
+    <path class="hot__lead" d="M202 250H386" fill="none"/>
+    <circle class="hot__ring" cx="188" cy="250" r="22" fill="none"/>
+    <circle class="hot__shape" cx="188" cy="250" r="13"/>
+    <text class="hot__num" x="188" y="254.5">2</text>
+    <text class="hot__label" x="400" y="248">Πρόσθιο πέλμα</text>
+    <text class="hot__sub" x="400" y="265">Σκληρύνσεις, κάλοι & τύλοι</text>
+    <rect class="hot__hit" x="162" y="224" width="462" height="52"/>
   </g>
-
-  <!-- Skin, nerves and vessels: the diabetic foot lives here. -->
-  <g class="hot" id="g-circulation" data-zone="circulation" tabindex="0" role="button"
-     aria-label="Δέρμα, νεύρα και αγγεία — διαβητικό πόδι">
-    <g class="organ">
-      <path class="hot__shape" d="M448 186c-6 62-30 112-70 150-40 38-96 62-166 74"
-            fill="none" stroke="url(#tissue)" stroke-width="8" stroke-linecap="round"/>
-      <path d="M448 186c-6 62-30 112-70 150-40 38-96 62-166 74"
-            fill="none" stroke="#8fb0d0" stroke-width="1.4" opacity=".6" stroke-dasharray="5 7"/>
-    </g>
-    <g class="flaw">
-      <path d="M330 356c-36 30-76 48-118 54" fill="none" stroke="#c2544f"
-            stroke-width="9" stroke-linecap="round" opacity=".32"/>
-      <g fill="none" stroke="#c2544f" stroke-width="3">
-        <circle cx="182" cy="424" r="14"/><circle cx="434" cy="424" r="14"/>
-        <circle cx="122" cy="392" r="14"/>
-      </g>
-    </g>
-    <path class="hot__lead" d="M436 250h126" fill="none"/>
-    <text class="hot__label" x="570" y="255">Νεύρα &amp; αγγεία</text>
-    <rect class="hot__hit" x="300" y="188" width="164" height="150"/>
+  <g class="hot" data-zone="circulation" tabindex="0" role="button"
+     aria-label="Νεύρα & αγγεία: Διαβητικό πόδι">
+    <path class="hot__lead" d="M192 378H386" fill="none"/>
+    <circle class="hot__ring" cx="178" cy="378" r="22" fill="none"/>
+    <circle class="hot__shape" cx="178" cy="378" r="13"/>
+    <text class="hot__num" x="178" y="382.5">3</text>
+    <text class="hot__label" x="400" y="376">Νεύρα &amp; αγγεία</text>
+    <text class="hot__sub" x="400" y="393">Διαβητικό πόδι</text>
+    <rect class="hot__hit" x="152" y="352" width="472" height="52"/>
   </g>
-
-  <text class="hot__label" x="618" y="462" text-anchor="end" fill="#6f8d96">Έδαφος</text>
+  <g class="hot" data-zone="heel" tabindex="0" role="button"
+     aria-label="Πτέρνα: Ξηροδερμία πελμάτων & ραγάδες">
+    <path class="hot__lead" d="M182 498H386" fill="none"/>
+    <circle class="hot__ring" cx="168" cy="498" r="22" fill="none"/>
+    <circle class="hot__shape" cx="168" cy="498" r="13"/>
+    <text class="hot__num" x="168" y="502.5">4</text>
+    <text class="hot__label" x="400" y="496">Πτέρνα</text>
+    <text class="hot__sub" x="400" y="513">Ξηροδερμία πελμάτων & ραγάδες</text>
+    <rect class="hot__hit" x="142" y="472" width="482" height="52"/>
+  </g>
 </svg>
+    <ol class="anatomy__legend" aria-label="Τα τέσσερα σημεία">
+      <li class="hot" data-zone="nail" tabindex="0" role="button"><b>1</b><span>Νύχι μεγάλου δακτύλου</span></li><li class="hot" data-zone="forefoot" tabindex="0" role="button"><b>2</b><span>Πρόσθιο πέλμα</span></li><li class="hot" data-zone="circulation" tabindex="0" role="button"><b>3</b><span>Νεύρα & αγγεία</span></li><li class="hot" data-zone="heel" tabindex="0" role="button"><b>4</b><span>Πτέρνα</span></li>
+    </ol>
   </div>
   <div class="anatomy__panel" aria-live="polite"></div>
 </div>
     <p class="anatomy__hint" style="margin-top:1.25rem">
-      Επιλέξτε μια ζώνη στο διάγραμμα. Το «Με πρόβλημα» δείχνει σχηματικά πώς εμφανίζεται
-      η κάθε πάθηση.</p>
+      Επιλέξτε ένα σημείο στο αποτύπωμα για να δείτε τι εμφανίζεται εκεί και τι κάνουμε γι' αυτό.</p>
   </div>
   <script>window.ENSO_ANATOMY={"circulation":{"zone":"Δέρμα, νεύρα & αγγεία","conditions":[{"title":"Διαβητικό πόδι","plain":"Έχω διαβήτη και δεν νιώθω καλά τα πόδια μου.","lead":"Ο διαβήτης μειώνει την αίσθηση και την κυκλοφορία στα πόδια. Το πρόβλημα δεν είναι ότι πονάει — είναι ότι δεν πονάει, και έτσι περνά απαρατήρητο.","url":"../pathiseis/diavitiko-podi/","treatments":[{"title":"Έλεγχος διαβητικού ποδιού","url":"../ypiresies/elenchos-diavitikou-podiou/"},{"title":"Ιατρική ποδολογία","url":"../ypiresies/iatriki-podologia/"}]}]},"forefoot":{"zone":"Πρόσθιο πέλμα","conditions":[{"title":"Σκληρύνσεις, κάλοι & τύλοι","plain":"Πονάω σαν να πατάω πάνω σε πετραδάκι.","lead":"Όπου το πέλμα δέχεται συνεχή πίεση και τριβή, το δέρμα αμύνεται πυκνώνοντας. Η σκλήρυνση εξελίσσεται σε τύλο και ο τύλος σε κάλο με πυρήνα που πονά.","url":"../pathiseis/skliryseis-kaloi-tyloi/","treatments":[{"title":"Αφαίρεση κάλων & τύλων","url":"../ypiresies/afairesi-kalon-tylon/"},{"title":"Ιατρική ποδολογία","url":"../ypiresies/iatriki-podologia/"}]}]},"heel":{"zone":"Πτέρνα","conditions":[{"title":"Ξηροδερμία πελμάτων & ραγάδες","plain":"Οι φτέρνες μου σκάνε και πονάνε όταν περπατάω.","lead":"Η τραχύτητα και η πάχυνση του δέρματος, ιδίως στην πτέρνα, είναι το σήμα της ξηρότητας. Χωρίς απομάκρυνση του νεκρού ιστού, η ενυδάτωση δεν φτάνει ποτέ εκεί που χρειάζεται.","url":"../pathiseis/ksirodermia-pelmaton/","treatments":[{"title":"Θεραπεία ξηροδερμίας & ραγάδων","url":"../ypiresies/therapeia-ksirodermias/"},{"title":"Ιατρική ποδολογία","url":"../ypiresies/iatriki-podologia/"}]}]},"nail":{"zone":"Νύχι μεγάλου δακτύλου","conditions":[{"title":"Είσφρηση όνυχος (ονυχοκρύπτωση)","plain":"Το νύχι μου μπαίνει στο δέρμα και πονάει.","lead":"Συχνή και επίπονη παθολογία του νυχιού, συγγενής ή επίκτητη μετά από τραύμα. Η αυξημένη καμπυλότητα ή η ανισορροπία πλάτους νυχιού και κοίτης το σπρώχνει μέσα στην πτυχή του δέρματος.","url":"../pathiseis/eisfriksi-nychiou/","treatments":[{"title":"Ορθονυχία με υαλώδεις νάρθηκες","url":"../ypiresies/orthonychia-narthikes/"},{"title":"Ιατρική ποδολογία","url":"../ypiresies/iatriki-podologia/"}]}]}};</script>
 </section>

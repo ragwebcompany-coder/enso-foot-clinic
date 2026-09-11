@@ -373,132 +373,88 @@ def overlays(depth=0, lang="el"):
 
 
 # ── Foot diagram ─────────────────────────────────────────────────────────────
-# A schematic lateral view of the right foot, drawn for this site. The toes are
-# on the left, the heel on the right, the leg cut off above the ankle. The
-# forefoot pad and the heel pad meet the ground; the arch lifts between them.
-#
-# Each zone is a focusable hotspot. The «Με πρόβλημα» toggle fades in what each
-# of the four conditions actually looks like — a keratin plaque with a core
-# under the forefoot, fissures across the heel pad, a nail edge curling into the
-# fold, and the pressure points a neuropathic foot no longer feels.
-FOOT_SVG = """<svg class="anatomy__svg" viewBox="0 0 680 560" role="img"
-  aria-label="Σχηματική πλάγια τομή του άκρου ποδός: νύχι μεγάλου δακτύλου, πρόσθιο πέλμα, πτέρνα, δέρμα με τα νεύρα και τα αγγεία του">
+# A footprint — the sole seen from below, the way a pressure plate or an ink
+# print shows it. The client asked for exactly this in place of the anatomical
+# cross-section: modern, plain, no drawn skin. Pressure pools where the foot
+# loads in every step (heel, ball, big toe), and four numbered points mark the
+# zones the site's conditions live in. Each point is a focusable hotspot; the
+# panel beside the print explains the zone.
+ZONES = [  # (zone id, marker x, marker y, label)
+    ("nail", 258, 118, "Νύχι μεγάλου δακτύλου"),
+    ("forefoot", 188, 250, "Πρόσθιο πέλμα"),
+    ("circulation", 178, 378, "Νεύρα &amp; αγγεία"),
+    ("heel", 168, 498, "Πτέρνα"),
+]
+
+
+def _zone_sub(zone):
+    """The condition(s) that live in a zone, for the label's second line."""
+    return " · ".join(c["title"] for c in CONDITIONS if c["zone"] == zone)
+
+
+def _footprint_svg():
+    sole = ("M112 235C130 190 200 170 250 195C290 218 292 275 280 320"
+            "C268 365 250 400 252 445C254 490 245 540 205 555"
+            "C165 570 120 545 112 500C104 450 106 390 104 330C102 290 100 262 112 235Z")
+    toes = [(258, 128, 36, 44, -8), (196, 108, 20, 27, -6), (150, 122, 18, 24, -4),
+            (112, 145, 16, 21, 0), (82, 175, 15, 19, 6)]
+    toes_svg = "".join(
+        f'<ellipse cx="{cx}" cy="{cy}" rx="{rx}" ry="{ry}" transform="rotate({rot} {cx} {cy})"/>'
+        for cx, cy, rx, ry, rot in toes)
+    hots = ""
+    for n, (zone, x, y, label) in enumerate(ZONES, start=1):
+        lx = 400
+        hots += f"""
+  <g class="hot" data-zone="{zone}" tabindex="0" role="button"
+     aria-label="{label.replace('&amp;', '&')}: {_zone_sub(zone)}">
+    <path class="hot__lead" d="M{x + 14} {y}H{lx - 14}" fill="none"/>
+    <circle class="hot__ring" cx="{x}" cy="{y}" r="22" fill="none"/>
+    <circle class="hot__shape" cx="{x}" cy="{y}" r="13"/>
+    <text class="hot__num" x="{x}" y="{y + 4.5}">{n}</text>
+    <text class="hot__label" x="{lx}" y="{y - 2}">{label}</text>
+    <text class="hot__sub" x="{lx}" y="{y + 15}">{_zone_sub(zone)}</text>
+    <rect class="hot__hit" x="{x - 26}" y="{y - 26}" width="{lx + 250 - x}" height="52"/>
+  </g>"""
+    return f"""<svg class="anatomy__svg" viewBox="40 60 640 540" role="img"
+  aria-label="Αποτύπωμα πέλματος με τέσσερα σημεία: νύχι μεγάλου δακτύλου, πρόσθιο πέλμα, νεύρα και αγγεία, πτέρνα">
   <defs>
-    <linearGradient id="tissue" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#e8f2fb"/><stop offset="1" stop-color="#c5dcf0"/>
-    </linearGradient>
-    <linearGradient id="skinGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#fdf1e8"/><stop offset="1" stop-color="#f6e0d1"/>
-    </linearGradient>
+    <clipPath id="fp-clip"><path d="{sole}"/>{toes_svg}</clipPath>
+    <radialGradient id="fp-heel" cx="168" cy="505" r="95" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1673bd" stop-opacity=".55"/><stop offset="1" stop-color="#1673bd" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="fp-ball" cx="190" cy="245" r="110" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1673bd" stop-opacity=".5"/><stop offset="1" stop-color="#1673bd" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="fp-toe" cx="258" cy="130" r="55" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1673bd" stop-opacity=".45"/><stop offset="1" stop-color="#1673bd" stop-opacity="0"/>
+    </radialGradient>
   </defs>
 
-  <!-- Leg above the ankle, cut off, sitting behind the foot. -->
-  <path d="M404 168h88v168h-88z" fill="#eef5fc"/>
-  <path d="M404 168v150M492 168v152" fill="none" stroke="#dae7f3" stroke-width="2"/>
-
-  <!-- The foot itself: dorsum from the toe up to the ankle, down the achilles,
-       round the heel, then along the sole with the arch lifting in the middle. -->
-  <path id="foot-skin"
-        d="M150 384C176 376 244 350 300 314C346 284 382 246 396 200
-           C400 186 400 178 400 170H496C496 196 498 262 502 306
-           C506 348 508 380 504 402C500 424 486 434 466 434
-           L400 434C356 434 336 396 296 392C256 388 238 424 200 432
-           L132 432C108 432 92 418 94 400C96 384 118 376 150 384Z"
-        fill="url(#skinGrad)" stroke="#e0c6b3" stroke-width="2"/>
-
-  <!-- Ground and skeletal hints. -->
-  <path d="M62 440h556" stroke="#d2e4f2" stroke-width="4" stroke-linecap="round"/>
-  <g stroke="#e6eef7" stroke-width="9" stroke-linecap="round" fill="none">
-    <path d="M196 408l108-58"/><path d="M214 416l104-50"/><path d="M238 420l96-42"/>
+  <!-- The print: a light wash, then the pressure pooling where the foot loads. -->
+  <g clip-path="url(#fp-clip)">
+    <rect x="40" y="60" width="290" height="530" fill="#a3d9f4" opacity=".55"/>
+    <rect x="40" y="60" width="290" height="530" fill="url(#fp-heel)"/>
+    <rect x="40" y="60" width="290" height="530" fill="url(#fp-ball)"/>
+    <rect x="40" y="60" width="290" height="530" fill="url(#fp-toe)"/>
   </g>
-  <ellipse cx="452" cy="392" rx="46" ry="34" fill="#f2e2d4" opacity=".7"/>
-
-  <!-- Nail of the great toe. -->
-  <g class="hot" id="g-nail" data-zone="nail" tabindex="0" role="button"
-     aria-label="Νύχι μεγάλου δακτύλου — είσφρηση όνυχος">
-    <g class="organ">
-      <ellipse class="hot__shape" cx="118" cy="392" rx="22" ry="12"
-               transform="rotate(-24 118 392)" fill="url(#tissue)"
-               stroke="#8fb0d0" stroke-width="1.8"/>
-    </g>
-    <g class="flaw">
-      <path d="M132 400c8 6 12 13 12 20" fill="none" stroke="#c2544f"
-            stroke-width="4.5" stroke-linecap="round"/>
-      <ellipse cx="140" cy="414" rx="16" ry="11" fill="#c2544f" opacity=".26"/>
-    </g>
-    <path class="hot__lead" d="M108 376V118h44" fill="none"/>
-    <text class="hot__label" x="160" y="122">Νύχι μεγάλου δακτύλου</text>
-    <rect class="hot__hit" x="84" y="362" width="84" height="72"/>
+  <g fill="none" stroke="#1673bd" stroke-opacity=".35" stroke-width="1.5">
+    <path d="{sole}"/>{toes_svg}
   </g>
-
-  <!-- Forefoot pad: the metatarsal heads, where calluses and corns build up. -->
-  <g class="hot" id="g-forefoot" data-zone="forefoot" tabindex="0" role="button"
-     aria-label="Πρόσθιο πέλμα — σκληρύνσεις, κάλοι και τύλοι">
-    <g class="organ">
-      <path class="hot__shape" d="M142 424h74" fill="none"
-            stroke="url(#tissue)" stroke-width="17" stroke-linecap="round"/>
-    </g>
-    <g class="flaw">
-      <path d="M150 424h60" fill="none" stroke="#d9a066" stroke-width="15" stroke-linecap="round"/>
-      <path d="M182 418l-7-32h14z" fill="#b57433"/>
-      <circle cx="182" cy="382" r="6" fill="#c2544f" opacity=".55"/>
-    </g>
-    <path class="hot__lead" d="M182 446v42h56" fill="none"/>
-    <text class="hot__label" x="246" y="493">Πρόσθιο πέλμα</text>
-    <rect class="hot__hit" x="128" y="400" width="106" height="48"/>
-  </g>
-
-  <!-- Heel pad: where dryness and fissures happen. -->
-  <g class="hot" id="g-heel" data-zone="heel" tabindex="0" role="button"
-     aria-label="Πτέρνα — ξηροδερμία πελμάτων και ραγάδες">
-    <g class="organ">
-      <path class="hot__shape" d="M404 426h62" fill="none"
-            stroke="url(#tissue)" stroke-width="19" stroke-linecap="round"/>
-    </g>
-    <g class="flaw">
-      <path d="M404 424h62" fill="none" stroke="#d9a066" stroke-width="15" stroke-linecap="round"/>
-      <path d="M412 410v26M428 406v30M444 408v28M460 412v22" fill="none"
-            stroke="#a53c33" stroke-width="3.6" stroke-linecap="round"/>
-    </g>
-    <path class="hot__lead" d="M508 420h54" fill="none"/>
-    <text class="hot__label" x="570" y="425">Πτέρνα</text>
-    <rect class="hot__hit" x="392" y="398" width="112" height="50"/>
-  </g>
-
-  <!-- Skin, nerves and vessels: the diabetic foot lives here. -->
-  <g class="hot" id="g-circulation" data-zone="circulation" tabindex="0" role="button"
-     aria-label="Δέρμα, νεύρα και αγγεία — διαβητικό πόδι">
-    <g class="organ">
-      <path class="hot__shape" d="M448 186c-6 62-30 112-70 150-40 38-96 62-166 74"
-            fill="none" stroke="url(#tissue)" stroke-width="8" stroke-linecap="round"/>
-      <path d="M448 186c-6 62-30 112-70 150-40 38-96 62-166 74"
-            fill="none" stroke="#8fb0d0" stroke-width="1.4" opacity=".6" stroke-dasharray="5 7"/>
-    </g>
-    <g class="flaw">
-      <path d="M330 356c-36 30-76 48-118 54" fill="none" stroke="#c2544f"
-            stroke-width="9" stroke-linecap="round" opacity=".32"/>
-      <g fill="none" stroke="#c2544f" stroke-width="3">
-        <circle cx="182" cy="424" r="14"/><circle cx="434" cy="424" r="14"/>
-        <circle cx="122" cy="392" r="14"/>
-      </g>
-    </g>
-    <path class="hot__lead" d="M436 250h126" fill="none"/>
-    <text class="hot__label" x="570" y="255">Νεύρα &amp; αγγεία</text>
-    <rect class="hot__hit" x="300" y="188" width="164" height="150"/>
-  </g>
-
-  <text class="hot__label" x="618" y="462" text-anchor="end" fill="#6f8d96">Έδαφος</text>
+{hots}
 </svg>"""
+
+
+FOOT_SVG = _footprint_svg()
 
 
 def anatomy_block(depth):
     return f"""<div class="anatomy" id="anatomy" data-default="nail">
   <div class="anatomy__stage">
-    <div class="anatomy__toggle" role="group" aria-label="Κατάσταση διαγράμματος">
-      <button type="button" data-state="normal" aria-pressed="true">Φυσιολογικό</button>
-      <button type="button" data-state="affected" aria-pressed="false">Με πρόβλημα</button>
-    </div>
     {FOOT_SVG}
+    <ol class="anatomy__legend" aria-label="Τα τέσσερα σημεία">
+      {"".join(f'<li class="hot" data-zone="{z}" tabindex="0" role="button"><b>{n}</b><span>{label.replace("&amp;", "&")}</span></li>'
+               for n, (z, _x, _y, label) in enumerate(ZONES, start=1))}
+    </ol>
   </div>
   <div class="anatomy__panel" aria-live="polite"></div>
 </div>"""

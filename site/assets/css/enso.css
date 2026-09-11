@@ -539,11 +539,38 @@ a.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border
 .anatomy__svg { width: 100%; height: auto; touch-action: manipulation; }
 .hot { cursor: pointer; transition: opacity .22s var(--ease); }
 .hot__hit { fill: transparent; }
-.hot__shape { transition: fill .3s var(--ease), stroke .3s var(--ease); }
-.hot__label { font-family: var(--text); font-size: 12.5px; font-weight: 500; fill: var(--deep); pointer-events: none; }
-.hot__lead { stroke: var(--teal-300); stroke-width: 1; pointer-events: none; }
-.hot.is-active .hot__shape, .hot:hover .hot__shape { fill: var(--teal-hi); }
+.hot__shape { fill: #fff; stroke: var(--teal); stroke-width: 2; transition: fill .3s var(--ease), stroke .3s var(--ease); }
+.hot__num { font-family: var(--text); font-size: 12.5px; font-weight: 700; fill: var(--teal); text-anchor: middle; pointer-events: none; transition: fill .3s var(--ease); }
+.hot__ring { stroke: var(--teal-hi); stroke-width: 1.5; opacity: 0; transform-box: fill-box; transform-origin: center; }
+.hot__label { font-family: var(--text); font-size: 14px; font-weight: 700; fill: var(--deep); pointer-events: none; }
+.hot__sub { font-family: var(--text); font-size: 11.5px; fill: var(--ink-3); pointer-events: none; }
+.hot__lead { stroke: var(--line); stroke-width: 1.5; pointer-events: none; transition: stroke .3s var(--ease); }
+.hot.is-active .hot__shape, .hot:hover .hot__shape { fill: var(--teal); }
+.hot.is-active .hot__num, .hot:hover .hot__num { fill: #fff; }
 .hot.is-active .hot__label, .hot:hover .hot__label { fill: var(--teal); }
+.hot.is-active .hot__lead { stroke: var(--teal-hi); }
+.hot.is-active .hot__ring { opacity: 1; animation: hot-pulse 2.2s var(--ease) infinite; }
+@keyframes hot-pulse { 0% { transform: scale(.7); opacity: .9; } 100% { transform: scale(1.35); opacity: 0; } }
+/* On a phone the print fills the card and the labels move to a legend below it,
+   which is also tappable — the same four hotspots, in HTML. */
+.anatomy__legend { display: none; }
+@media (max-width: 600px) {
+  .anatomy__stage { overflow: hidden; }
+  .anatomy__svg { width: 168%; max-width: none; margin-left: 2%; }
+  .anatomy__svg .hot__label, .anatomy__svg .hot__sub, .anatomy__svg .hot__lead { display: none; }
+  .anatomy__legend {
+    display: grid; grid-template-columns: 1fr 1fr; gap: .5rem .75rem;
+    list-style: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--line-soft);
+  }
+  .anatomy__legend li { display: flex; align-items: center; gap: .55rem; font-size: .84rem; color: var(--ink-2); line-height: 1.3; }
+  .anatomy__legend b {
+    flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center;
+    border: 2px solid var(--teal); color: var(--teal); font-size: .74rem; font-weight: 700;
+    transition: background-color .25s var(--ease), color .25s var(--ease);
+  }
+  .anatomy__legend li.is-active b { background: var(--teal); color: #fff; }
+  .anatomy__legend li.is-active span { color: var(--teal); font-weight: 700; }
+}
 .anatomy__toggle {
   position: absolute; top: clamp(1rem, 2.5vw, 1.75rem); right: clamp(1rem, 2.5vw, 1.75rem);
   display: inline-flex; background: var(--mist-2); border-radius: 100px; padding: 3px; gap: 2px;
@@ -943,18 +970,6 @@ a.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border
 .timeline b { font-family: var(--display); font-size: 1.05rem; color: var(--teal); }
 .timeline span { color: var(--ink-2); font-size: .93rem; }
 
-/* Diagram states — the toggle fades in what each condition looks like on the
-   foot: a thickened plaque under the forefoot, fissures across the heel pad,
-   a nail edge curling into the fold, and the pressure points a neuropathic
-   foot no longer feels. */
-.anatomy__svg .organ { transform-box: view-box; transition: transform .65s var(--ease-out); }
-.anatomy__svg .flaw {
-  opacity: 0; transition: opacity .5s var(--ease-out); pointer-events: none;
-}
-.anatomy__svg.is-affected .flaw { opacity: 1; }
-.anatomy__svg.is-affected #g-nail .organ { transform: translate(0, 1px); }
-.anatomy__svg #foot-skin { transition: fill .6s var(--ease-out); }
-.anatomy__svg.is-affected #foot-skin { fill: #f4e2d6; }
 .hot:focus-visible { outline: none; }
 .hot:focus-visible .hot__shape { stroke: var(--teal); stroke-width: 2.6; }
 .hot:focus-visible .hot__label { fill: var(--teal); }
