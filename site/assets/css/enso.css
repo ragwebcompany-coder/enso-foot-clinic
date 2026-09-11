@@ -1187,20 +1187,23 @@ body:has(.cookies.is-shown) .totop { bottom: 15rem; }
 /* ══════════════════════════════════════════════════════════════════════════
    Entry screen (homepage)
    The whole screen is one button: the mark, the name, «Πατήστε εδώ». It sits
-   over the page, fades out on tap, and never returns within the session
-   (html.gate-done is set before first paint on a return visit).
+   over the page and fades out on tap. It shows every time the homepage opens.
    ══════════════════════════════════════════════════════════════════════════ */
 .gate {
   position: fixed; inset: 0; z-index: 200; isolation: isolate; overflow: hidden;
-  display: grid; justify-items: center; align-content: center; gap: 0;
-  width: 100%; padding: var(--pad-x); text-align: center;
+  display: block; width: 100%; height: 100%; padding: 0; text-align: center;
   background: var(--abyss); color: #fff; font: inherit; cursor: pointer;
+  -webkit-appearance: none; appearance: none; -webkit-tap-highlight-color: transparent;
   transition: opacity .75s var(--ease), visibility .75s;
+}
+.gate__inner {
+  position: relative; z-index: 2; height: 100%; width: 100%;
+  display: grid; justify-items: center; align-content: center; gap: 0;
+  padding: var(--pad-x);
 }
 .gate:focus-visible { outline: none; }
 .gate:focus-visible .gate__cta { outline: 2px solid #fff; outline-offset: 4px; }
 .gate.is-leaving { opacity: 0; visibility: hidden; pointer-events: none; }
-.gate-done .gate { display: none; }
 .gate-open { overflow: hidden; }
 .gate > .hero__aurora { opacity: .55; }
 .gate__mark {

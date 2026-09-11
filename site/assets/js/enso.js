@@ -724,26 +724,22 @@
   }
 
   /* ── Entry screen ──────────────────────────────────────────────────── */
-  /* The homepage opens on the mark and «Πατήστε εδώ». One tap (or Enter, the
-     gate is a button and takes focus) fades it out; sessionStorage keeps it
-     from coming back while the tab lives. */
+  /* The homepage opens on the mark and «Πατήστε εδώ», every time. One tap (or
+     Enter — the gate is a button and takes focus) fades it out. */
   function gate() {
     var g = $(".gate");
     if (!g) return;
     var root = document.documentElement;
-    if (root.classList.contains("gate-done")) { g.remove(); return; }
     root.classList.add("gate-open");
     try { g.focus({ preventScroll: true }); } catch (e) {}
     var opened = false;
     function open() {
       if (opened) return;
       opened = true;
-      try { sessionStorage.setItem("enso-gate", "1"); } catch (e) {}
       g.classList.add("is-leaving");
       root.classList.remove("gate-open");
       var done = function () {
         g.remove();
-        root.classList.add("gate-done");
         document.dispatchEvent(new Event("enso:gate"));
       };
       if (reduced) done(); else setTimeout(done, 750);

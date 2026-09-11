@@ -562,19 +562,20 @@ def build_home():
         f'<li><b data-count="{a}">{a}</b><span>{b}</span></li>' for a, b in creds)
 
     # The entry screen the clinic asked for: the mark alone on the deep ground,
-    # the name, and «Πατήστε εδώ». One tap opens the site. It shows once per
-    # browser session; the inline line below hides it before first paint on a
-    # return visit so there is no flash. Behind it the page starts straight on
-    # the conditions — the lockup is the gate, it is not repeated.
+    # the name, and «Πατήστε εδώ». It is the homepage — it shows every time the
+    # page opens, and one tap fades it out. Behind it the page starts straight
+    # on the conditions; the lockup is the gate, it is not repeated. The grid
+    # lives on an inner span: Safari has been unreliable with grid on <button>.
     body = f"""<button class="gate" type="button" aria-label="Είσοδος στον ιστότοπο του Ensō Foot Clinic">
   <span class="hero__aurora" aria-hidden="true"><i></i><i></i><i></i></span>
   <span class="hero__mesh" aria-hidden="true"></span>
-  {img("enso-badge-light.svg", "Ensō Foot Clinic", 400, 400, 0, cls="gate__mark", priority=True)}
-  <span class="gate__name">Ensō <b>Foot Clinic</b></span>
-  <span class="gate__sub"><span>Christodoulou Elpiniki</span><i aria-hidden="true">·</i><span>Holistic Podology</span></span>
-  <span class="gate__cta">Πατήστε εδώ {I['right']}</span>
+  <span class="gate__inner">
+    {img("enso-badge-light.svg", "Ensō Foot Clinic", 400, 400, 0, cls="gate__mark", priority=True)}
+    <span class="gate__name">Ensō <b>Foot Clinic</b></span>
+    <span class="gate__sub"><span>Christodoulou Elpiniki</span><i aria-hidden="true">·</i><span>Holistic Podology</span></span>
+    <span class="gate__cta">Πατήστε εδώ {I['right']}</span>
+  </span>
 </button>
-<script>try{{if(sessionStorage.getItem("enso-gate"))document.documentElement.classList.add("gate-done")}}catch(e){{}}</script>
 
 <section class="section" id="pathiseis">
   <div class="wrap">
