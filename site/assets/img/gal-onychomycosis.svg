@@ -2,7 +2,7 @@
   <g>
     <rect x="90" y="170" width="180" height="150" rx="20" fill="#f3e7dc" stroke="#e0c6b3" stroke-width="1.8"/>
     <path d="M90 250c60-14 120-14 180 0" fill="none" stroke="#a3d9f4" stroke-width="2"/>
-    <text x="180" y="356" font-family="Manrope,-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="15" font-weight="560" fill="#0c3f7c" text-anchor="middle">Υγιές νύχι</text>
+    <text x="180" y="356" font-family="M PLUS Rounded 1c,Manrope,-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="15" font-weight="560" fill="#0c3f7c" text-anchor="middle">Υγιές νύχι</text>
   </g>
   <g>
     <rect x="370" y="160" width="180" height="170" rx="20" fill="#e9d5b6" stroke="#c2865a" stroke-width="2"/>
@@ -10,8 +10,8 @@
     <path d="M470 160v170" stroke="#c9a06a" stroke-width="2" stroke-dasharray="5 6"/>
     <path d="M506 168c18 40 16 96-2 148" fill="none" stroke="#b07f42" stroke-width="5"/>
     <path d="M534 176c10 44 8 100-4 146" fill="none" stroke="#9a6b33" stroke-width="4"/>
-    <text x="460" y="356" font-family="Manrope,-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="15" font-weight="560" fill="#0c3f7c" text-anchor="middle">Προσβεβλημένο νύχι</text>
+    <text x="460" y="356" font-family="M PLUS Rounded 1c,Manrope,-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="15" font-weight="560" fill="#0c3f7c" text-anchor="middle">Προσβεβλημένο νύχι</text>
   </g>
-  <text x="40" y="92" font-family="Manrope,-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="19" font-weight="560" fill="#0c3f7c" text-anchor="start">Ονυχομυκητίαση</text>
-  <text x="40" y="444" font-family="Manrope,-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="13.5" font-weight="420" fill="#6a83a3" text-anchor="start">Πάχυνση, αποχρωματισμός και θρυμματισμός — από την άκρη προς τη ρίζα.</text>
+  <text x="40" y="92" font-family="M PLUS Rounded 1c,Manrope,-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="19" font-weight="560" fill="#0c3f7c" text-anchor="start">Ονυχομυκητίαση</text>
+  <text x="40" y="444" font-family="M PLUS Rounded 1c,Manrope,-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif" font-size="13.5" font-weight="420" fill="#6a83a3" text-anchor="start">Πάχυνση, αποχρωματισμός και θρυμματισμός — από την άκρη προς τη ρίζα.</text>
 </g></svg>

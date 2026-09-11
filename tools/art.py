@@ -37,8 +37,48 @@ WARN    = "#c2865a"
 ALERT   = "#c2544f"
 KERAT   = "#d9a066"
 
-FONT = ('font-family="Manrope,-apple-system,BlinkMacSystemFont,'
+FONT = ('font-family="M PLUS Rounded 1c,Manrope,-apple-system,BlinkMacSystemFont,'
         '\'Segoe UI\',Helvetica,Arial,sans-serif"')
+
+
+# ── The card's typeface, set as outlines ─────────────────────────────────────
+# The clinic's business card is set in M PLUS Rounded 1c. The pages load it from
+# Google Fonts, but an SVG viewed through <img> cannot reach a web font, so the
+# lockups below draw the wordmark as paths from a Latin+Greek subset kept in
+# brand/. The same files feed the PNG share card.
+BRAND_FONT = {400: os.path.join(ROOT, "brand", "mplus-rounded-1c-400.ttf"),
+              700: os.path.join(ROOT, "brand", "mplus-rounded-1c-700.ttf")}
+_TT = {}
+
+
+def _tt(weight):
+    if weight not in _TT:
+        from fontTools.ttLib import TTFont
+        _TT[weight] = TTFont(BRAND_FONT[weight])
+    return _TT[weight]
+
+
+def text_path(text, x, y, size, *, weight=400, fill="#000", tracking=0.0,
+              anchor="start", extra=""):
+    """`text` at (x, y) baseline as a single <path>, in the card's typeface.
+    `tracking` is extra letter-spacing in user units."""
+    from fontTools.pens.svgPathPen import SVGPathPen
+    from fontTools.pens.transformPen import TransformPen
+    f = _tt(weight)
+    upem = f["head"].unitsPerEm
+    cmap = f.getBestCmap(); gs = f.getGlyphSet(); hmtx = f["hmtx"]
+    k = size / upem
+    names = [cmap.get(ord(ch), ".notdef") for ch in text]
+    width = sum(hmtx[n][0] * k for n in names) + tracking * (len(text) - 1)
+    x0 = x - width / 2 if anchor == "middle" else (x - width if anchor == "end" else x)
+    pen = SVGPathPen(gs)
+    pos = 0.0
+    for n in names:
+        tp = TransformPen(pen, (k, 0, 0, -k, x0 + pos, y))
+        gs[n].draw(tp)
+        pos += hmtx[n][0] * k + tracking
+    d = pen.getCommands()
+    return f'<path d="{d}" fill="{fill}" {extra}/>' if d else ""
 
 
 def w(name, body):
@@ -312,15 +352,14 @@ def logo(light=False, descriptor=None):
     # — enough for a 2× screen, and the whole file still weighs less than the
     # drawn mark it replaced.
     mark = mark_image(58, cy, 96, light=light, px=208)
-    tail = (f'\n  <text x="128" y="95" {FONT} font-size="12.5" font-weight="500" '
-            f'letter-spacing="4.2" fill="{desc}">HOLISTIC PODOLOGY</text>'
+    tail = ("\n  " + text_path("HOLISTIC PODOLOGY", 128, 95, 12.5, weight=700,
+                                fill=desc, tracking=3.2)
             if descriptor else "")
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 396 {h}" width="396" height="{h}"
   role="img" aria-label="Ensō Foot Clinic — Ολιστική ποδολογία">
   {mark}
-  <text x="126" y="{cy + 8}" {FONT} font-size="34" fill="{name}">
-    <tspan font-weight="600" letter-spacing="-.5">Ensō</tspan><tspan
-       font-weight="300" fill="{second}" letter-spacing=".2"> Foot Clinic</tspan></text>{tail}
+  {text_path("Ensō", 126, cy + 8, 34, weight=400, fill=name)}
+  {text_path("Foot Clinic", 209, cy + 8, 34, weight=700, fill=second)}{tail}
 </svg>"""
 
 
@@ -390,12 +429,11 @@ def clinic_banner():
     {"".join(f'<circle cx="1170" cy="350" r="{r}"/>' for r in range(60, 640, 42))}
   </g>
   {mark_image(1170, 350, 500, light=True, px=560)}
-  <text x="120" y="292" {FONT} font-size="76" fill="#ffffff">
-    <tspan font-weight="600">Ensō</tspan><tspan font-weight="300" fill="{TEAL300}"> Foot Clinic</tspan></text>
-  <text x="124" y="352" {FONT} font-size="30" font-weight="500" letter-spacing="7"
-        fill="{BRAND}">HOLISTIC PODOLOGY</text>
-  <text x="122" y="440" {FONT} font-size="30" font-weight="400" fill="{TEAL300}"
-        opacity=".9">Χριστοδούλου Ελπινίκη · Θεσσαλονίκη · Αθήνα · από το 2002</text>
+  {text_path("Ensō", 120, 292, 76, weight=400, fill="#ffffff")}
+  {text_path("Foot Clinic", 306, 292, 76, weight=700, fill=TEAL300)}
+  {text_path("HOLISTIC PODOLOGY", 124, 352, 30, weight=700, fill=BRAND, tracking=7)}
+  {text_path("Χριστοδούλου Ελπινίκη · Θεσσαλονίκη · Αθήνα · από το 2002", 122, 440, 30,
+             weight=400, fill=TEAL300, extra='opacity=".9"')}
 </svg>"""
 
 
@@ -413,10 +451,8 @@ def portrait():
   {enso_mark(450, 400, 232, 74, "P", seed=5)}
   <text x="450" y="436" {FONT} font-size="146" font-weight="300" fill="#ffffff"
         text-anchor="middle">ΕΧ</text>
-  <text x="450" y="700" {FONT} font-size="42" font-weight="560" fill="{DEEP}"
-        text-anchor="middle">Ελπινίκη Χριστοδούλου</text>
-  <text x="450" y="748" {FONT} font-size="26" font-weight="420" fill="{TEAL}"
-        text-anchor="middle" letter-spacing="2.4">ΠΟΔΟΛΟΓΟΣ · ΑΠΟ ΤΟ 2002</text>
+  {text_path("Ελπινίκη Χριστοδούλου", 450, 700, 42, weight=700, fill=DEEP, anchor="middle")}
+  {text_path("ΠΟΔΟΛΟΓΟΣ · ΑΠΟ ΤΟ 2002", 450, 748, 26, weight=400, fill=TEAL, anchor="middle", tracking=2.4)}
 </svg>"""
 
 
@@ -762,7 +798,8 @@ def rasterise():
             dr.ellipse([x - t / 2, y - t / 2, x + t / 2, y + t / 2], fill=col)
 
     def font(size, bold=False):
-        for path in ("/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+        for path in (BRAND_FONT[700 if bold else 400],
+                     "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
                      "/System/Library/Fonts/Helvetica.ttc",
                      "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"):
             if os.path.exists(path):
@@ -792,7 +829,7 @@ def rasterise():
     m = mark_png(int(H * 0.80), light=True)
     og.paste(m, (int(W * 0.755 - m.width / 2), int(H * 0.5 - m.height / 2)), m)
     d.text((150, 400), "Ensō", font=font(190), fill=(255, 255, 255))
-    d.text((156, 640), "F O O T   C L I N I C", font=font(74), fill=hexrgb(TEAL300))
+    d.text((156, 640), "F O O T   C L I N I C", font=font(74, bold=True), fill=hexrgb(TEAL300))
     d.text((160, 748), "H O L I S T I C   P O D O L O G Y", font=font(40),
            fill=hexrgb(BRAND))
     d.text((156, 856), "Ποδολογικό κέντρο · Θεσσαλονίκη · Αθήνα", font=font(56),

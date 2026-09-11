@@ -147,7 +147,7 @@ def head(title, desc, depth, canonical, *, lang="el", alt=None, jsonld=None,
 <link rel="apple-touch-icon" href="{asset(depth, "assets/img/favicon-144.png")}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300..800&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;400;500;700&amp;display=swap">
 <link rel="stylesheet" href="{asset(depth, "assets/css/enso.css")}">
 <script>document.documentElement.className+=" js";</script>
 {ld}</head>"""
