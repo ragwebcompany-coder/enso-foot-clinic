@@ -19,16 +19,16 @@ ROOT = os.path.dirname(HERE)
 IMG = os.path.join(ROOT, "site", "assets", "img")
 
 # ── Palette (mirrors :root in enso.css) ──────────────────────────────────────
-BRAND   = "#63aabc"   # the Ensō brand teal
-TEAL    = "#2b7f96"
-DEEP    = "#14424f"
-ABYSS   = "#0b2a34"
-TEAL300 = "#a5d3de"
-MIST    = "#e0eff3"
-MIST2   = "#f0f8fa"
-PAPER   = "#fbfdfd"
-LINE    = "#d5e5ea"
-INK3    = "#6f8d96"
+BRAND   = "#45b3e8"   # the Ensō brand blue — the cyan edge of the watercolour mark
+TEAL    = "#1673bd"
+DEEP    = "#0c3f7c"
+ABYSS   = "#071f42"
+TEAL300 = "#a3d9f4"
+MIST    = "#e2f1fb"
+MIST2   = "#f0f8fe"
+PAPER   = "#fbfdff"
+LINE    = "#d2e4f2"
+INK3    = "#6a83a3"
 SKIN    = "#fdf1e8"
 SKIN2   = "#f6e0d1"
 SKIN_L  = "#e0c6b3"
@@ -37,7 +37,7 @@ WARN    = "#c2865a"
 ALERT   = "#c2544f"
 KERAT   = "#d9a066"
 
-FONT = ('font-family="Commissioner,-apple-system,BlinkMacSystemFont,'
+FONT = ('font-family="Manrope,-apple-system,BlinkMacSystemFont,'
         '\'Segoe UI\',Helvetica,Arial,sans-serif"')
 
 
@@ -111,10 +111,10 @@ def mark_image(cx, cy, size, *, light=False, px=None):
 # The real Ensō logo is a watercolour brush circle: indigo pigment pooling in
 # blooms, thinning to a pale wash where the brush ran dry. These four steps
 # reproduce that range while staying inside the site palette.
-INK_DEEP = "#1b4f7d"   # where the pigment pools
-INK_MID  = "#2b7f96"
-INK_SOFT = "#63aabc"   # the brand teal
-INK_PALE = "#a5d3de"
+INK_DEEP = "#0a3a80"   # where the pigment pools
+INK_MID  = "#1a7fcf"
+INK_SOFT = "#4fbde9"   # the brand blue
+INK_PALE = "#a3d9f4"
 
 # The brush lands at about one o'clock and sweeps clockwise, lifting just short
 # of where it began — so the circle stays open at the top right, as it does in
@@ -313,10 +313,10 @@ def logo(light=False, descriptor=None):
     # drawn mark it replaced.
     mark = mark_image(58, cy, 96, light=light, px=208)
     tail = (f'\n  <text x="128" y="95" {FONT} font-size="12.5" font-weight="500" '
-            f'letter-spacing="4.2" fill="{desc}">PODOLOGY · PODIATRY</text>'
+            f'letter-spacing="4.2" fill="{desc}">HOLISTIC PODOLOGY</text>'
             if descriptor else "")
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 396 {h}" width="396" height="{h}"
-  role="img" aria-label="Ensō Foot Clinic — Ποδολογία, Ποδιατρική">
+  role="img" aria-label="Ensō Foot Clinic — Ολιστική ποδολογία">
   {mark}
   <text x="126" y="{cy + 8}" {FONT} font-size="34" fill="{name}">
     <tspan font-weight="600" letter-spacing="-.5">Ensō</tspan><tspan
@@ -335,7 +335,7 @@ def favicon():
 # ── Hero / clinic / portrait panels ──────────────────────────────────────────
 def hero():
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 620" width="500" height="620"
-  role="img" aria-label="Το υδατογραφικό σήμα ensō του ιατρείου">
+  role="img" aria-label="Το υδατογραφικό σήμα ensō του ποδολογικού κέντρου">
   <defs>
     <linearGradient id="hbg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="{MIST2}"/><stop offset="1" stop-color="{MIST}"/>
@@ -351,7 +351,7 @@ def hero_dark():
     glass panel behind it shows through, and the ink shifted up the palette so it
     glows rather than sinks."""
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 620" width="500" height="620"
-  role="img" aria-label="Το υδατογραφικό σήμα ensō του ιατρείου">
+  role="img" aria-label="Το υδατογραφικό σήμα ensō του ποδολογικού κέντρου">
   {mark_image(250, 310, 400, light=True, px=520)}
 </svg>"""
 
@@ -367,10 +367,19 @@ def enso_badge():
 </svg>"""
 
 
+def enso_badge_light():
+    """The same square badge with the pigment walked up to the pale end, for the
+    homepage lockup, where it sits on the deep ground under the wordmark."""
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400"
+  role="img" aria-label="Το σήμα ensō του Ensō Foot Clinic">
+  {mark_image(200, 200, 356, light=True, px=460)}
+</svg>"""
+
+
 def clinic_banner():
     """The full four-line lockup the clinic uses, on its own ground."""
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 700" width="1600" height="700"
-  role="img" aria-label="Ensō Foot Clinic — Χριστοδούλου Ελπινίκη, Ποδολογία & Ποδιατρική">
+  role="img" aria-label="Ensō Foot Clinic — Χριστοδούλου Ελπινίκη, Ολιστική ποδολογία">
   <defs>
     <linearGradient id="cbg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="{DEEP}"/><stop offset="1" stop-color="{ABYSS}"/>
@@ -384,9 +393,9 @@ def clinic_banner():
   <text x="120" y="292" {FONT} font-size="76" fill="#ffffff">
     <tspan font-weight="600">Ensō</tspan><tspan font-weight="300" fill="{TEAL300}"> Foot Clinic</tspan></text>
   <text x="124" y="352" {FONT} font-size="30" font-weight="500" letter-spacing="7"
-        fill="{BRAND}">PODOLOGY · PODIATRY</text>
+        fill="{BRAND}">HOLISTIC PODOLOGY</text>
   <text x="122" y="440" {FONT} font-size="30" font-weight="400" fill="{TEAL300}"
-        opacity=".9">Χριστοδούλου Ελπινίκη · Περαία, Θεσσαλονίκη · από το 2002</text>
+        opacity=".9">Χριστοδούλου Ελπινίκη · Θεσσαλονίκη · Αθήνα · από το 2002</text>
 </svg>"""
 
 
@@ -784,9 +793,9 @@ def rasterise():
     og.paste(m, (int(W * 0.755 - m.width / 2), int(H * 0.5 - m.height / 2)), m)
     d.text((150, 400), "Ensō", font=font(190), fill=(255, 255, 255))
     d.text((156, 640), "F O O T   C L I N I C", font=font(74), fill=hexrgb(TEAL300))
-    d.text((160, 748), "P O D O L O G Y   ·   P O D I A T R Y", font=font(40),
+    d.text((160, 748), "H O L I S T I C   P O D O L O G Y", font=font(40),
            fill=hexrgb(BRAND))
-    d.text((156, 856), "Ποδολογικό ιατρείο · Περαία, Θεσσαλονίκη", font=font(56),
+    d.text((156, 856), "Ποδολογικό κέντρο · Θεσσαλονίκη · Αθήνα", font=font(56),
            fill=hexrgb(TEAL300))
     d.text((156, 946), "Χριστοδούλου Ελπινίκη · από το 2002", font=font(56),
            fill=hexrgb(BRAND))
@@ -805,6 +814,7 @@ def main():
     made.append(w("hero-enso.svg", hero()))
     made.append(w("hero-enso-dark.svg", hero_dark()))
     made.append(w("enso-badge.svg", enso_badge()))
+    made.append(w("enso-badge-light.svg", enso_badge_light()))
     made.append(w("clinic-enso.svg", clinic_banner()))
     made.append(w("elpiniki-christodoulou.svg", portrait()))
     for stem, fn in GALLERY_ART.items():

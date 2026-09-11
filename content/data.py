@@ -5,10 +5,12 @@ Business facts (name, practitioner, credentials, services, NAP, socials) come
 from the clinic's own published copy on ensofootclinic.gr. Clinical copy lives
 in `copy.py`. Edit this file to change structure, contact details or menus.
 
-Two things are NOT published anywhere by the clinic and are therefore left
+Opening hours are NOT published anywhere by the clinic and are therefore left
 deliberately non-committal — confirm them before launch:
   · opening hours  → shown as «Κατόπιν ραντεβού», no openingHoursSpecification
-  · the Athens address → only the Athens phone lines are listed, no street
+
+Both addresses and all three phone lines come from the clinic's business card
+(Sept 2026): Ρωμανού 11, Περαία and Ελ. Βενιζέλου 180, Καλλιθέα.
 """
 
 SITE = {
@@ -25,6 +27,9 @@ SITE = {
     "email": "podopure@gmail.com",
     "address": "Ρωμανού 11, Περαία (3ος όροφος)",
     "address_en": "Romanou 11, Peraia, Thessaloniki (3rd floor)",
+    "address_athens": "Ελ. Βενιζέλου 180, Καλλιθέα",
+    "address_athens_en": "El. Venizelou 180, Kallithea, Athens",
+    "map_athens": "https://maps.google.com/?q=%CE%95%CE%BB.%20%CE%92%CE%B5%CE%BD%CE%B9%CE%B6%CE%AD%CE%BB%CE%BF%CF%85%20180%2C%20%CE%9A%CE%B1%CE%BB%CE%BB%CE%B9%CE%B8%CE%AD%CE%B1%2C%20%CE%91%CE%B8%CE%AE%CE%BD%CE%B1",
     "postcode": "570 19",
     "map": "https://maps.google.com/?q=%CE%A1%CF%89%CE%BC%CE%B1%CE%BD%CE%BF%CF%8D+11%2C+%CE%A0%CE%B5%CF%81%CE%B1%CE%AF%CE%B1%2C+Greece",
     "map_full": ("https://www.google.com/maps/place/"
@@ -53,11 +58,11 @@ SITE = {
     # Where the clinic's work actually happens, from its own contact page.
     "venues": [
         ("Ποδολογικό κέντρο Περαίας", "Ρωμανού 11, Περαία — 3ος όροφος",
-         "Η έδρα του ιατρείου. Αξιολόγηση άκρου ποδός, ιατρική ποδολογία, "
+         "Η έδρα του ποδολογικού κέντρου. Αξιολόγηση άκρου ποδός, ιατρική ποδολογία, "
          "ορθονυχία και έλεγχος διαβητικού ποδιού."),
-        ("Ραντεβού Αθήνας", "Τηλεφωνικά στο 210 958 6060 ή 698 385 0193",
+        ("Ποδολογικό κέντρο Αθήνας", "Ελ. Βενιζέλου 180, Καλλιθέα",
          "Η Ελπινίκη Χριστοδούλου δέχεται περιστατικά και στην Αθήνα. "
-         "Καλέστε για διαθεσιμότητα και τόπο συνάντησης."),
+         "Ραντεβού στο 210 958 6060 ή στο 698 385 0193."),
     ],
     # Areas the clinic actually draws patients from, declared once as areaServed
     # instead of one near-duplicate landing page per suburb (doorway pages).
@@ -80,19 +85,19 @@ PRACTITIONER = {
     "slug": "elpiniki-christodoulou",
     "name": "Ελπινίκη Χριστοδούλου",
     "name_en": "Elpiniki Christodoulou",
-    "role": "Ποδολόγος · υπεύθυνη του ιατρείου",
+    "role": "Ποδολόγος · υπεύθυνη του ποδολογικού κέντρου",
     "role_en": "Podologist · clinical lead",
     "since": "2002",
-    "years": "19+",
+    "years": "25+",
     "photo": "elpiniki-christodoulou.svg",
     "quote": ("Η βαρύτητα μπορεί να γίνει ο καλύτερος σου σύμμαχος αφού πρώτα "
               "κάνεις τον ποδίατρο καλύτερο σου φίλο."),
     "quote_en": ("Gravity can become your best ally — once you have made the "
                  "podiatrist your best friend."),
-    "blurb": ("Ποδολόγος με πάνω από 19 χρόνια στη θεραπεία του άκρου ποδός και "
+    "blurb": ("Ποδολόγος με πάνω από 25 χρόνια στη θεραπεία του άκρου ποδός και "
               "στην αισθητική περιποίησή του. Από το 2002 προσφέρει θεραπείες με "
               "μετρήσιμο αποτέλεσμα σε όσους ταλαιπωρούνται από προβλήματα στα κάτω άκρα."),
-    "blurb_en": ("Podologist with more than 19 years in foot therapy and foot "
+    "blurb_en": ("Podologist with more than 25 years in foot therapy and foot "
                  "aesthetics. Practising since 2002."),
     "credentials": [
         ("2002 → σήμερα", "Owner, Trellis Podology &amp; Nails — Θεσσαλονίκη"),
@@ -166,7 +171,7 @@ TREATMENTS = [
          lead="Δομημένη αξιολόγηση αίσθησης, κυκλοφορίας, δέρματος και υποδημάτων, ώστε το "
               "πρόβλημα να βρεθεί πριν γίνει πληγή.",
          kind="prevention",
-         matrix=dict(setting="Στο ιατρείο", sensation="Ανώδυνος έλεγχος",
+         matrix=dict(setting="Στο ποδολογικό κέντρο", sensation="Ανώδυνος έλεγχος",
                      sessions="1 φορά/χρόνο κατ' ελάχιστον", duration="30–40 λεπτά",
                      after="Γραπτό πλάνο φροντίδας", pain="Χωρίς πόνο"),
          treats=["Διαβητική νευροπάθεια", "Περιφερική αγγειοπάθεια",
@@ -177,10 +182,10 @@ TREATMENTS = [
          short="Κλινική περιποίηση άκρου ποδός",
          meta="Ιατρική ποδολογία: αποστειρωμένη, ανώδυνη κλινική περιποίηση πελμάτων και "
               "νυχιών με φρέζα και νυστέρι. Δεν είναι pedicure — είναι θεραπευτική πράξη.",
-         lead="Η βασική συνεδρία του ιατρείου: αξιολόγηση, αποστειρωμένα εργαλεία, "
+         lead="Η βασική συνεδρία του ποδολογικού κέντρου: αξιολόγηση, αποστειρωμένα εργαλεία, "
               "θεραπευτική περιποίηση δέρματος και νυχιών, οδηγίες για το σπίτι.",
          kind="care",
-         matrix=dict(setting="Στο ιατρείο", sensation="Ανώδυνη",
+         matrix=dict(setting="Στο ποδολογικό κέντρο", sensation="Ανώδυνη",
                      sessions="Κάθε 6–8 εβδομάδες", duration="45–60 λεπτά",
                      after="Περπατάτε αμέσως", pain="Χωρίς πόνο"),
          treats=["Πάχυνση νυχιών", "Σκληρύνσεις", "Ξηροδερμία", "Φροντίδα ευπαθούς ποδιού"]),
@@ -193,7 +198,7 @@ TREATMENTS = [
          lead="Ο πυρήνας του κάλου αφαιρείται στρώση-στρώση με αποστειρωμένο νυστέρι. Η "
               "ανακούφιση είναι άμεση — αλλά η δουλειά είναι να φύγει και η πίεση.",
          kind="care",
-         matrix=dict(setting="Στο ιατρείο", sensation="Ανώδυνη",
+         matrix=dict(setting="Στο ποδολογικό κέντρο", sensation="Ανώδυνη",
                      sessions="1 συνεδρία · επανέλεγχος 6–8 εβδ.", duration="30–45 λεπτά",
                      after="Περπατάτε αμέσως", pain="Χωρίς πόνο"),
          treats=["Κάλοι με πυρήνα", "Τύλοι", "Σκληρύνσεις", "Μεσοδακτύλιοι κάλοι"]),
@@ -206,7 +211,7 @@ TREATMENTS = [
          lead="Πρώτα φεύγει ο νεκρός ιστός, μετά μπαίνει η ενυδάτωση. Με την αντίστροφη "
               "σειρά, η κρέμα μένει πάνω στο σκληρό δέρμα και δεν κάνει τίποτα.",
          kind="care",
-         matrix=dict(setting="Στο ιατρείο", sensation="Ανώδυνη",
+         matrix=dict(setting="Στο ποδολογικό κέντρο", sensation="Ανώδυνη",
                      sessions="1–3 συνεδρίες", duration="40–50 λεπτά",
                      after="Ενυδάτωση καθημερινά στο σπίτι", pain="Χωρίς πόνο"),
          treats=["Ραγάδες πτέρνας", "Ξηροδερμία πελμάτων", "Απολέπιση", "Πρόληψη λοίμωξης"]),
@@ -219,7 +224,7 @@ TREATMENTS = [
          lead="Ένας λεπτός υαλώδης νάρθηκας κολλάται πάνω στο νύχι και το ξαναμαθαίνει να "
               "μεγαλώνει επίπεδο. Καμία τομή, κανένα ράμμα, καμία απώλεια νυχιού.",
          kind="device",
-         matrix=dict(setting="Στο ιατρείο", sensation="Ανώδυνη &amp; αναίμακτη",
+         matrix=dict(setting="Στο ποδολογικό κέντρο", sensation="Ανώδυνη &amp; αναίμακτη",
                      sessions="Επανατοποθέτηση κάθε 4–6 εβδ.", duration="30 λεπτά",
                      after="Περπατάτε και φοράτε παπούτσια αμέσως",
                      pain="Ανακούφιση από την πρώτη μέρα"),
@@ -399,7 +404,7 @@ SEMINARS = [
          price="Δωρεάν συμμετοχή",
          price_eur=0,          # numeric, for schema.org Offer. None = do not state one.
          register=("closed", ""),
-         lead="Το πρώτο διαδικτυακό σεμινάριο του ιατρείου, μια εισαγωγή στη σύγχρονη "
+         lead="Το πρώτο διαδικτυακό σεμινάριο του ποδολογικού κέντρου, μια εισαγωγή στη σύγχρονη "
               "ποδολογική πράξη. Οι εγγραφές έχουν λήξει.",
          topics=["Τι είναι η ποδολογία και πού σταματά", "Αποστείρωση και ασφάλεια",
                  "Το διαβητικό πόδι στην καθημερινή πράξη",

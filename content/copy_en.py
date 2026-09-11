@@ -16,7 +16,7 @@ time. It is a fair description of the work here: a thorough job on the foot that
 close the conversation but starts it.</p>
 
 <p>The clinic is in Peraia, Thessaloniki, and continues a practice that began in
-<b>2002</b>. It is run by <b>Elpiniki Christodoulou</b>, a podologist with more than 19
+<b>2002</b>. It is run by <b>Elpiniki Christodoulou</b>, a podologist with more than 25
 years in foot therapy and foot aesthetics.</p>
 
 <h2>How we work</h2>
@@ -32,7 +32,7 @@ we will see you in six months. That is the goal.</p>
 <h2>Our principles</h2>
 
 <ul>
-<li><b>Sterilisation without shortcuts.</b> Cleaning, disinfection and class-B autoclave
+<li><b>Sterilisation without shortcuts.</b> Cleaning, disinfection and autoclave
 sterilisation, in sealed pouches opened in front of you. Anything that cannot be
 sterilised is single-use.</li>
 <li><b>Dry technique.</b> No soaking, no shared basins. Working on dry skin is more
@@ -61,8 +61,8 @@ glass-fibre brace.</li>
 
 <h2>Practical details</h2>
 
-<p>The clinic is at <b>Romanou 11, Peraia, Thessaloniki, 3rd floor</b>. Appointments in
-Athens are also available by phone. Consultations can be held in English.</p>
+<p>The clinic is at <b>Romanou 11, Peraia, Thessaloniki, 3rd floor</b>, and in Athens at
+<b>El. Venizelou 180, Kallithea</b>. Appointments are booked by phone. Consultations can be held in English.</p>
 
 <p>Bring the shoes you actually wear every day — not your best pair. It is the single
 most useful piece of information you can give us.</p>
@@ -337,7 +337,7 @@ writing.</li>
 <ul>
 <li><b>Purpose.</b> A pedicure is cosmetic care. Podology is a therapeutic procedure with
 clinical assessment.</li>
-<li><b>Instruments.</b> Class-B autoclave sterilisation, sealed pouches, single-use where
+<li><b>Instruments.</b> Autoclave sterilisation, sealed pouches, single-use where
 required.</li>
 <li><b>Technique.</b> Dry work with burr and sterile blade, not soaking and a rasp — which
 is why a corn's core can actually be removed.</li>

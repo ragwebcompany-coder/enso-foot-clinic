@@ -63,7 +63,7 @@ def asset(depth, path):
 T = {
     "el": dict(
         skip="Μετάβαση στο περιεχόμενο", nav_label="Κύρια πλοήγηση",
-        clinic="Το ιατρείο", conditions="Παθήσεις", treatments="Υπηρεσίες",
+        clinic="Το κέντρο", conditions="Παθήσεις", treatments="Υπηρεσίες",
         both="Παθήσεις & υπηρεσίες", guide="Οδηγός συμπτωμάτων",
         tracker="Φροντίδα ποδιών", seminars="Σεμινάρια",
         articles="Άρθρα", gallery="Εικονογραφήσεις", contact="Επικοινωνία",
@@ -71,7 +71,7 @@ T = {
         all_conditions="Όλες οι παθήσεις", compare="Σύγκριση υπηρεσιών",
         search_ph="Πάθηση, υπηρεσία ή άρθρο…", search_hint="Γράψτε τουλάχιστον 2 χαρακτήρες.",
         hours="Ωράριο", terms="Όροι χρήσης & απόρρητο", other_lang_full="English",
-        tagline="Ποδολογικό ιατρείο στην Περαία Θεσσαλονίκης, από το 2002. "
+        tagline="Ποδολογικό κέντρο σε Θεσσαλονίκη και Αθήνα, από το 2002. "
                 "Θεραπεία και φροντίδα του άκρου ποδός.",
         call="Κλήση", top="Επιστροφή στην κορυφή", close="Κλείσιμο",
         prev="Προηγούμενο", next="Επόμενο", view="Προβολή",
@@ -91,7 +91,7 @@ T = {
         all_conditions="All conditions", compare="Compare services",
         search_ph="Condition, service or article…", search_hint="Type at least 2 characters.",
         hours="Opening hours", terms="Terms & privacy", other_lang_full="Ελληνικά",
-        tagline="Podology clinic in Peraia, Thessaloniki, practising since 2002.",
+        tagline="Podology centre in Thessaloniki and Athens, practising since 2002.",
         call="Call", top="Back to top", close="Close",
         prev="Previous", next="Next", view="View",
         ck_title="Cookies",
@@ -121,7 +121,7 @@ def head(title, desc, depth, canonical, *, lang="el", alt=None, jsonld=None,
 <meta name="description" content="{desc}">
 <link rel="canonical" href="{SITE['domain']}/{canonical.lstrip('/')}">
 <link rel="alternate" hreflang="{lang}" href="{SITE['domain']}/{canonical.lstrip('/')}">{alt_links}
-<meta name="theme-color" content="#63aabc">
+<meta name="theme-color" content="#0c3f7c">
 <meta name="geo.region" content="{SITE['region_iso']}">
 <meta name="geo.placename" content="{SITE['locality']}, {SITE['region']}">
 <meta name="geo.position" content="{SITE['lat']};{SITE['lng']}">
@@ -133,7 +133,7 @@ def head(title, desc, depth, canonical, *, lang="el", alt=None, jsonld=None,
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{SITE['domain']}/{canonical.lstrip('/')}">
 <meta property="og:image" content="{SITE['domain']}/{og_image}">
-<meta property="og:image:alt" content="{SITE['name']} — ποδολογικό ιατρείο, Περαία Θεσσαλονίκης">
+<meta property="og:image:alt" content="{SITE['name']} — ποδολογικό κέντρο, Περαία Θεσσαλονίκης">
 <meta property="place:location:latitude" content="{SITE['lat']}">
 <meta property="place:location:longitude" content="{SITE['lng']}">
 <meta property="business:contact_data:locality" content="{SITE['locality']}">
@@ -147,7 +147,7 @@ def head(title, desc, depth, canonical, *, lang="el", alt=None, jsonld=None,
 <link rel="apple-touch-icon" href="{asset(depth, "assets/img/favicon-144.png")}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Commissioner:wght@300..700&amp;family=GFS+Didot&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@300..800&amp;display=swap">
 <link rel="stylesheet" href="{asset(depth, "assets/css/enso.css")}">
 <script>document.documentElement.className+=" js";</script>
 {ld}</head>"""
@@ -280,18 +280,20 @@ def footer(depth, lang="el"):
     if lang == "en":
         col1 = "".join(f'<li><a href="{b}en/{s}/">{n}</a></li>' for s, n in EN_NAV[1:4])
         col2 = "".join(f'<li><a href="{b}en/{s}/">{n}</a></li>' for s, n in EN_NAV[4:])
-        addr = SITE["address_en"]
+        addr, addr2 = SITE["address_en"], SITE["address_athens_en"]
+        city1, city2 = "Thessaloniki", "Athens"
     else:
         col1 = "".join(f'<li><a href="{b}pathiseis/{c["slug"]}/">{c["title"]}</a></li>' for c in CONDITIONS)
         col2 = "".join(f'<li><a href="{b}ypiresies/{x["slug"]}/">{x["title"]}</a></li>' for x in TREATMENTS)
-        addr = SITE["address"]
+        addr, addr2 = SITE["address"], SITE["address_athens"]
+        city1, city2 = "Θεσσαλονίκη", "Αθήνα"
     h1, h2 = t["conditions"], t["treatments"]
     return f"""<footer class="footer">
   <div class="wrap">
     <div class="footer__grid">
       <div class="footer__brand">
         <img src="{asset(depth, "assets/img/logo-light.svg")}" alt="{SITE['name']}" width="196" height="61" loading="lazy">
-        <p class="small" style="margin-top:1.1rem;max-width:34ch;color:#9cc3ce">{t['tagline']}</p>
+        <p class="small" style="margin-top:1.1rem;max-width:34ch;color:#9dc0de">{t['tagline']}</p>
         <div class="socials" style="margin-top:1.5rem">
           <a href="{SITE['social']['facebook']}" rel="noopener" target="_blank" aria-label="Facebook">{I['fb']}</a>
           <a href="{SITE['social']['tiktok']}" rel="noopener" target="_blank" aria-label="TikTok">{I['tiktok']}</a>
@@ -302,9 +304,12 @@ def footer(depth, lang="el"):
       <div>
         <h4>{t['contact']}</h4>
         <ul style="margin-bottom:1.6rem">
-          <li><a href="{SITE['map']}" rel="noopener" target="_blank">{addr}, {SITE['postcode']}</a></li>
-          <li><a href="tel:{SITE['phone_href']}">{SITE['phone']}</a></li>
-          <li><a href="tel:{SITE['phone_alt_href']}">{SITE['phone_alt']}</a></li>
+          <li class="footer__place"><b>{city1}</b>
+            <a href="{SITE['map']}" rel="noopener" target="_blank">{addr}, {SITE['postcode']}</a>
+            <a href="tel:{SITE['phone_href']}">{SITE['phone']}</a></li>
+          <li class="footer__place"><b>{city2}</b>
+            <a href="{SITE['map_athens']}" rel="noopener" target="_blank">{addr2}</a>
+            <span><a href="tel:{SITE['phone_alt_href']}">{SITE['phone_alt']}</a> · <a href="tel:{SITE['phone_mob_href']}">{SITE['phone_mob']}</a></span></li>
           <li><a href="mailto:{SITE['email']}">{SITE['email']}</a></li>
         </ul>
         <h4>{t['hours']}</h4>
@@ -380,7 +385,7 @@ FOOT_SVG = """<svg class="anatomy__svg" viewBox="0 0 680 560" role="img"
   aria-label="Σχηματική πλάγια τομή του άκρου ποδός: νύχι μεγάλου δακτύλου, πρόσθιο πέλμα, πτέρνα, δέρμα με τα νεύρα και τα αγγεία του">
   <defs>
     <linearGradient id="tissue" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#e6f3f6"/><stop offset="1" stop-color="#c3dfe7"/>
+      <stop offset="0" stop-color="#e8f2fb"/><stop offset="1" stop-color="#c5dcf0"/>
     </linearGradient>
     <linearGradient id="skinGrad" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#fdf1e8"/><stop offset="1" stop-color="#f6e0d1"/>
@@ -388,8 +393,8 @@ FOOT_SVG = """<svg class="anatomy__svg" viewBox="0 0 680 560" role="img"
   </defs>
 
   <!-- Leg above the ankle, cut off, sitting behind the foot. -->
-  <path d="M404 168h88v168h-88z" fill="#eef7f9"/>
-  <path d="M404 168v150M492 168v152" fill="none" stroke="#dbeaef" stroke-width="2"/>
+  <path d="M404 168h88v168h-88z" fill="#eef5fc"/>
+  <path d="M404 168v150M492 168v152" fill="none" stroke="#dae7f3" stroke-width="2"/>
 
   <!-- The foot itself: dorsum from the toe up to the ankle, down the achilles,
        round the heel, then along the sole with the arch lifting in the middle. -->
@@ -402,8 +407,8 @@ FOOT_SVG = """<svg class="anatomy__svg" viewBox="0 0 680 560" role="img"
         fill="url(#skinGrad)" stroke="#e0c6b3" stroke-width="2"/>
 
   <!-- Ground and skeletal hints. -->
-  <path d="M62 440h556" stroke="#d5e5ea" stroke-width="4" stroke-linecap="round"/>
-  <g stroke="#e6f0f3" stroke-width="9" stroke-linecap="round" fill="none">
+  <path d="M62 440h556" stroke="#d2e4f2" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#e6eef7" stroke-width="9" stroke-linecap="round" fill="none">
     <path d="M196 408l108-58"/><path d="M214 416l104-50"/><path d="M238 420l96-42"/>
   </g>
   <ellipse cx="452" cy="392" rx="46" ry="34" fill="#f2e2d4" opacity=".7"/>
@@ -414,7 +419,7 @@ FOOT_SVG = """<svg class="anatomy__svg" viewBox="0 0 680 560" role="img"
     <g class="organ">
       <ellipse class="hot__shape" cx="118" cy="392" rx="22" ry="12"
                transform="rotate(-24 118 392)" fill="url(#tissue)"
-               stroke="#8fb6c2" stroke-width="1.8"/>
+               stroke="#8fb0d0" stroke-width="1.8"/>
     </g>
     <g class="flaw">
       <path d="M132 400c8 6 12 13 12 20" fill="none" stroke="#c2544f"
@@ -467,7 +472,7 @@ FOOT_SVG = """<svg class="anatomy__svg" viewBox="0 0 680 560" role="img"
       <path class="hot__shape" d="M448 186c-6 62-30 112-70 150-40 38-96 62-166 74"
             fill="none" stroke="url(#tissue)" stroke-width="8" stroke-linecap="round"/>
       <path d="M448 186c-6 62-30 112-70 150-40 38-96 62-166 74"
-            fill="none" stroke="#8fb6c2" stroke-width="1.4" opacity=".6" stroke-dasharray="5 7"/>
+            fill="none" stroke="#8fb0d0" stroke-width="1.4" opacity=".6" stroke-dasharray="5 7"/>
     </g>
     <g class="flaw">
       <path d="M330 356c-36 30-76 48-118 54" fill="none" stroke="#c2544f"
