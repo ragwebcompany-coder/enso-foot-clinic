@@ -564,7 +564,8 @@ def build_home():
     # The entry screen the clinic asked for: the mark alone on the deep ground,
     # the name, and «Πατήστε εδώ». One tap opens the site. It shows once per
     # browser session; the inline line below hides it before first paint on a
-    # return visit so there is no flash.
+    # return visit so there is no flash. Behind it the page starts straight on
+    # the conditions — the lockup is the gate, it is not repeated.
     body = f"""<button class="gate" type="button" aria-label="Είσοδος στον ιστότοπο του Ensō Foot Clinic">
   <span class="hero__aurora" aria-hidden="true"><i></i><i></i><i></i></span>
   <span class="hero__mesh" aria-hidden="true"></span>
@@ -574,32 +575,13 @@ def build_home():
   <span class="gate__cta">Πατήστε εδώ {I['right']}</span>
 </button>
 <script>try{{if(sessionStorage.getItem("enso-gate"))document.documentElement.classList.add("gate-done")}}catch(e){{}}</script>
-<section class="hero hero--deep hero--lockup">
-  <div class="hero__aurora" aria-hidden="true"><i></i><i></i><i></i></div>
-  <div class="hero__mesh" aria-hidden="true"></div>
-  <div class="wrap hero__lockup">
-    {img("enso-badge-light.svg", "Το σήμα ensō του Ensō Foot Clinic", 400, 400, 0,
-         cls="hero__mark-img", priority=True)}
-    <h1 class="hero__wordmark">Ensō <span>Foot Clinic</span></h1>
-    <p class="hero__descriptor"><span>Christodoulou Elpiniki</span><i aria-hidden="true"></i><span>Holistic Podology</span></p>
-    <div class="hero__actions">
-      <a class="btn btn--light" href="tel:{SITE['phone_href']}">Κλείστε ραντεβού</a>
-      <a class="btn btn--outline-light" href="ypiresies/">Οι υπηρεσίες μας</a>
-    </div>
-    <a class="hero__scroll" href="#odigos" aria-label="Δείτε περισσότερα">
-      <span class="hero__scroll-mouse"></span>{I['down']}</a>
-  </div>
-  <div class="wrap">
-    <ul class="creds__list creds__list--deep">{creds_html}</ul>
-  </div>
-</section>
 
-<section class="section">
+<section class="section" id="pathiseis">
   <div class="wrap">
     <div class="sec-head sec-head--split">
       <div class="stack">
         <p class="eyebrow">Παθήσεις</p>
-        <h2>Πού μπορούμε να δώσουμε λύσεις.</h2>
+        <h1>Πού μπορούμε να δώσουμε λύσεις.</h1>
       </div>
       <p class="lede">Διαβάστε τι είναι, γιατί εμφανίζεται και τι γίνεται γι' αυτό —
         γραμμένο ώστε να το καταλάβετε πριν μπείτε στο ποδολογικό κέντρο.</p>
@@ -608,6 +590,10 @@ def build_home():
     <p style="margin-top:2rem"><a class="link-more" href="pathiseis/">Όλες οι παθήσεις</a></p>
   </div>
 </section>
+
+<div class="creds">
+  <div class="wrap"><ul class="creds__list">{creds_html}</ul></div>
+</div>
 
 {anatomy_section(d)}
 
@@ -709,7 +695,7 @@ def build_home():
          desc="Ποδολογικό κέντρο στην Περαία, από το 2002. Διαβητικό πόδι, κάλοι και "
               "τύλοι, ραγάδες πτέρνας, είσφρηση όνυχος με ανώδυνη ορθονυχία.",
          depth=0, body=body, jsonld=ld, alt=("en", "en/"),
-         body_class="page--home", over_dark=True)
+         body_class="page--home")
 
 
 def article_title(slug):

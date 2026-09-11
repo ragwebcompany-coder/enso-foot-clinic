@@ -1141,24 +1141,6 @@ body:has(.cookies.is-shown) .totop { bottom: 15rem; }
 
 /* The header floats over the band until the page scrolls past it. */
 .brand__light { display: none; }
-.page--home .header:not(.is-stuck) {
-  background: transparent; border-bottom-color: transparent;
-  backdrop-filter: none; -webkit-backdrop-filter: none;
-}
-.page--home .header:not(.is-stuck) .brand__dark { display: none; }
-.page--home .header:not(.is-stuck) .brand__light { display: block; }
-.page--home .header:not(.is-stuck) .nav__link,
-.page--home .header:not(.is-stuck) .icon-btn,
-.page--home .header:not(.is-stuck) .lang { color: #fff; }
-.page--home .header:not(.is-stuck) .lang { border-color: rgba(255,255,255,.3); }
-.page--home .header:not(.is-stuck) .nav__link:hover,
-.page--home .header:not(.is-stuck) .lang:hover { color: var(--teal-300); }
-.page--home .header:not(.is-stuck) .burger span { background: #fff; }
-.page--home .header:not(.is-stuck) .btn--sm {
-  background: #fff; color: var(--deep);
-}
-.page--home .header:not(.is-stuck) .btn--sm:hover { background: var(--teal-300); }
-.page--home .header:not(.is-stuck) :focus-visible { outline-color: #fff; }
 
 /* A pull-quote panel on the deep ground, used for the seminars door. */
 .panel {
@@ -1201,53 +1183,6 @@ body:has(.cookies.is-shown) .totop { bottom: 15rem; }
   .hero__pane { max-width: 420px; }
 }
 
-/* The homepage opens on the lockup the clinic asked for: the mark, the name,
-   the practitioner and «Holistic Podology» — centred on the deep ground, the
-   same at every width. Nothing else competes with it above the fold. */
-.hero--lockup { text-align: center; }
-.hero--lockup .hero__lockup {
-  position: relative; z-index: 2;
-  display: grid; justify-items: center; gap: 0;
-  padding-block: clamp(1rem, 3vw, 2.5rem) 0;
-}
-.hero__mark-img {
-  width: min(56vw, 300px); height: auto;
-  filter: drop-shadow(0 24px 60px rgba(0,0,0,.35));
-}
-.hero--lockup .hero__wordmark {
-  font-family: var(--display); font-weight: 400; letter-spacing: -.01em;
-  font-size: clamp(2.5rem, 1.4rem + 5.2vw, 4.8rem); line-height: 1.02;
-  color: #fff; margin-top: .6rem; max-width: none;
-}
-.hero--lockup .hero__wordmark span { font-weight: 700; color: var(--teal-300); }
-.hero__descriptor {
-  display: flex; align-items: center; justify-content: center; flex-wrap: wrap;
-  gap: .55rem .9rem; margin-top: 1.1rem;
-  font-size: clamp(.7rem, .62rem + .4vw, .84rem); font-weight: 500;
-  letter-spacing: .24em; text-transform: uppercase; color: var(--teal-300);
-}
-.hero__descriptor i { display: block; width: 2.2rem; height: 1px; background: rgba(163,217,244,.5); }
-.hero--lockup .hero__actions { justify-content: center; margin-top: 2.2rem; }
-.hero--lockup .hero__actions .btn { letter-spacing: .08em; text-transform: uppercase; font-size: .8rem; font-weight: 700; }
-.hero__scroll {
-  display: grid; justify-items: center; gap: .5rem;
-  margin-top: 2.4rem; color: var(--teal-300); text-decoration: none; opacity: .85;
-}
-.hero__scroll-mouse {
-  width: 22px; height: 34px; border: 1.5px solid currentColor;
-  border-radius: 12px; position: relative;
-}
-.hero__scroll-mouse::after {
-  content: ""; position: absolute; left: 50%; top: 7px; translate: -50% 0;
-  width: 3px; height: 7px; border-radius: 2px; background: currentColor;
-  animation: scroll-hint 1.8s var(--ease) infinite;
-}
-@keyframes scroll-hint { 0%,100% { top: 7px; opacity: 1 } 60% { top: 17px; opacity: .25 } }
-@media (max-width: 720px) {
-  .hero--lockup .hero__actions { display: grid; width: 100%; gap: .7rem; }
-  .hero--lockup .hero__actions .btn { width: 100%; justify-content: center; }
-  .creds__list--deep { margin-top: 2.4rem; padding-top: 1.5rem; }
-}
 
 /* ══════════════════════════════════════════════════════════════════════════
    Entry screen (homepage)
@@ -1306,3 +1241,7 @@ body:has(.cookies.is-shown) .totop { bottom: 15rem; }
   0%, 100% { box-shadow: 0 0 0 0 rgba(163,217,244,.45); }
   60% { box-shadow: 0 0 0 16px rgba(163,217,244,0); }
 }
+
+/* The homepage starts straight on the conditions, right under the header. */
+.page--home #pathiseis { padding-top: clamp(2.5rem, 6vw, 5rem); }
+.page--home #pathiseis h1 { font-size: clamp(2rem, 1.4rem + 2.6vw, 3.4rem); }
