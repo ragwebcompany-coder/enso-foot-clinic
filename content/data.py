@@ -29,6 +29,16 @@ SITE = {
     "address_en": "Romanou 11, Peraia, Thessaloniki (3rd floor)",
     "address_athens": "Ελ. Βενιζέλου 180, Καλλιθέα",
     "address_athens_en": "El. Venizelou 180, Kallithea, Athens",
+    "postcode_athens": "176 75",
+    # The pin of the Google Business Profile «Ensō Foot Clinic Athens» (read from
+    # the Maps embed, Sept 2026); 11888.gr lists the same address, ΤΚ 17675.
+    "lat_athens": 37.9541154,
+    "lng_athens": 23.6989612,
+    # The embeds search for the business by name + address, so Google shows its
+    # own listing pin (the Business Profile card), not a bare street point.
+    "embed_athens": "https://www.google.com/maps?q=Ens%C5%8D%20Foot%20Clinic%2C%20%CE%9B%CE%B5%CF%89%CF%86.%20%CE%95%CE%BB.%20%CE%92%CE%B5%CE%BD%CE%B9%CE%B6%CE%AD%CE%BB%CE%BF%CF%85%20180%2C%20%CE%9A%CE%B1%CE%BB%CE%BB%CE%B9%CE%B8%CE%AD%CE%B1%20176%2075&z=16&output=embed&hl=el",
+    "embed": "https://www.google.com/maps?q=Enso%20Foot%20Clinic%20Christodoulou%20Elpiniki%2C%20%CE%A1%CF%89%CE%BC%CE%B1%CE%BD%CE%BF%CF%8D%2011%2C%20%CE%A0%CE%B5%CF%81%CE%B1%CE%AF%CE%B1%20570%2019&z=16&output=embed&hl=el",
+    "map_athens_full": "https://www.google.com/maps/search/?api=1&query=Ens%C5%8D%20Foot%20Clinic%2C%20%CE%9B%CE%B5%CF%89%CF%86.%20%CE%95%CE%BB.%20%CE%92%CE%B5%CE%BD%CE%B9%CE%B6%CE%AD%CE%BB%CE%BF%CF%85%20180%2C%20%CE%9A%CE%B1%CE%BB%CE%BB%CE%B9%CE%B8%CE%AD%CE%B1%20176%2075",
     "map_athens": "https://maps.google.com/?q=%CE%95%CE%BB.%20%CE%92%CE%B5%CE%BD%CE%B9%CE%B6%CE%AD%CE%BB%CE%BF%CF%85%20180%2C%20%CE%9A%CE%B1%CE%BB%CE%BB%CE%B9%CE%B8%CE%AD%CE%B1%2C%20%CE%91%CE%B8%CE%AE%CE%BD%CE%B1",
     "postcode": "570 19",
     "map": "https://maps.google.com/?q=%CE%A1%CF%89%CE%BC%CE%B1%CE%BD%CE%BF%CF%8D+11%2C+%CE%A0%CE%B5%CF%81%CE%B1%CE%AF%CE%B1%2C+Greece",
@@ -39,8 +49,10 @@ SITE = {
              "%CE%A0%CE%B5%CF%81%CE%B1%CE%AF%CE%B1%2C+Greece&ll=40.5067925,22.9252194&navigate=yes"),
     "moovit": ("https://moovit.com/?to=%CE%A1%CF%89%CE%BC%CE%B1%CE%BD%CE%BF%CF%8D+11%2C+"
                "%CE%A0%CE%B5%CF%81%CE%B1%CE%AF%CE%B1%2C+Greece&tll=40.5067925_22.9252194&metroId=1"),
-    "lat": 40.5067925,
-    "lng": 22.9252194,
+    # The pin of the Google Business Profile «Enso Foot Clinic Christodoulou
+    # Elpiniki» (read from the Maps embed, Sept 2026).
+    "lat": 40.5067435,
+    "lng": 22.9252016,
     "region_iso": "GR-B",            # Κεντρική Μακεδονία, ISO 3166-2
     "locality": "Περαία",
     "locality_en": "Peraia",

@@ -308,7 +308,7 @@ def footer(depth, lang="el"):
             <a href="{SITE['map']}" rel="noopener" target="_blank">{addr}, {SITE['postcode']}</a>
             <a href="tel:{SITE['phone_href']}">{SITE['phone']}</a></li>
           <li class="footer__place"><b>{city2}</b>
-            <a href="{SITE['map_athens']}" rel="noopener" target="_blank">{addr2}</a>
+            <a href="{SITE['map_athens']}" rel="noopener" target="_blank">{addr2}, {SITE['postcode_athens']}</a>
             <span><a href="tel:{SITE['phone_alt_href']}">{SITE['phone_alt']}</a> · <a href="tel:{SITE['phone_mob_href']}">{SITE['phone_mob']}</a></span></li>
           <li><a href="mailto:{SITE['email']}">{SITE['email']}</a></li>
         </ul>

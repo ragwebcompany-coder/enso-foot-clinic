@@ -880,6 +880,14 @@ a.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border
 .stack { display: grid; gap: 1.15rem; align-content: start; justify-items: start; }
 .pill-row { display: flex; flex-wrap: wrap; gap: .45rem; }
 .map { width: 100%; height: clamp(300px, 45vh, 460px); border: 0; border-radius: var(--r-lg); }
+/* One card per centre: the map, then the address and the way-finding links. */
+.mapcard { margin: 0; display: grid; gap: .8rem; }
+.mapcard .map { height: clamp(240px, 32vh, 320px); }
+.mapcard figcaption { display: grid; gap: .6rem; }
+.mapcard figcaption > div:first-child { display: grid; gap: .1rem; }
+.mapcard figcaption b { font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); }
+.mapcard figcaption span { font-size: .95rem; color: var(--ink); }
+.mapcard + .mapcard { padding-top: 1rem; border-top: 1px solid var(--line-soft); }
 .contact-grid { display: grid; gap: clamp(1.5rem, 4vw, 3rem); align-items: start; }
 @media (min-width: 940px) { .contact-grid { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); } }
 .info-list { display: grid; gap: 1.35rem; list-style: none; }

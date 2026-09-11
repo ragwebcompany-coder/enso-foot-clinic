@@ -218,6 +218,7 @@ def _address_athens():
             "streetAddress": "Ελ. Βενιζέλου 180",
             "addressLocality": "Καλλιθέα",
             "addressRegion": "Αττική",
+            "postalCode": SITE["postcode_athens"],
             "addressCountry": "GR"}
 
 
@@ -270,6 +271,8 @@ def clinic_ld():
         "hasMap": SITE["map_full"],
         "location": {"@type": "Place", "name": "Ensō Foot Clinic — Αθήνα",
                      "address": _address_athens(), "hasMap": SITE["map_athens"],
+                     "geo": {"@type": "GeoCoordinates", "latitude": SITE["lat_athens"],
+                             "longitude": SITE["lng_athens"]},
                      "telephone": SITE["phone_alt_href"]},
         "areaServed": _area_served(),
         "medicalSpecialty": "Podiatric",
@@ -1524,7 +1527,7 @@ def build_contact():
             <a href="{SITE['map']}" target="_blank" rel="noopener">{SITE['address']}, {SITE['postcode']} {SITE['locality']}</a></div></li>
           <li>{I['phone']}<div><b>Τηλέφωνο Θεσσαλονίκης</b><a href="tel:{SITE['phone_href']}">{SITE['phone']}</a></div></li>
           <li>{I['pin']}<div><b>Αθήνα</b>
-            <a href="{SITE['map_athens']}" target="_blank" rel="noopener">{SITE['address_athens']}</a></div></li>
+            <a href="{SITE['map_athens']}" target="_blank" rel="noopener">{SITE['address_athens']}, {SITE['postcode_athens']}</a></div></li>
           <li>{I['phone']}<div><b>Τηλέφωνο Αθήνας</b>
             <a href="tel:{SITE['phone_alt_href']}">{SITE['phone_alt']}</a> ·
             <a href="tel:{SITE['phone_mob_href']}">{SITE['phone_mob']}</a></div></li>
@@ -1532,16 +1535,30 @@ def build_contact():
           <li>{I['clock']}<div style="width:100%"><b>Ωράριο</b><div style="margin-top:.35rem">{hours}</div></div></li>
         </ul>
         <a class="btn btn--block" href="tel:{SITE['phone_href']}">{I['phone']} Καλέστε για ραντεβού</a>
-        <div class="pill-row">
-          <a class="chip" href="{SITE['map_full']}" target="_blank" rel="noopener">{I['pin']} Google Maps</a>
-          <a class="chip" href="{SITE['waze']}" target="_blank" rel="noopener">Waze</a>
-          <a class="chip" href="{SITE['moovit']}" target="_blank" rel="noopener">Moovit</a>
-        </div>
       </div>
       <div class="stack" style="justify-items:stretch">
-        <iframe class="map" loading="lazy" title="Χάρτης — Ensō Foot Clinic, Ρωμανού 11, Περαία"
-          referrerpolicy="no-referrer-when-downgrade"
-          src="https://www.google.com/maps?q={SITE['lat']},{SITE['lng']}&amp;z=16&amp;output=embed"></iframe>
+        <figure class="mapcard">
+          <iframe class="map" loading="lazy" title="Χάρτης — Ensō Foot Clinic, Ρωμανού 11, Περαία Θεσσαλονίκης"
+            referrerpolicy="no-referrer-when-downgrade" src="{SITE['embed'].replace('&', '&amp;')}"></iframe>
+          <figcaption>
+            <div><b>Θεσσαλονίκη</b><span>{SITE['address']}, {SITE['postcode']} {SITE['locality']}</span></div>
+            <div class="pill-row">
+              <a class="chip" href="{SITE['map_full']}" target="_blank" rel="noopener">{I['pin']} Google Maps</a>
+              <a class="chip" href="{SITE['waze']}" target="_blank" rel="noopener">Waze</a>
+              <a class="chip" href="{SITE['moovit']}" target="_blank" rel="noopener">Moovit</a>
+            </div>
+          </figcaption>
+        </figure>
+        <figure class="mapcard">
+          <iframe class="map" loading="lazy" title="Χάρτης — Ensō Foot Clinic, Λεωφ. Ελ. Βενιζέλου 180, Καλλιθέα Αθήνας"
+            referrerpolicy="no-referrer-when-downgrade" src="{SITE['embed_athens'].replace('&', '&amp;')}"></iframe>
+          <figcaption>
+            <div><b>Αθήνα</b><span>{SITE['address_athens']}, {SITE['postcode_athens']}</span></div>
+            <div class="pill-row">
+              <a class="chip" href="{SITE['map_athens_full']}" target="_blank" rel="noopener">{I['pin']} Google Maps</a>
+            </div>
+          </figcaption>
+        </figure>
         <div class="note">
           <b>Πριν το ραντεβού</b>
           <span>Φέρτε τα παπούτσια που φοράτε καθημερινά. Δείχνουν σε ένα λεπτό αυτό που η
