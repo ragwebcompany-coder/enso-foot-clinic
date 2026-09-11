@@ -723,12 +723,43 @@
     });
   }
 
+  /* ── Entry screen ──────────────────────────────────────────────────── */
+  /* The homepage opens on the mark and «Πατήστε εδώ». One tap (or Enter, the
+     gate is a button and takes focus) fades it out; sessionStorage keeps it
+     from coming back while the tab lives. */
+  function gate() {
+    var g = $(".gate");
+    if (!g) return;
+    var root = document.documentElement;
+    if (root.classList.contains("gate-done")) { g.remove(); return; }
+    root.classList.add("gate-open");
+    try { g.focus({ preventScroll: true }); } catch (e) {}
+    var opened = false;
+    function open() {
+      if (opened) return;
+      opened = true;
+      try { sessionStorage.setItem("enso-gate", "1"); } catch (e) {}
+      g.classList.add("is-leaving");
+      root.classList.remove("gate-open");
+      var done = function () {
+        g.remove();
+        root.classList.add("gate-done");
+        document.dispatchEvent(new Event("enso:gate"));
+      };
+      if (reduced) done(); else setTimeout(done, 750);
+    }
+    g.addEventListener("click", open);
+  }
+
   /* ── Cookie notice ─────────────────────────────────────────────────── */
   function cookies() {
     var box = $(".cookies");
     if (!box) return;
     if (store("enso-consent")) return;
-    setTimeout(function () { box.classList.add("is-shown"); }, 900);
+    var show = function () { setTimeout(function () { box.classList.add("is-shown"); }, 900); };
+    // Not on top of the entry screen: wait until it has been opened.
+    if ($(".gate")) document.addEventListener("enso:gate", show, { once: true });
+    else show();
     function save(value) {
       store("enso-consent", value);
       box.classList.remove("is-shown");
@@ -740,7 +771,7 @@
   }
 
   function init() {
-    header(); reveal(); counters(); search(); guide(); anatomy(); compare();
+    gate(); header(); reveal(); counters(); search(); guide(); anatomy(); compare();
     tracker(); faq(); doc(); gallery(); articleFilter(); chrome(); cookies();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);

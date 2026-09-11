@@ -1248,3 +1248,61 @@ body:has(.cookies.is-shown) .totop { bottom: 15rem; }
   .hero--lockup .hero__actions .btn { width: 100%; justify-content: center; }
   .creds__list--deep { margin-top: 2.4rem; padding-top: 1.5rem; }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Entry screen (homepage)
+   The whole screen is one button: the mark, the name, «Πατήστε εδώ». It sits
+   over the page, fades out on tap, and never returns within the session
+   (html.gate-done is set before first paint on a return visit).
+   ══════════════════════════════════════════════════════════════════════════ */
+.gate {
+  position: fixed; inset: 0; z-index: 200; isolation: isolate; overflow: hidden;
+  display: grid; justify-items: center; align-content: center; gap: 0;
+  width: 100%; padding: var(--pad-x); text-align: center;
+  background: var(--abyss); color: #fff; font: inherit; cursor: pointer;
+  transition: opacity .75s var(--ease), visibility .75s;
+}
+.gate:focus-visible { outline: none; }
+.gate:focus-visible .gate__cta { outline: 2px solid #fff; outline-offset: 4px; }
+.gate.is-leaving { opacity: 0; visibility: hidden; pointer-events: none; }
+.gate-done .gate { display: none; }
+.gate-open { overflow: hidden; }
+.gate > .hero__aurora { opacity: .55; }
+.gate__mark {
+  position: relative; z-index: 2; width: min(60vw, 340px); height: auto;
+  filter: drop-shadow(0 24px 60px rgba(0,0,0,.4));
+  animation: gate-in 1.1s var(--ease-out) both;
+}
+.gate__name {
+  position: relative; z-index: 2; margin-top: .5rem;
+  font-family: var(--display); font-weight: 400; letter-spacing: -.01em;
+  font-size: clamp(2.2rem, 1.3rem + 4.6vw, 4.2rem); line-height: 1.05;
+  animation: gate-in 1.1s var(--ease-out) both;
+}
+.gate__name b { font-weight: 700; color: var(--teal-300); }
+.gate__sub {
+  position: relative; z-index: 2; margin-top: .9rem;
+  font-size: clamp(.66rem, .58rem + .4vw, .8rem); font-weight: 500;
+  letter-spacing: .24em; text-transform: uppercase; color: var(--teal-300);
+}
+.gate__sub i { font-style: normal; padding-inline: .5em; }
+@media (max-width: 480px) {
+  .gate__sub { display: grid; gap: .35rem; }
+  .gate__sub i { display: none; }
+}
+.gate__cta {
+  position: relative; z-index: 2; margin-top: 2.6rem;
+  display: inline-flex; align-items: center; gap: .55rem;
+  padding: .95rem 1.9rem; border: 1px solid rgba(255,255,255,.5); border-radius: 100px;
+  font-size: .8rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  transition: background-color .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
+  animation: gate-pulse 2.6s 1s ease-in-out infinite;
+}
+.gate__cta svg { transition: transform .25s var(--ease); }
+.gate:hover .gate__cta { background: #fff; color: var(--deep); border-color: #fff; }
+.gate:hover .gate__cta svg { transform: translateX(3px); }
+@keyframes gate-in { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes gate-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(163,217,244,.45); }
+  60% { box-shadow: 0 0 0 16px rgba(163,217,244,0); }
+}
