@@ -352,6 +352,14 @@ def seo_title(text, suffix=" | Ensō Foot Clinic", cap=70):
     return text if len(text) + len(suffix) > cap else text + suffix
 
 
+def svg_box(name):
+    """The intrinsic size of a generated SVG, read from its viewBox — art.py
+    sizes some of them from the type they contain, so the numbers move."""
+    head = open(os.path.join(OUT, "assets", "img", name), encoding="utf-8").read(400)
+    w, h = re.search(r'viewBox="0 0 ([\d.]+) ([\d.]+)"', head).groups()
+    return round(float(w)), round(float(h))
+
+
 def img(name, alt, w, h, depth, *, cls="", loading="lazy", priority=False):
     """SVG is served as-is; raster art gets a WebP source with the original as fallback."""
     stem, ext = name.rsplit(".", 1)
@@ -366,6 +374,26 @@ def img(name, alt, w, h, depth, *, cls="", loading="lazy", priority=False):
     return (f'<picture><source srcset="{webp}" type="image/webp">'
             f'<img src="{src}" alt="{alt}" width="{w}" height="{h}"'
             f'{load}{extra}{klass}></picture>')
+
+
+def gate_lockup():
+    """The entry screen's lockup, in two cuts.
+
+    Side by side the mark has to shrink to about 190px on a 390px screen, so
+    phones get a stacked cut where it is more than twice that. Both carry their
+    own copy of the mark, ~190KB each, and a display:none image is still
+    downloaded — so the choice is made with <source media>, where the browser
+    fetches only the one it will use, rather than in CSS.
+    """
+    ww, wh = svg_box("logo-lockup-light.svg")
+    sw, sh = svg_box("logo-lockup-stacked.svg")
+    wide = asset(0, "assets/img/logo-lockup-light.svg")
+    stacked = asset(0, "assets/img/logo-lockup-stacked.svg")
+    return (f'<picture>'
+            f'<source media="(max-width: 719px)" srcset="{stacked}" width="{sw}" height="{sh}">'
+            f'<img class="gate__lockup" src="{wide}" '
+            f'alt="Ensō Foot Clinic — Christodoulou Elpiniki, Holistic Podology" '
+            f'width="{ww}" height="{wh}" fetchpriority="high"></picture>')
 
 
 def crumbs(items, depth, lang="el"):
@@ -593,9 +621,9 @@ def build_home():
         f'<li><b data-count="{a}">{a}</b><span>{b}</span></li>' for a, b in creds)
 
     # The entry screen the clinic asked for: its own logo on the deep ground and
-    # «Πατήστε εδώ». The logo is the clinic's actual lockup from ensofootclinic.gr
-    # with its aqua plate lifted away — she asked for it minimal and transparent,
-    # so it sits directly on the petrol (see lockup_light() in art.py). Mark, name,
+    # «Πατήστε εδώ». The logo is the clinic's lockup rebuilt whole and transparent
+    # — the ensō inside her own file is cropped flat at the bottom, so it cannot
+    # be used without its plate (see lockup_light() in art.py). Mark, name,
     # practitioner and descriptor are all inside the artwork, so nothing is set
     # beside it but the current descriptor line. It is the homepage: it shows every time the
     # page opens, and one tap fades it out. Behind it the page starts straight
@@ -605,9 +633,7 @@ def build_home():
   <span class="hero__aurora" aria-hidden="true"><i></i><i></i><i></i></span>
   <span class="hero__mesh" aria-hidden="true"></span>
   <span class="gate__inner">
-    {img("logo-lockup-light.png", "Ensō Foot Clinic — Christodoulou Elpiniki, Holistic Podology",
-         945, 591, 0, cls="gate__lockup", priority=True)}
-    <span class="gate__sub">Holistic Podology</span>
+    {gate_lockup()}
     <span class="gate__cta">Πατήστε εδώ {I['right']}</span>
   </span>
 </button>

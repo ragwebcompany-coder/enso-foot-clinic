@@ -4,7 +4,7 @@
     python3 enso-new/tools/art.py
 
 Writes into site/assets/img/:
-  · logo.svg / logo-light.svg / logo-light-plain.svg / logo-lockup-light.png
+  · logo.svg / logo-light.svg / logo-light-plain.svg / logo-lockup-light.svg
   · favicon.svg / favicon-144.png / og-enso.png
   · hero-enso.svg / hero-enso-dark.svg / clinic-enso.svg
   · elpiniki-christodoulou.svg
@@ -114,17 +114,32 @@ def hex_rgb(h):
     return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
 
 
-def mark_png(px, light=False):
-    """The mark at `px` square. `light=True` walks the pigment up to the pale end
-    of the palette, so on the deep ground it reads the way the white wordmark
-    beside it does instead of sinking into the navy."""
+def mark_png(px, light=False, tint=False):
+    """The mark at `px` square.
+
+    `light=True` walks the pigment up to the pale end of the palette, so on the
+    deep ground it reads the way the white wordmark beside it does instead of
+    sinking into the navy — the densest paint ends up white.
+
+    `tint=True` does the opposite and is what the entry-screen lockup wants: the
+    dense paint takes the logo's own aqua and only the dry, thin end goes white,
+    so the ring reads as the coloured brush it is on the clinic's card rather
+    than as a pale ghost of it."""
     from PIL import Image
     import numpy as np
-    key = (px, light)
+    key = (px, light, tint)
     if key in _MARK:
         return _MARK[key]
     im = Image.open(MARK).convert("RGBA").resize((px, px), Image.LANCZOS)
-    if light:
+    if tint:
+        a = np.asarray(im).astype(np.float32)
+        rgb, al = a[..., :3], a[..., 3]
+        lum = 0.2126 * rgb[..., 0] + 0.7152 * rgb[..., 1] + 0.0722 * rgb[..., 2]
+        dens = np.clip(1 - (lum - 40) / 175, 0, 1)[..., None] ** 0.7
+        aqua = np.array([hex_rgb(TEAL300)], "float32")
+        im = Image.fromarray(
+            np.dstack([255 - (255 - aqua) * dens, al]).astype("uint8"), "RGBA")
+    elif light:
         a = np.asarray(im).astype(np.float32)
         rgb, al = a[..., :3], a[..., 3]
         lum = 0.2126 * rgb[..., 0] + 0.7152 * rgb[..., 1] + 0.0722 * rgb[..., 2]
@@ -136,13 +151,13 @@ def mark_png(px, light=False):
     return im
 
 
-def _mark_b64(px, light):
+def _mark_b64(px, light, tint=False):
     """Quantised to 128 colours: the granulation survives, the bytes roughly
     third — which matters, because every lockup carries its own copy inline."""
     from PIL import Image
-    key = ("b64", px, light)
+    key = ("b64", px, light, tint)
     if key not in _MARK:
-        q = mark_png(px, light).quantize(colors=128, method=Image.FASTOCTREE,
+        q = mark_png(px, light, tint).quantize(colors=128, method=Image.FASTOCTREE,
                                          dither=Image.FLOYDSTEINBERG)
         buf = io.BytesIO()
         q.save(buf, "PNG", optimize=True)
@@ -150,7 +165,7 @@ def _mark_b64(px, light):
     return _MARK[key]
 
 
-def mark_image(cx, cy, size, *, light=False, px=None):
+def mark_image(cx, cy, size, *, light=False, tint=False, px=None):
     """The mark centred on (cx, cy) in a `size` square. Embedded rather than
     linked: these SVGs are loaded through <img>, where an external reference
     would never resolve."""
@@ -158,7 +173,7 @@ def mark_image(cx, cy, size, *, light=False, px=None):
     h = size / 2
     return (f'<image x="{cx - h:.1f}" y="{cy - h:.1f}" '
             f'width="{size:.1f}" height="{size:.1f}" '
-            f'href="data:image/png;base64,{_mark_b64(px, light)}"/>')
+            f'href="data:image/png;base64,{_mark_b64(px, light, tint)}"/>')
 
 
 # ── Palette of the mark ──────────────────────────────────────────────────────
@@ -433,47 +448,99 @@ def enso_badge_light():
 </svg>"""
 
 
-# ── The clinic's own lockup, lifted off its plate ────────────────────────────
+# ── The clinic's own lockup, rebuilt whole ───────────────────────────────────
 # brand/enso-lockup-source.png is the artwork exactly as the clinic uses it:
 # mark, «Ensō Foot Clinic», the practitioner's name and the descriptor, printed
-# in navy and white on a flat aqua plate. The entry screen wants it transparent
-# and minimal, which the file cannot be as it stands — lift the plate away and
-# the navy half of the wordmark is left sitting invisibly on the deep ground.
+# in navy and white on a flat aqua plate. The entry screen wants it transparent,
+# and the file cannot give that — not because of the plate, but because the
+# ensō inside it is **cropped**. Its ink runs to row 0 and to the last row, and
+# out to both side edges: the circle was trimmed to fit the card. On the plate
+# nobody sees it, because the cut lands exactly where the card ends. Lift the
+# plate away and the bottom of the brush is a straight slice.
 #
-# So the plate becomes alpha, and ink is re-mapped by tone rather than by hue:
-# what was dark (the navy wordmark, the loaded brush) takes the logo's own aqua,
-# what was light (the white wordmark, the dry brush) takes a softened white. The
-# two-tone split of the original survives, the letterforms are untouched, and
-# both halves read on the petrol. The light end is compressed because pure white
-# turns the dry-brush texture into speckle at this size.
-LOCKUP = os.path.join(ROOT, "brand", "enso-lockup-source.png")
-LOCKUP_PLATE = (137.0, 209.0, 219.0)     # the aqua the artwork is printed on
-LOCKUP_PALE = (214.0, 240.0, 245.0)
+# So the lockup is rebuilt rather than keyed: the mark comes from
+# brand/enso-mark.png, which is the same ensō complete and already cut out, and
+# the wordmark is re-set in the site's own face. The layout is not invented —
+# the four lines keep the position, right edge and relative size they have in
+# the clinic's file, measured off it (cap heights 0.115h / 0.146h / 0.064h /
+# 0.085h, baselines 0.296h / 0.633h / 0.770h / 0.904h, right edge 0.94w).
+LOCKUP_H = 620
+_CAP = 0.715          # Manrope cap height, in em
+
+# The four lines, as (text, cap height in units of H, baseline in units of H,
+# weight, colour key) — the proportions read off the clinic's own file.
+_LOCKUP_LINES = [
+    ("Ensō",                   0.115, 0.296, 400, "aqua"),
+    ("Foot Clinic",            0.146, 0.633, 700, "white"),
+    ("Christodoulou Elpiniki", 0.064, 0.770, 700, "aqua"),
+    ("Holistic Podology",      0.085, 0.904, 700, "white"),
+]
 
 
 def lockup_light():
-    from PIL import Image
-    import numpy as np
-    im = np.asarray(Image.open(LOCKUP).convert("RGB")).astype(np.float32)
-    plate = np.array(LOCKUP_PLATE)
-    aqua = np.array(hex_rgb(TEAL300), dtype=np.float32)
-    pale = np.array(LOCKUP_PALE)
-    plate_lum = float(0.2126 * plate[0] + 0.7152 * plate[1] + 0.0722 * plate[2])
+    """The full lockup for a deep ground: the complete mark, transparent, with
+    the two tones of the original kept — «Ensō» and the practitioner's name in
+    the logo's own aqua, «Foot Clinic» and the descriptor in white.
 
-    # A small dead zone swallows the compression halo around the plate; the
-    # gamma then pushes everything past it towards opaque, so the brush reads as
-    # paint rather than as grey mottle with the ground showing through it.
-    d = np.linalg.norm(im - plate, axis=-1)
-    alpha = np.clip((d - 14.0) / 58.0, 0, 1) ** 0.62
-    lum = 0.2126 * im[..., 0] + 0.7152 * im[..., 1] + 0.0722 * im[..., 2]
-    t = np.clip((lum - plate_lum) / (255.0 - plate_lum), 0, 1) ** 1.6
-    rgb = aqua + (pale - aqua) * t[..., None]
+    The mark is placed from the type rather than pinned: it is pushed left until
+    only its outer strokes reach into the longest line, the way the brush does
+    on the clinic's own card, so no letter is ever swallowed by the dense middle
+    of the ring."""
+    h = LOCKUP_H
+    pad = 50
+    sizes = [(t, c * h / _CAP, b * h, wt, col) for t, c, b, wt, col in _LOCKUP_LINES]
+    text_w = max(text_width(t, size, weight=wt) for t, size, _, wt, _ in sizes)
 
-    out = Image.fromarray(np.dstack([rgb, alpha * 255]).astype("uint8"), "RGBA")
-    out = out.crop(out.getbbox())        # the plate left a wide empty margin
-    out.save(os.path.join(IMG, "logo-lockup-light.png"), optimize=True)
-    out.save(os.path.join(IMG, "logo-lockup-light.webp"), "WEBP", quality=92, method=6)
-    return out.size
+    # The ensō is open at its top right, and on the clinic's card the type sits
+    # in that opening — the longest line reaches about a fifth of the way into
+    # the ring, the rest brush its edge. Lay it out that way rather than by eye.
+    mark_size = 0.95 * h
+    cx = pad + mark_size / 2
+    text_left = pad + mark_size - 0.22 * mark_size
+    width = round(text_left + text_w + pad)
+    right = width - pad
+
+    lines = "\n  ".join(
+        text_path(t, right, b, size, weight=wt, anchor="end",
+                  fill=TEAL300 if col == "aqua" else "#ffffff")
+        for t, size, b, wt, col in sizes)
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {h}" width="{width}" height="{h}"
+  role="img" aria-label="Ensō Foot Clinic — Christodoulou Elpiniki, Holistic Podology">
+  {mark_image(cx, h / 2, mark_size, tint=True, px=820)}
+  {lines}
+</svg>"""
+
+
+def lockup_light_stacked():
+    """The same lockup for a phone, stacked: the mark over the type rather than
+    beside it. Side by side, the wide version has to shrink to about 190px of
+    mark on a 390px screen — stacked, the mark gets more than twice that, which
+    is the point of an entry screen."""
+    pad = 40
+    cap = [0.60, 0.78, 0.40, 0.46]        # relative to the wide version's caps
+    base_h = LOCKUP_H
+    sizes = [(t, c * base_h / _CAP * k, wt, col)
+             for (t, c, _b, wt, col), k in zip(_LOCKUP_LINES, cap)]
+    text_w = max(text_width(t, size, weight=wt) for t, size, wt, _ in sizes)
+
+    mark_size = max(text_w * 1.02, 420)
+    width = round(max(text_w, mark_size) + 2 * pad)
+    cx = width / 2
+
+    y = pad + mark_size + 40
+    lines, gaps = [], [1.28, 1.16, 1.30, 0.0]
+    for (t, size, wt, col), gap in zip(sizes, gaps):
+        y += size * 0.72
+        lines.append(text_path(t, cx, y, size, weight=wt, anchor="middle",
+                               fill=TEAL300 if col == "aqua" else "#ffffff"))
+        y += size * gap * 0.36
+    height = round(y + pad)
+    body = "\n  ".join(lines)
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" width="{width}" height="{height}"
+  role="img" aria-label="Ensō Foot Clinic — Christodoulou Elpiniki, Holistic Podology">
+  {mark_image(cx, pad + mark_size / 2, mark_size, tint=True, px=820)}
+  {body}
+</svg>"""
 
 
 def clinic_banner():
@@ -919,10 +986,10 @@ def main():
     made.append(w("elpiniki-christodoulou.svg", portrait()))
     for stem, fn in GALLERY_ART.items():
         made.append(w(stem + ".svg", fn()))
+    made.append(w("logo-lockup-light.svg", lockup_light()))
+    made.append(w("logo-lockup-stacked.svg", lockup_light_stacked()))
     n = rasterise()
-    size = lockup_light()
-    print(f"drew {len(made)} SVG + {n + 2} PNG assets → {IMG}")
-    print(f"  logo-lockup-light {size[0]}×{size[1]} (transparent, from brand/enso-lockup-source.png)")
+    print(f"drew {len(made)} SVG + {n} PNG assets → {IMG}")
 
 
 if __name__ == "__main__":
