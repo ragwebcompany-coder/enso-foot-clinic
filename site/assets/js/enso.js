@@ -742,9 +742,42 @@
         g.remove();
         document.dispatchEvent(new Event("enso:gate"));
       };
-      if (reduced) done(); else setTimeout(done, 750);
+        if (reduced) done(); else setTimeout(done, 750);
     }
     g.addEventListener("click", open);
+    lean(g);
+  }
+
+  /* The lockup leans towards the pointer, and a wash of the logo's aqua follows
+     it. Only where there is a real pointer to follow: a touch screen has none,
+     and the CSS gives it a slow float instead. Everything is written as custom
+     properties on the gate, so if this never runs the lockup simply sits still.
+     Six setProperty calls per move is cheap and the browser coalesces the style
+     change into the next frame by itself, so there is no rAF here to go wrong. */
+  function lean(g) {
+    if (reduced) return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+
+    var VARS = ["--tilt-x", "--tilt-y", "--shift-x", "--shift-y"];
+
+    g.addEventListener("pointermove", function (e) {
+      if (e.pointerType === "touch") return;
+      var nx = (e.clientX / window.innerWidth) * 2 - 1;
+      var ny = (e.clientY / window.innerHeight) * 2 - 1;
+      var st = g.style;
+      st.setProperty("--tilt-y", (nx * 5).toFixed(2) + "deg");
+      st.setProperty("--tilt-x", (-ny * 3.5).toFixed(2) + "deg");
+      st.setProperty("--shift-x", (nx * 16).toFixed(1) + "px");
+      st.setProperty("--shift-y", (ny * 11).toFixed(1) + "px");
+      st.setProperty("--glow-x", (nx * 50 + 50).toFixed(1) + "%");
+      st.setProperty("--glow-y", (ny * 50 + 50).toFixed(1) + "%");
+      g.classList.add("is-pointing");
+    }, { passive: true });
+
+    g.addEventListener("pointerleave", function () {
+      g.classList.remove("is-pointing");
+      VARS.forEach(function (k) { g.style.removeProperty(k); });
+    });
   }
 
   /* ── Cookie notice ─────────────────────────────────────────────────── */

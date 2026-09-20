@@ -632,6 +632,7 @@ def build_home():
     body = f"""<button class="gate" type="button" aria-label="Είσοδος στον ιστότοπο του Ensō Foot Clinic">
   <span class="hero__aurora" aria-hidden="true"><i></i><i></i><i></i></span>
   <span class="hero__mesh" aria-hidden="true"></span>
+  <span class="gate__glow" aria-hidden="true"></span>
   <span class="gate__inner">
     {gate_lockup()}
     <span class="gate__cta">Πατήστε εδώ {I['right']}</span>

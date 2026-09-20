@@ -188,7 +188,7 @@ h4 { font-family: var(--text); font-weight: 700; font-size: 1.02rem; line-height
 .section--deep h2, .section--deep h3 { color: #fff; }
 .section--deep .lede, .section--deep .muted { color: #a7c6d0; }
 .section--deep .eyebrow { color: var(--teal-300); }
-.section--deep .eyebrow::before { background: rgba(163,217,244,.45); }
+.section--deep .eyebrow::before { background: rgba(137,209,219,.45); }
 
 .sec-head { display: grid; gap: .9rem; margin-bottom: clamp(2rem, 4vw, 3.25rem); max-width: 62ch; }
 .sec-head--split {
@@ -1244,6 +1244,48 @@ body:has(.cookies.is-shown) .totop { bottom: 15rem; }
 /* <source media> picks the cut; the width just follows it. */
 .gate__lockup { width: min(92vw, 860px); }
 @media (max-width: 719px) { .gate__lockup { width: min(78vw, 330px); } }
+
+/* ── The lockup answers the pointer ──────────────────────────────────────
+   The tilt lives on the <picture>, not on the image: the image is still
+   running its entrance animation, and animation-fill-mode: both would win
+   against a plain transform on the same element. JS writes the four custom
+   properties below on .gate; everything here is a no-op until it does, so a
+   touch device, a reduced-motion visitor or a failed script all get the
+   lockup sitting still and correct. */
+.gate__inner picture {
+  display: block; position: relative; z-index: 2;
+  transform:
+    perspective(1100px)
+    rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg))
+    translate3d(var(--shift-x, 0px), var(--shift-y, 0px), 0)
+    scale(var(--lockup-scale, 1));
+  transition: transform .45s var(--ease-out);
+}
+/* While the pointer is actually over the screen the lockup has to keep up with
+   it, so the easing gets out of the way. */
+.gate.is-pointing .gate__inner picture { transition: transform .12s linear; }
+.gate:hover { --lockup-scale: 1.02; }
+.gate:active { --lockup-scale: .988; }
+
+/* A wash of the logo's own aqua that follows the pointer, behind the artwork. */
+.gate__glow {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0;
+  background: radial-gradient(520px circle at var(--glow-x, 50%) var(--glow-y, 45%),
+              rgba(137,209,219,.22), rgba(137,209,219,0) 68%);
+  transition: opacity .6s var(--ease);
+}
+.gate.is-pointing .gate__glow { opacity: 1; }
+
+/* No pointer to follow: the mark breathes instead, so the screen is not dead. */
+@media (hover: none) {
+  .gate__inner picture {
+    animation: gate-float 7s 1.4s ease-in-out infinite;
+  }
+}
+@keyframes gate-float {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(0, -10px, 0) scale(1.012); }
+}
 .gate__sub {
   position: relative; z-index: 2; margin-top: 1.5rem;
   font-size: clamp(.66rem, .58rem + .4vw, .8rem); font-weight: 500;
@@ -1262,8 +1304,8 @@ body:has(.cookies.is-shown) .totop { bottom: 15rem; }
 .gate:hover .gate__cta svg { transform: translateX(3px); }
 @keyframes gate-in { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
 @keyframes gate-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(163,217,244,.45); }
-  60% { box-shadow: 0 0 0 16px rgba(163,217,244,0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(137,209,219,.45); }
+  60% { box-shadow: 0 0 0 16px rgba(137,209,219,0); }
 }
 
 /* The homepage starts straight on the conditions, right under the header. */
