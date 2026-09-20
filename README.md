@@ -207,10 +207,10 @@ flex και τα στοιχεία ξεχειλίζουν *έξω* από το κ
 | Ενότητα | Μοτίβο |
 |---|---|
 | Παθήσεις | `/pathiseis/<slug>/` — `diavitiko-podi`, `skliryseis-kaloi-tyloi`, `ksirodermia-pelmaton`, `eisfriksi-nychiou` |
-| Υπηρεσίες | `/ypiresies/<slug>/` — `elenchos-diavitikou-podiou`, `iatriki-podologia`, `afairesi-kalon-tylon`, `therapeia-ksirodermias`, `orthonychia-narthikes` |
+| Υπηρεσίες | `/ypiresies/<slug>/` — `elenchos-diavitikou-podiou`, `kliniki-podologia`, `afairesi-kalon-tylon`, `therapeia-ksirodermias`, `orthonychia-narthikes` |
 | Σεμινάρια | `/seminaria/` · `/seminaria/<slug>/` |
 | Άρθρα | `/arthra/<slug>/` |
-| Σελίδες | `/to-iatreio/`, `/elpiniki-christodoulou/`, `/odigos-symptomaton/`, `/frontida-podion/`, `/gallery/`, `/epikoinonia/`, `/oroi-chrisis/` |
+| Σελίδες | `/to-kentro/`, `/elpiniki-christodoulou/`, `/odigos-symptomaton/`, `/frontida-podion/`, `/gallery/`, `/epikoinonia/`, `/oroi-chrisis/` |
 | Αγγλικά | `/en/`, `/en/<slug>/` |
 
 ## Τοπικό SEO (Περαία / Θεσσαλονίκη)
@@ -249,11 +249,14 @@ flex και τα στοιχεία ξεχειλίζουν *έξω* από το κ
   περιστατικά και δεν έχουν θέμα πνευματικών δικαιωμάτων.
 - Προσβασιμότητα: skip link, landmarks, ορατό focus, ARIA στα widgets,
   σεβασμός στο `prefers-reduced-motion`, alt text σε κάθε εικόνα.
-- Γραμματοσειρά: **M PLUS Rounded 1c** παντού — η γραμματοσειρά της επαγγελματικής
-  κάρτας της πελάτισσας (ταυτοποιήθηκε από φωτογραφία, 11/9/2026). Στατικά βάρη
-  300/400/500/700 από Google Fonts, με ελληνικά. Τα λογότυπα SVG και η OG εικόνα
-  τη χρησιμοποιούν ως outlines από το subset στο `brand/mplus-rounded-1c-*.ttf`
-  (χρειάζεται `fontTools` για το `art.py`).
+- Γραμματοσειρά: **Manrope** για τίτλους, **Inter** για κείμενο — λιτό γεωμετρικό
+  ζευγάρι που απαντά στους κυκλικούς χαρακτήρες του λογοτύπου. Η πελάτισσα ζήτησε
+  «minimal» (15/9/2026)· το προηγούμενο M PLUS Rounded 1c ήταν στρογγυλεμένο.
+  **Και οι δύο έχουν ελληνικά** — οι περισσότερες γεωμετρικές γραμματοσειρές του
+  Google Fonts (Jost, Poppins, Outfit, Questrial, DM Sans, Montserrat) **δεν
+  έχουν**, οπότε ελέγξτε το unicode-range πριν αλλάξετε οτιδήποτε εδώ. Τα λογότυπα
+  SVG και η OG εικόνα τη χρησιμοποιούν ως outlines από τα static instances στο
+  `brand/manrope-*.ttf` (χρειάζεται `fontTools` για το `art.py`).
 - Καμία εξωτερική εξάρτηση JavaScript.
 - Credit «Made by CLINICBRAIN» → https://clinicbrain.gr στο κάτω μέρος κάθε
   σελίδας (`SITE["credit"]` στο `content/data.py`).
@@ -270,9 +273,9 @@ flex και τα στοιχεία ξεχειλίζουν *έξω* από το κ
 desktop.** Κεντραρισμένο, σε ανοιχτό φόντο αντί για το σκούρο:
 
 1. το σήμα ensō ως **badge** (`enso-badge.svg`)
-2. «Ensō *Foot Clinic*» σε M PLUS Rounded 1c
+2. «Ensō *Foot Clinic*» σε Manrope
 3. ριγέ διαχωριστικό: ΠΟΔΟΛΟΓΙΑ · ΠΟΔΙΑΤΡΙΚΗ
-4. **τρεις στήλες** με γραμμικά εικονίδια → διαβητικό πόδι · ιατρική ποδολογία ·
+4. **τρεις στήλες** με γραμμικά εικονίδια → διαβητικό πόδι · κλινική ποδολογία ·
    ορθονυχία (tap targets 92px)
 5. το slogan με **τονισμένες λέξεις** στο brand χρώμα, υπογεγραμμένο
 6. δύο pill κουμπιά: ΚΛΕΙΣΤΕ ΡΑΝΤΕΒΟΥ (γεμάτο) · ΟΙ ΥΠΗΡΕΣΙΕΣ ΜΑΣ (περίγραμμα)
@@ -300,22 +303,31 @@ header η πλήρης υφή θα διέλυε το σήμα.
 
 Το slogan είναι η αυτούσια φράση της κλινικής, στο `PRACTITIONER["quote"]`, και
 τυπογραφείται με την κλάση `.slogan` — στη **γραμματοσειρά κειμένου
-(M PLUS Rounded 1c, βάρος 700)**: είναι δήλωση πρακτικής, όχι
+(Inter, βάρος 700)**: είναι δήλωση πρακτικής, όχι
 τίτλος. Εμφανίζεται στο hero (EL & EN) και στο βιογραφικό.
 
 ### Παλέτα
 
 Από το λογότυπο του Ensō. Ορίζεται στο `:root` του `site/assets/css/enso.css`:
 
+Η πελάτισσα ζήτησε ρητά **«μπλε ραφ, όχι απλά ένα κοινό μπλε»** (15/9/2026). Τα
+`--deep` / `--abyss` είναι αυτό· το `--teal-300` είναι το **ίδιο** γαλάζιο με το
+πλαίσιο του λογοτύπου (`#89d1db`), και το `NAVY` του `art.py` (`#0d2b7d`) είναι
+το μπλε του wordmark — και τα δύο δειγματοληπτήθηκαν από το αρχείο του λογοτύπου.
+
 | Token | Τιμή | Χρήση |
 |---|---|---|
-| `--teal-hi` | `#63aabc` | το brand χρώμα του Ensō — hover, ενεργές καταστάσεις, σήμα |
-| `--teal` | `#2b7f96` | σύνδεσμοι, accents, focus ring |
-| `--teal-300` | `#a5d3de` | ήπια στοιχεία, κείμενο σε σκούρο φόντο |
-| `--deep` | `#14424f` | τίτλοι, σκούρες ενότητες, κουμπιά |
-| `--abyss` | `#0b2a34` | βαθύτερο φόντο, overlays |
+| `--teal-300` | `#89d1db` | το γαλάζιο του λογοτύπου — κείμενο & στοιχεία σε σκούρο φόντο |
+| `--teal-hi` | `#5e9fb6` | hover, ενεργές καταστάσεις |
+| `--teal` | `#3b7387` | σύνδεσμοι, accents, focus ring |
+| `--deep` | `#2a4b5a` | «μπλε ραφ» — τίτλοι, σκούρες ενότητες, κουμπιά |
+| `--abyss` | `#16323e` | βαθύτερο φόντο, η οθόνη εισόδου, footer |
 | `--sand` | `#c2865a` | ζεστό συμπληρωματικό (κεράτινη, προειδοποιήσεις) |
-| `--mist` / `--mist-2` / `--paper` | `#e0eff3` / `#f0f8fa` / `#fbfdfd` | ουδέτερα φόντα |
+| `--mist` / `--mist-2` / `--paper` | `#e4f0f4` / `#f1f8fa` / `#fafdfe` | ουδέτερα φόντα |
+
+**Το λογότυπο στην αρχική** (`site/assets/img/logo-lockup.png`) είναι το αυθεντικό
+αρχείο από το ensofootclinic.gr, αναλλοίωτο — η πελάτισσα ζήτησε «ακριβώς ίδιο».
+Το πρωτότυπο φυλάσσεται στο `brand/enso-lockup-source.png`. Μην το ξαναφτιάξετε.
 
 ## ⚠ Πριν τη δημοσίευση
 

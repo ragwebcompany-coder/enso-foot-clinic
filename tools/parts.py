@@ -68,6 +68,7 @@ T = {
         tracker="Φροντίδα ποδιών", seminars="Σεμινάρια",
         articles="Άρθρα", gallery="Εικονογραφήσεις", contact="Επικοινωνία",
         book="Ραντεβού", search="Αναζήτηση (Ctrl+K)", menu="Μενού", other_lang="EN",
+        city_thess="Θεσσαλονίκη", city_athens="Αθήνα",
         all_conditions="Όλες οι παθήσεις", compare="Σύγκριση υπηρεσιών",
         search_ph="Πάθηση, υπηρεσία ή άρθρο…", search_hint="Γράψτε τουλάχιστον 2 χαρακτήρες.",
         hours="Ωράριο", terms="Όροι χρήσης & απόρρητο", other_lang_full="English",
@@ -88,6 +89,7 @@ T = {
         tracker="Foot care", seminars="Seminars",
         articles="Articles", gallery="Illustrations", contact="Contact",
         book="Book", search="Search (Ctrl+K)", menu="Menu", other_lang="ΕΛ",
+        city_thess="Thessaloniki", city_athens="Athens",
         all_conditions="All conditions", compare="Compare services",
         search_ph="Condition, service or article…", search_hint="Type at least 2 characters.",
         hours="Opening hours", terms="Terms & privacy", other_lang_full="Ελληνικά",
@@ -121,9 +123,10 @@ def head(title, desc, depth, canonical, *, lang="el", alt=None, jsonld=None,
 <meta name="description" content="{desc}">
 <link rel="canonical" href="{SITE['domain']}/{canonical.lstrip('/')}">
 <link rel="alternate" hreflang="{lang}" href="{SITE['domain']}/{canonical.lstrip('/')}">{alt_links}
-<meta name="theme-color" content="#0c3f7c">
+<meta name="theme-color" content="#2a4b5a">
 <meta name="geo.region" content="{SITE['region_iso']}">
 <meta name="geo.placename" content="{SITE['locality']}, {SITE['region']}">
+<meta name="geo.placename" content="Καλλιθέα, Αθήνα">
 <meta name="geo.position" content="{SITE['lat']};{SITE['lng']}">
 <meta name="ICBM" content="{SITE['lat']}, {SITE['lng']}">
 <meta property="og:type" content="website">
@@ -133,7 +136,7 @@ def head(title, desc, depth, canonical, *, lang="el", alt=None, jsonld=None,
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{SITE['domain']}/{canonical.lstrip('/')}">
 <meta property="og:image" content="{SITE['domain']}/{og_image}">
-<meta property="og:image:alt" content="{SITE['name']} — ποδολογικό κέντρο, Περαία Θεσσαλονίκης">
+<meta property="og:image:alt" content="{SITE['name']} — ποδολογικό κέντρο, Θεσσαλονίκη &amp; Αθήνα">
 <meta property="place:location:latitude" content="{SITE['lat']}">
 <meta property="place:location:longitude" content="{SITE['lng']}">
 <meta property="business:contact_data:locality" content="{SITE['locality']}">
@@ -147,7 +150,7 @@ def head(title, desc, depth, canonical, *, lang="el", alt=None, jsonld=None,
 <link rel="apple-touch-icon" href="{asset(depth, "assets/img/favicon-144.png")}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;400;500;700&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Manrope:wght@400;500;600;700&amp;display=swap">
 <link rel="stylesheet" href="{asset(depth, "assets/css/enso.css")}">
 <script>document.documentElement.className+=" js";</script>
 {ld}</head>"""
@@ -171,7 +174,7 @@ def search_overlay(lang="el"):
 
 EN_NAV = [("the-clinic", "The Clinic"), ("diabetic-foot-care", "Diabetic Foot Care"),
           ("calluses-and-corns", "Calluses & Corns"), ("dry-cracked-heels", "Dry & Cracked Heels"),
-          ("ingrown-toenail", "Ingrown Toenail"), ("medical-pedicure", "Medical Pedicure")]
+          ("ingrown-toenail", "Ingrown Toenail"), ("clinical-podology", "Clinical Podology")]
 
 
 def drawer(depth, lang="el"):
@@ -184,14 +187,15 @@ def drawer(depth, lang="el"):
   {links}
   <div class="drawer__group"><a class="drawer__top" href="{b}">{t['other_lang_full']}</a></div>
   <div class="drawer__cta">
-    <a class="btn btn--block" href="tel:{SITE['phone_href']}">{I['phone']} {SITE['phone']}</a>
+    <a class="btn btn--block" href="tel:{SITE['phone_href']}">{I['phone']} {t['city_thess']} · {SITE['phone']}</a>
+    <a class="btn btn--block" href="tel:{SITE['phone_alt_href']}">{I['phone']} {t['city_athens']} · {SITE['phone_alt']}</a>
     <a class="btn btn--ghost btn--block" href="mailto:{SITE['email']}">{I['mail']} {SITE['email']}</a>
   </div>
 </div>"""
     conds = "".join(f'<a href="{b}pathiseis/{c["slug"]}/">{c["title"]}</a>' for c in CONDITIONS)
     treats = "".join(f'<a href="{b}ypiresies/{x["slug"]}/">{x["title"]}</a>' for x in TREATMENTS)
     return f"""<div class="drawer" id="drawer">
-  <div class="drawer__group"><a class="drawer__top" href="{b}to-iatreio/">{t['clinic']}</a></div>
+  <div class="drawer__group"><a class="drawer__top" href="{b}to-kentro/">{t['clinic']}</a></div>
   <div class="drawer__group">
     <button class="drawer__top" aria-expanded="false">{t['conditions']} {I['chev']}</button>
     <div class="drawer__panel"><a href="{b}pathiseis/">{t['all_conditions']}</a>{conds}</div>
@@ -208,7 +212,8 @@ def drawer(depth, lang="el"):
   <div class="drawer__group"><a class="drawer__top" href="{b}epikoinonia/">{t['contact']}</a></div>
   <div class="drawer__group"><a class="drawer__top" href="{b}en/">{t['other_lang_full']}</a></div>
   <div class="drawer__cta">
-    <a class="btn btn--block" href="tel:{SITE['phone_href']}">{I['phone']} {SITE['phone']}</a>
+    <a class="btn btn--block" href="tel:{SITE['phone_href']}">{I['phone']} {t['city_thess']} · {SITE['phone']}</a>
+    <a class="btn btn--block" href="tel:{SITE['phone_alt_href']}">{I['phone']} {t['city_athens']} · {SITE['phone_alt']}</a>
     <a class="btn btn--ghost btn--block" href="mailto:{SITE['email']}">{I['mail']} {SITE['email']}</a>
   </div>
 </div>"""
@@ -234,7 +239,7 @@ def header(depth, active="", lang="el", over_dark=False):
             f'<a class="mega__link" href="{b}ypiresies/{x["slug"]}/"><b>{x["title"]}</b>'
             f'<span>{x["short"]}</span></a>' for x in TREATMENTS)
         nav = f"""<nav class="nav" aria-label="{t['nav_label']}">
-        <div class="nav__item"><a class="nav__link" href="{b}to-iatreio/"{cur('clinic')}>{t['clinic']}</a></div>
+        <div class="nav__item"><a class="nav__link" href="{b}to-kentro/"{cur('clinic')}>{t['clinic']}</a></div>
         <div class="nav__item" data-mega>
           <button class="nav__link" aria-expanded="false">{t['both']} {I['chev']}</button>
           <div class="mega">
@@ -249,12 +254,16 @@ def header(depth, active="", lang="el", over_dark=False):
       </nav>"""
         lang_link = f'<a class="lang" href="{b}en/" hreflang="en">{t["other_lang"]}</a>'
 
+    # The Greek site has a contact page listing both centres; the English one
+    # does not, so there the button still dials the clinic directly.
+    book_href = f"{b}epikoinonia/" if lang == "el" else f"tel:{SITE['phone_href']}"
+
     # Over a deep hero the header floats transparent, so it carries the light
     # lockup as well and CSS swaps them as the page scrolls into the solid bar.
-    brand_img = f'<img class="brand__dark" src="{asset(depth, "assets/img/logo.svg")}" alt="{SITE["name"]}" width="174" height="42">'
+    brand_img = f'<img class="brand__dark" src="{asset(depth, "assets/img/logo.svg")}" alt="{SITE["name"]}" width="174" height="44">'
     if over_dark:
-        brand_img += (f'<img class="brand__light" src="{asset(depth, "assets/img/logo-light.svg")}" '
-                      f'alt="" aria-hidden="true" width="174" height="42">')
+        brand_img += (f'<img class="brand__light" src="{asset(depth, "assets/img/logo-light-plain.svg")}" '
+                      f'alt="" aria-hidden="true" width="174" height="44">')
     return f"""<a class="skip" href="#main">{t['skip']}</a>
 <header class="header">
   <div class="wrap header__bar">
@@ -263,7 +272,7 @@ def header(depth, active="", lang="el", over_dark=False):
     <div class="header__tools">
       <button class="icon-btn" data-search-open aria-label="{t['search']}">{I['search']}</button>
       {lang_link}
-      <a class="btn btn--sm" href="tel:{SITE['phone_href']}">{t['book']}</a>
+      <a class="btn btn--sm" href="{book_href}">{t['book']}</a>
       <button class="icon-btn burger" aria-label="{t['menu']}" aria-expanded="false" aria-controls="drawer">
         <span></span><span></span><span></span></button>
     </div>
@@ -292,8 +301,8 @@ def footer(depth, lang="el"):
   <div class="wrap">
     <div class="footer__grid">
       <div class="footer__brand">
-        <img src="{asset(depth, "assets/img/logo-light.svg")}" alt="{SITE['name']}" width="196" height="61" loading="lazy">
-        <p class="small" style="margin-top:1.1rem;max-width:34ch;color:#9dc0de">{t['tagline']}</p>
+        <img src="{asset(depth, "assets/img/logo-light.svg")}" alt="{SITE['name']}" width="196" height="64" loading="lazy">
+        <p class="small" style="margin-top:1.1rem;max-width:34ch;color:#9ec0cb">{t['tagline']}</p>
         <div class="socials" style="margin-top:1.5rem">
           <a href="{SITE['social']['facebook']}" rel="noopener" target="_blank" aria-label="Facebook">{I['fb']}</a>
           <a href="{SITE['social']['tiktok']}" rel="noopener" target="_blank" aria-label="TikTok">{I['tiktok']}</a>
@@ -317,7 +326,7 @@ def footer(depth, lang="el"):
       </div>
     </div>
     <div class="footer__bottom">
-      <span>© {SITE['founded']}–2026 {SITE['name']} · {SITE['locality']}, {SITE['region']}</span>
+      <span>© {SITE['founded']}–2026 {SITE['name']} · {city1} &amp; {city2}</span>
       <span style="display:flex;gap:1.25rem;flex-wrap:wrap;align-items:center">
         <a href="{b}seminaria/">{t['seminars']}</a>
         <a href="{b}oroi-chrisis/">{t['terms']}</a>
@@ -368,7 +377,8 @@ def overlays(depth=0, lang="el"):
 <button class="totop" aria-label="{t['top']}">{I['up']}</button>
 
 <div class="actionbar">
-  <a class="btn btn--sm btn--block" href="tel:{SITE['phone_href']}">{I['phone']} {t['book']} · {SITE['phone']}</a>
+  <a class="btn btn--sm btn--block" href="tel:{SITE['phone_href']}">{I['phone']} {t['city_thess']}</a>
+  <a class="btn btn--sm btn--block" href="tel:{SITE['phone_alt_href']}">{I['phone']} {t['city_athens']}</a>
 </div>"""
 
 
@@ -420,24 +430,24 @@ def _footprint_svg():
   <defs>
     <clipPath id="fp-clip"><path d="{sole}"/>{toes_svg}</clipPath>
     <radialGradient id="fp-heel" cx="168" cy="505" r="95" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#1673bd" stop-opacity=".55"/><stop offset="1" stop-color="#1673bd" stop-opacity="0"/>
+      <stop offset="0" stop-color="#3b7387" stop-opacity=".55"/><stop offset="1" stop-color="#3b7387" stop-opacity="0"/>
     </radialGradient>
     <radialGradient id="fp-ball" cx="190" cy="245" r="110" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#1673bd" stop-opacity=".5"/><stop offset="1" stop-color="#1673bd" stop-opacity="0"/>
+      <stop offset="0" stop-color="#3b7387" stop-opacity=".5"/><stop offset="1" stop-color="#3b7387" stop-opacity="0"/>
     </radialGradient>
     <radialGradient id="fp-toe" cx="258" cy="130" r="55" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#1673bd" stop-opacity=".45"/><stop offset="1" stop-color="#1673bd" stop-opacity="0"/>
+      <stop offset="0" stop-color="#3b7387" stop-opacity=".45"/><stop offset="1" stop-color="#3b7387" stop-opacity="0"/>
     </radialGradient>
   </defs>
 
   <!-- The print: a light wash, then the pressure pooling where the foot loads. -->
   <g clip-path="url(#fp-clip)">
-    <rect x="40" y="60" width="290" height="530" fill="#a3d9f4" opacity=".55"/>
+    <rect x="40" y="60" width="290" height="530" fill="#89d1db" opacity=".55"/>
     <rect x="40" y="60" width="290" height="530" fill="url(#fp-heel)"/>
     <rect x="40" y="60" width="290" height="530" fill="url(#fp-ball)"/>
     <rect x="40" y="60" width="290" height="530" fill="url(#fp-toe)"/>
   </g>
-  <g fill="none" stroke="#1673bd" stroke-opacity=".35" stroke-width="1.5">
+  <g fill="none" stroke="#3b7387" stroke-opacity=".35" stroke-width="1.5">
     <path d="{sole}"/>{toes_svg}
   </g>
 {hots}

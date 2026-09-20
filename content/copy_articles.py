@@ -347,7 +347,7 @@ ARTICLES_COPY = {
 τη συστηματική αγωγή.</span></div>
 
 <p>Δείτε τι περιλαμβάνει μια συνεδρία
-<a href="@/ypiresies/iatriki-podologia/">ιατρικής ποδολογίας</a>.</p>
+<a href="@/ypiresies/kliniki-podologia/">κλινικής ποδολογίας</a>.</p>
 """),
 
 "sosta-ypodimata-pos-ta-epilegoume": dict(
@@ -482,7 +482,7 @@ ARTICLES_COPY = {
 σειρά.</p>
 
 <p>Δείτε τι περιλαμβάνει μια συνεδρία
-<a href="@/ypiresies/iatriki-podologia/">ιατρικής ποδολογίας</a>.</p>
+<a href="@/ypiresies/kliniki-podologia/">κλινικής ποδολογίας</a>.</p>
 """),
 
 "frontida-podion-sto-spiti": dict(
@@ -615,6 +615,6 @@ ARTICLES_COPY = {
 <p>Στο ποδολογικό κέντρο αξιολογούμε το δέρμα, αναγνωρίζουμε τη στικτή κερατόλυση και τη
 μυκητίαση, και σχεδιάζουμε πρωτόκολλο που έχει σειρά και διάρκεια — όχι απλώς μια
 λίστα προϊόντων. Δείτε την
-<a href="@/ypiresies/iatriki-podologia/">ιατρική ποδολογία</a>.</p>
+<a href="@/ypiresies/kliniki-podologia/">κλινική ποδολογία</a>.</p>
 """),
 }

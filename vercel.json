@@ -51,6 +51,16 @@
       "permanent": true
     },
     {
+      "source": "/to-iatreio/",
+      "destination": "/to-kentro/",
+      "permanent": true
+    },
+    {
+      "source": "/en/medical-pedicure/",
+      "destination": "/en/clinical-podology/",
+      "permanent": true
+    },
+    {
       "source": "/Διαδικτυακά-Μαθήματα/",
       "destination": "/",
       "permanent": true
@@ -58,6 +68,11 @@
     {
       "source": "/%CE%94%CE%B9%CE%B1%CE%B4%CE%B9%CE%BA%CF%84%CF%85%CE%B1%CE%BA%CE%AC-%CE%9C%CE%B1%CE%B8%CE%AE%CE%BC%CE%B1%CF%84%CE%B1/",
       "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/ypiresies/iatriki-podologia/",
+      "destination": "/ypiresies/kliniki-podologia/",
       "permanent": true
     }
   ],

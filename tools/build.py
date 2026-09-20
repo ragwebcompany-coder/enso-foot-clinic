@@ -36,7 +36,7 @@ TREATS = {t["slug"]: t for t in TREATMENTS}
 # Every page of the site, keyed by its copy slug. Used by the `@/` link rewriter,
 # the search index and the sitemap.
 URLMAP = {
-    "home": "", "to-iatreio": "to-iatreio/",
+    "home": "", "to-kentro": "to-kentro/",
     PRACTITIONER["slug"]: PRACTITIONER["slug"] + "/",
     "epikoinonia": "epikoinonia/", "oroi-chrisis": "oroi-chrisis/",
     "arthra": "arthra/", "gallery": "gallery/",
@@ -163,10 +163,10 @@ def meta_desc(slug, fallback=""):
     return html.escape(d[:158], quote=True)
 
 
-def local_desc(text, tail=" Ensō Foot Clinic, Περαία — Θεσσαλονίκη."):
+def local_desc(text, tail=" Ensō Foot Clinic — Θεσσαλονίκη & Αθήνα."):
     """Appends the locality to a meta description when there is room for it."""
     text = text.rstrip()
-    if "Περαία" in text or "Θεσσαλον" in text or len(text) + len(tail) > 158:
+    if "Θεσσαλον" in text or "Αθήν" in text or len(text) + len(tail) > 158:
         return text
     return text + tail
 
@@ -201,6 +201,7 @@ def page(*, path, title, desc, depth, body, active="", jsonld=None, lang="el",
 
 # ── Structured data ─────────────────────────────────────────────────────────
 CLINIC_ID = SITE["domain"] + "/#clinic"
+ATHENS_ID = SITE["domain"] + "/#clinic-athina"
 PODOLOGIST_ID = SITE["domain"] + "/#" + PRACTITIONER["slug"]
 
 
@@ -245,7 +246,8 @@ def clinic_ld():
         "legalName": SITE["legal"],
         "alternateName": ["Ensō Foot Clinic", "Ενσο Ποδολογικό Κέντρο",
                           "Trellis Podology & Nails"],
-        "description": "Ποδολογικό κέντρο στην Περαία Θεσσαλονίκης, από το 2002. "
+        "description": "Ποδολογικό κέντρο σε Θεσσαλονίκη (Περαία) και Αθήνα (Καλλιθέα), "
+                       "από το 2002. "
                        "Διαβητικό πόδι, σκληρύνσεις, κάλοι και τύλοι, ξηροδερμία "
                        "πελμάτων και ραγάδες, είσφρηση όνυχος και ορθονυχία.",
         "url": SITE["domain"] + "/",
@@ -269,11 +271,7 @@ def clinic_ld():
         "address": _address(),
         "geo": _geo(),
         "hasMap": SITE["map_full"],
-        "location": {"@type": "Place", "name": "Ensō Foot Clinic — Αθήνα",
-                     "address": _address_athens(), "hasMap": SITE["map_athens"],
-                     "geo": {"@type": "GeoCoordinates", "latitude": SITE["lat_athens"],
-                             "longitude": SITE["lng_athens"]},
-                     "telephone": SITE["phone_alt_href"]},
+        "department": {"@id": ATHENS_ID},
         "areaServed": _area_served(),
         "medicalSpecialty": "Podiatric",
         "founder": {"@id": PODOLOGIST_ID},
@@ -285,6 +283,35 @@ def clinic_ld():
         # No openingHoursSpecification: the clinic works by appointment and has
         # never published fixed hours. Inventing them would be worse than omitting.
         "sameAs": [SITE["social"]["facebook"], SITE["social"]["tiktok"]],
+    }
+
+
+def athens_ld():
+    """The Athens centre as a branch in its own right — same practitioner, same
+    services, its own address, pin and line."""
+    return {
+        "@context": "https://schema.org",
+        "@type": ["MedicalBusiness", "LocalBusiness"],
+        "@id": ATHENS_ID,
+        "name": SITE["name"] + " — Αθήνα",
+        "parentOrganization": {"@id": CLINIC_ID},
+        "description": "Το ποδολογικό κέντρο Ensō Foot Clinic στην Καλλιθέα Αθήνας. "
+                       "Διαβητικό πόδι, κάλοι και τύλοι, ραγάδες πτέρνας, ορθονυχία.",
+        "url": SITE["domain"] + "/epikoinonia/",
+        "logo": SITE["domain"] + "/assets/img/logo.svg",
+        "image": [SITE["domain"] + "/assets/img/og-enso.png"],
+        "telephone": SITE["phone_alt_href"],
+        "email": SITE["email"],
+        "medicalSpecialty": "Podiatric",
+        "priceRange": "€€",
+        "address": _address_athens(),
+        "geo": {"@type": "GeoCoordinates", "latitude": SITE["lat_athens"],
+                "longitude": SITE["lng_athens"]},
+        "hasMap": SITE["map_athens"],
+        "employee": {"@id": PODOLOGIST_ID},
+        "areaServed": [{"@type": "City", "name": "Αθήνα"},
+                       {"@type": "City", "name": "Καλλιθέα"},
+                       {"@type": "AdministrativeArea", "name": "Αττική"}],
     }
 
 
@@ -314,9 +341,10 @@ def podologist_ld():
 
 def org_graph():
     """Clinic + podologist in one graph — the @id references resolve on every page."""
-    c, d = clinic_ld(), podologist_ld()
-    c.pop("@context", None); d.pop("@context", None)
-    return {"@context": "https://schema.org", "@graph": [c, d]}
+    nodes = [clinic_ld(), athens_ld(), podologist_ld()]
+    for n in nodes:
+        n.pop("@context", None)
+    return {"@context": "https://schema.org", "@graph": nodes}
 
 
 def seo_title(text, suffix=" | Ensō Foot Clinic", cap=70):
@@ -564,8 +592,11 @@ def build_home():
     creds_html = "".join(
         f'<li><b data-count="{a}">{a}</b><span>{b}</span></li>' for a, b in creds)
 
-    # The entry screen the clinic asked for: the mark alone on the deep ground,
-    # the name, and «Πατήστε εδώ». It is the homepage — it shows every time the
+    # The entry screen the clinic asked for: its own logo on the deep ground and
+    # «Πατήστε εδώ». The logo is the clinic's actual lockup, lifted unaltered
+    # from ensofootclinic.gr at the client's request — mark, name, practitioner
+    # and descriptor are all inside the artwork, so nothing is set beside it but
+    # the current descriptor line. It is the homepage: it shows every time the
     # page opens, and one tap fades it out. Behind it the page starts straight
     # on the conditions; the lockup is the gate, it is not repeated. The grid
     # lives on an inner span: Safari has been unreliable with grid on <button>.
@@ -573,9 +604,9 @@ def build_home():
   <span class="hero__aurora" aria-hidden="true"><i></i><i></i><i></i></span>
   <span class="hero__mesh" aria-hidden="true"></span>
   <span class="gate__inner">
-    {img("enso-badge-light.svg", "Ensō Foot Clinic", 400, 400, 0, cls="gate__mark", priority=True)}
-    <span class="gate__name">Ensō <b>Foot Clinic</b></span>
-    <span class="gate__sub"><span>Christodoulou Elpiniki</span><i aria-hidden="true">·</i><span>Holistic Podology</span></span>
+    {img("logo-lockup.png", "Ensō Foot Clinic — Christodoulou Elpiniki, Holistic Podology",
+         1004, 591, 0, cls="gate__lockup", priority=True)}
+    <span class="gate__sub">Holistic Podology</span>
     <span class="gate__cta">Πατήστε εδώ {I['right']}</span>
   </span>
 </button>
@@ -638,7 +669,7 @@ def build_home():
         </ul>
         <div class="pill-row">
           <a class="chip" href="{PRACTITIONER['slug']}/">Βιογραφικό</a>
-          <a class="chip" href="to-iatreio/">Το ποδολογικό κέντρο</a>
+          <a class="chip" href="to-kentro/">Το ποδολογικό κέντρο</a>
           <a class="chip" href="gallery/">Εικονογραφήσεις</a>
         </div>
       </div>
@@ -695,8 +726,9 @@ def build_home():
            "url": SITE["domain"] + "/", "inLanguage": "el",
            "publisher": {"@id": CLINIC_ID}}]
 
-    page(path="", title="Ποδολόγος στην Περαία Θεσσαλονίκης | Ensō Foot Clinic",
-         desc="Ποδολογικό κέντρο στην Περαία, από το 2002. Διαβητικό πόδι, κάλοι και "
+    page(path="", title="Ποδολόγος σε Θεσσαλονίκη & Αθήνα | Ensō Foot Clinic",
+         desc="Ποδολογικό κέντρο σε Περαία Θεσσαλονίκης και Καλλιθέα Αθήνας, από το 2002. "
+              "Διαβητικό πόδι, κάλοι και "
               "τύλοι, ραγάδες πτέρνας, είσφρηση όνυχος με ανώδυνη ορθονυχία.",
          depth=0, body=body, jsonld=ld, alt=("en", "en/"),
          body_class="page--home")
@@ -1181,9 +1213,9 @@ def build_treatments_hub():
 <section class="section section--tight"><div class="wrap"><div class="grid grid--3">{cards}</div></div></section>
 {compare_section(d)}
 {cta_band(d)}"""
-    page(path="ypiresies/", title="Υπηρεσίες ποδολογίας — Περαία | Ensō Foot Clinic",
-         desc="Ιατρική ποδολογία, αφαίρεση κάλων και τύλων, θεραπεία ξηροδερμίας, "
-              "ορθονυχία με νάρθηκα, έλεγχος διαβητικού ποδιού. Περαία, Θεσσαλονίκη.",
+    page(path="ypiresies/", title="Υπηρεσίες ποδολογίας — Θεσσαλονίκη & Αθήνα | Ensō Foot Clinic",
+         desc="Κλινική ποδολογία, αφαίρεση κάλων και τύλων, θεραπεία ξηροδερμίας, "
+              "ορθονυχία με νάρθηκα, έλεγχος διαβητικού ποδιού. Θεσσαλονίκη & Αθήνα.",
          depth=d, body=body, jsonld=[crumb_ld], active="treatments")
 
 
@@ -1238,7 +1270,7 @@ def build_articles_hub():
 # ── Clinic, practitioner, guide, tracker, gallery, contact, terms ───────────
 def build_clinic():
     d = 1
-    body_html, faq_title, pairs = prose("to-iatreio", d)
+    body_html, faq_title, pairs = prose("to-kentro", d)
     faq_html, faq_ld = faq_block(faq_title, pairs, "faq-clinic")
     crumb_html, crumb_ld = crumbs([("Το ποδολογικό κέντρο", None)], d)
     body = f"""<section class="page-head">
@@ -1246,7 +1278,7 @@ def build_clinic():
     <div class="sec-head sec-head--split" style="margin-bottom:0">
       <div class="stack"><p class="eyebrow">Το ποδολογικό κέντρο</p>
         <h1>Ένας κύκλος που κλείνει με μία κίνηση.</h1></div>
-      <p class="lede">Ποδολογικό κέντρο στην Περαία Θεσσαλονίκης. Αποστειρωμένα εργαλεία,
+      <p class="lede">Ποδολογικό κέντρο σε Περαία Θεσσαλονίκης και Καλλιθέα Αθήνας. Αποστειρωμένα εργαλεία,
         στεγνή τεχνική, μηδενικός πόνος — και ένα γραπτό πλάνο που φεύγει μαζί σας.</p>
     </div>
   </div>
@@ -1287,8 +1319,8 @@ def build_clinic():
     ld = [crumb_ld, org_graph()]
     if faq_ld:
         ld.append(faq_ld)
-    page(path="to-iatreio/", title="Το ποδολογικό κέντρο — Περαία, Θεσσαλονίκη | Ensō Foot Clinic",
-         desc="Ποδολογικό κέντρο στην Περαία Θεσσαλονίκης, από το 2002. Αποστείρωση "
+    page(path="to-kentro/", title="Το ποδολογικό κέντρο — Θεσσαλονίκη & Αθήνα | Ensō Foot Clinic",
+         desc="Ποδολογικό κέντρο σε Περαία Θεσσαλονίκης και Καλλιθέα Αθήνας, από το 2002. Αποστείρωση "
               "σε αυτόκαυστο, στεγνή τεχνική, γραπτό πλάνο φροντίδας.",
          depth=d, body=body, jsonld=ld, active="clinic")
 
@@ -1351,7 +1383,10 @@ def build_guide_page():
         <h2>Κάποια σημάδια θέλουν γιατρό σήμερα.</h2>
         <p class="lede">Ο οδηγός δεν είναι κατάλληλος αν έχετε:</p>
         <ul class="bullets">{flags}</ul>
-        <a class="btn" href="tel:{SITE['phone_href']}">{I['phone']} Καλέστε μας</a>
+        <div class="pill-row">
+          <a class="btn" href="tel:{SITE['phone_href']}">{I['phone']} Θεσσαλονίκη · {SITE['phone']}</a>
+          <a class="btn btn--ghost" href="tel:{SITE['phone_alt_href']}">{I['phone']} Αθήνα · {SITE['phone_alt']}</a>
+        </div>
       </div>
       <div class="stack">
         <p class="eyebrow">Πώς λειτουργεί</p>
@@ -1534,7 +1569,8 @@ def build_contact():
           <li>{I['mail']}<div><b>Email</b><a href="mailto:{SITE['email']}">{SITE['email']}</a></div></li>
           <li>{I['clock']}<div style="width:100%"><b>Ωράριο</b><div style="margin-top:.35rem">{hours}</div></div></li>
         </ul>
-        <a class="btn btn--block" href="tel:{SITE['phone_href']}">{I['phone']} Καλέστε για ραντεβού</a>
+        <a class="btn btn--block" href="tel:{SITE['phone_href']}">{I['phone']} Ραντεβού Θεσσαλονίκη · {SITE['phone']}</a>
+        <a class="btn btn--ghost btn--block" href="tel:{SITE['phone_alt_href']}">{I['phone']} Ραντεβού Αθήνα · {SITE['phone_alt']}</a>
       </div>
       <div class="stack" style="justify-items:stretch">
         <figure class="mapcard">
@@ -1608,7 +1644,7 @@ def build_contact():
 
     place_ld = {
         "@context": "https://schema.org", "@type": "ContactPage",
-        "name": "Επικοινωνία — Ensō Foot Clinic, Περαία",
+        "name": "Επικοινωνία — Ensō Foot Clinic, Θεσσαλονίκη & Αθήνα",
         "url": f"{SITE['domain']}/epikoinonia/",
         "inLanguage": "el", "about": {"@id": CLINIC_ID},
         "mainEntity": {"@id": CLINIC_ID},
@@ -1617,7 +1653,7 @@ def build_contact():
     if faq_ld:
         ld.append(faq_ld)
     page(path="epikoinonia/",
-         title="Επικοινωνία & ραντεβού — Περαία | Ensō Foot Clinic",
+         title="Επικοινωνία & ραντεβού — Θεσσαλονίκη & Αθήνα | Ensō Foot Clinic",
          desc=f"Ensō Foot Clinic — {SITE['address']}, {SITE['postcode']} Περαία. "
               f"Θεσσαλονίκη {SITE['phone']} · Αθήνα {SITE['phone_alt']}. Κατόπιν ραντεβού.",
          depth=d, body=body, jsonld=ld, active="contact")
@@ -1667,12 +1703,12 @@ from parts import EN_NAV
 # hreflang is declared only where a page has a real 1:1 counterpart.
 EN_PAIR = {
     "en/": "",
-    "en/the-clinic/": "to-iatreio/",
+    "en/the-clinic/": "to-kentro/",
     "en/diabetic-foot-care/": "pathiseis/diavitiko-podi/",
     "en/calluses-and-corns/": "pathiseis/skliryseis-kaloi-tyloi/",
     "en/dry-cracked-heels/": "pathiseis/ksirodermia-pelmaton/",
     "en/ingrown-toenail/": "pathiseis/eisfriksi-nychiou/",
-    "en/medical-pedicure/": "ypiresies/iatriki-podologia/",
+    "en/clinical-podology/": "ypiresies/kliniki-podologia/",
 }
 
 
@@ -1694,8 +1730,8 @@ def en_shell(*, path, title, desc, depth, inner, active=""):
       <div class="stack" style="justify-items:stretch">
         <a class="btn btn--light btn--block" href="mailto:{SITE['email']}">{I['mail']} {SITE['email']}</a>
         <a class="btn btn--outline-light btn--block" href="tel:{SITE['phone_href']}">{I['phone']} {SITE['phone_href']}</a>
-        <p class="tiny" style="color:#8fb5d6">{SITE['address_en']}, {SITE['postcode']}<br>{SITE['address_athens_en']}</p>
-        <div class="footer__hours" style="color:#a9c8e6">{hours}</div>
+        <p class="tiny" style="color:#92b5c0">{SITE['address_en']}, {SITE['postcode']}<br>{SITE['address_athens_en']}</p>
+        <div class="footer__hours" style="color:#a7c6d0">{hours}</div>
       </div>
     </div>
   </div>
@@ -1739,7 +1775,7 @@ def build_en_home():
     <h2>What we treat.</h2></div>
   <div class="grid grid--3">{cards}</div></div></section>"""
     en_shell(path="en/", title="Ensō Foot Clinic — Podology in Thessaloniki, Greece",
-             desc="Podology clinic in Peraia, Thessaloniki. Diabetic foot care, calluses "
+             desc="Podology clinic in Thessaloniki and Athens. Diabetic foot care, calluses "
                   "and corns, cracked heels, ingrown toenail correction. English spoken.",
              depth=1, inner=inner, active="home")
 
@@ -1768,8 +1804,9 @@ def build_index_files():
         entries.append({"u": url, "t": title,
                         "b": re.sub(r"\s+", " ", html.unescape(blurb))[:320], "k": keywords})
 
-    add("", "Αρχική", "Ensō Foot Clinic — ποδολογικό κέντρο στην Περαία Θεσσαλονίκης, από το 2002.")
-    add("to-iatreio/", "Το ποδολογικό κέντρο", plain("to-iatreio", 300), "ποδολογικό κέντρο περαία")
+    add("", "Αρχική", "Ensō Foot Clinic — ποδολογικό κέντρο σε Περαία Θεσσαλονίκης "
+        "και Καλλιθέα Αθήνας, από το 2002.")
+    add("to-kentro/", "Το ποδολογικό κέντρο", plain("to-kentro", 300), "ποδολογικό κέντρο περαία")
     add(f"{PRACTITIONER['slug']}/", PRACTITIONER["name"],
         plain(PRACTITIONER["slug"], 300), "ποδολόγος βιογραφικό σεμινάρια")
     add("odigos-symptomaton/", "Οδηγός συμπτωμάτων",
@@ -1797,7 +1834,7 @@ def build_index_files():
         add(f"ypiresies/{t['slug']}/", t["title"], plain(t["slug"], 320), t["short"])
     for slug, tag in ARTICLES:
         add(f"arthra/{slug}/", article_title(slug), plain(slug, 320), tag)
-    add("en/", "Ensō Foot Clinic — English", "Podology in Peraia, Thessaloniki, in English.", "english")
+    add("en/", "Ensō Foot Clinic — English", "Podology in Thessaloniki and Athens, in English.", "english")
     for slug, legacy, title in EN_PAGES:
         add(f"en/{slug}/", title, plain(legacy, 320), "english")
 
@@ -1834,6 +1871,8 @@ LEGACY_URLS = [
     ("/seminars/freeseminar", "/seminaria/1o-seminario-podologias/"),
     ("/terms", "/oroi-chrisis/"),
     ("/privacy", "/oroi-chrisis/"),
+    ("/to-iatreio", "/to-kentro/"),
+    ("/en/medical-pedicure", "/en/clinical-podology/"),
     ("/Διαδικτυακά-Μαθήματα", "/"),
     ("/%CE%94%CE%B9%CE%B1%CE%B4%CE%B9%CE%BA%CF%84%CF%85%CE%B1%CE%BA%CE%AC-%CE%9C%CE%B1%CE%B8%CE%AE%CE%BC%CE%B1%CF%84%CE%B1", "/"),
 ]
@@ -1841,6 +1880,12 @@ LEGACY_URLS = [
 
 def build_redirects():
     rules = list(LEGACY_URLS)
+    # Pages renamed after launch: every treatment or condition whose slug moved
+    # keeps a 301 from where it used to live.
+    rules += [(f"/ypiresies/{t['legacy']}", f"/ypiresies/{t['slug']}/")
+              for t in TREATMENTS if t["legacy"] != t["slug"]]
+    rules += [(f"/pathiseis/{c['legacy']}", f"/pathiseis/{c['slug']}/")
+              for c in CONDITIONS if c["legacy"] != c["slug"]]
 
     write("_redirects", "".join(f"{a}  {b}  301\n" for a, b in rules))
     ht = ["RewriteEngine On"]

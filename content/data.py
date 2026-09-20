@@ -70,7 +70,7 @@ SITE = {
     # Where the clinic's work actually happens, from its own contact page.
     "venues": [
         ("Ποδολογικό κέντρο Περαίας", "Ρωμανού 11, Περαία — 3ος όροφος",
-         "Η έδρα του ποδολογικού κέντρου. Αξιολόγηση άκρου ποδός, ιατρική ποδολογία, "
+         "Η έδρα του ποδολογικού κέντρου. Αξιολόγηση άκρου ποδός, κλινική ποδολογία, "
          "ορθονυχία και έλεγχος διαβητικού ποδιού."),
         ("Ποδολογικό κέντρο Αθήνας", "Ελ. Βενιζέλου 180, Καλλιθέα",
          "Η Ελπινίκη Χριστοδούλου δέχεται περιστατικά και στην Αθήνα. "
@@ -136,7 +136,7 @@ CONDITIONS = [
               "δεν είναι ότι πονάει — είναι ότι δεν πονάει, και έτσι περνά απαρατήρητο.",
          plain="Έχω διαβήτη και δεν νιώθω καλά τα πόδια μου.",
          stat=("1 φορά/χρόνο", "ο ελάχιστος έλεγχος"),
-         treatments=["elenchos-diavitikou-podiou", "iatriki-podologia"]),
+         treatments=["elenchos-diavitikou-podiou", "kliniki-podologia"]),
 
     dict(slug="skliryseis-kaloi-tyloi", legacy="skliryseis-kaloi-tyloi", zone="forefoot",
          title="Σκληρύνσεις, κάλοι & τύλοι",
@@ -146,7 +146,7 @@ CONDITIONS = [
               "Η σκλήρυνση εξελίσσεται σε τύλο και ο τύλος σε κάλο με πυρήνα που πονά.",
          plain="Πονάω σαν να πατάω πάνω σε πετραδάκι.",
          stat=("Πίεση", "το κοινό αίτιο και των τριών"),
-         treatments=["afairesi-kalon-tylon", "iatriki-podologia"]),
+         treatments=["afairesi-kalon-tylon", "kliniki-podologia"]),
 
     dict(slug="ksirodermia-pelmaton", legacy="ksirodermia-pelmaton", zone="heel",
          title="Ξηροδερμία πελμάτων & ραγάδες",
@@ -157,7 +157,7 @@ CONDITIONS = [
               "εκεί που χρειάζεται.",
          plain="Οι φτέρνες μου σκάνε και πονάνε όταν περπατάω.",
          stat=("Πτέρνα", "η πιο συχνή εστία"),
-         treatments=["therapeia-ksirodermias", "iatriki-podologia"]),
+         treatments=["therapeia-ksirodermias", "kliniki-podologia"]),
 
     dict(slug="eisfriksi-nychiou", legacy="eisfriksi-nychiou", zone="nail",
          title="Είσφρηση όνυχος (ονυχοκρύπτωση)",
@@ -168,7 +168,7 @@ CONDITIONS = [
               "μέσα στην πτυχή του δέρματος.",
          plain="Το νύχι μου μπαίνει στο δέρμα και πονάει.",
          stat=("96%", "επιτυχία με νάρθηκα ορθονυχίας"),
-         treatments=["orthonychia-narthikes", "iatriki-podologia"]),
+         treatments=["orthonychia-narthikes", "kliniki-podologia"]),
 ]
 
 # ── Services / treatments ────────────────────────────────────────────────────
@@ -189,10 +189,10 @@ TREATMENTS = [
          treats=["Διαβητική νευροπάθεια", "Περιφερική αγγειοπάθεια",
                  "Σημεία υπερπίεσης", "Πρόληψη έλκους"]),
 
-    dict(slug="iatriki-podologia", legacy="iatriki-podologia",
-         title="Ιατρική ποδολογία",
+    dict(slug="kliniki-podologia", legacy="iatriki-podologia",
+         title="Κλινική ποδολογία",
          short="Κλινική περιποίηση άκρου ποδός",
-         meta="Ιατρική ποδολογία: αποστειρωμένη, ανώδυνη κλινική περιποίηση πελμάτων και "
+         meta="Κλινική ποδολογία: αποστειρωμένη, ανώδυνη κλινική περιποίηση πελμάτων και "
               "νυχιών με φρέζα και νυστέρι. Δεν είναι pedicure — είναι θεραπευτική πράξη.",
          lead="Η βασική συνεδρία του ποδολογικού κέντρου: αξιολόγηση, αποστειρωμένα εργαλεία, "
               "θεραπευτική περιποίηση δέρματος και νυχιών, οδηγίες για το σπίτι.",
@@ -485,5 +485,5 @@ EN_PAGES = [
     ("calluses-and-corns", "en/calluses-and-corns", "Calluses & Corns"),
     ("dry-cracked-heels", "en/dry-cracked-heels", "Dry & Cracked Heels"),
     ("ingrown-toenail", "en/ingrown-toenail", "Ingrown Toenail"),
-    ("medical-pedicure", "en/medical-pedicure", "Medical Pedicure"),
+    ("clinical-podology", "en/clinical-podology", "Clinical Podology"),
 ]

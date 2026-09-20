@@ -4,7 +4,7 @@
     python3 enso-new/tools/art.py
 
 Writes into site/assets/img/:
-  · logo.svg / logo-light.svg / favicon.svg / favicon-144.png / og-enso.png
+  · logo.svg / logo-light.svg / logo-light-plain.svg / favicon.svg / favicon-144.png / og-enso.png
   · hero-enso.svg / hero-enso-dark.svg / clinic-enso.svg
   · elpiniki-christodoulou.svg
   · gal-*.svg — the fourteen schematic illustrations used by /gallery/
@@ -19,16 +19,19 @@ ROOT = os.path.dirname(HERE)
 IMG = os.path.join(ROOT, "site", "assets", "img")
 
 # ── Palette (mirrors :root in enso.css) ──────────────────────────────────────
-BRAND   = "#45b3e8"   # the Ensō brand blue — the cyan edge of the watercolour mark
-TEAL    = "#1673bd"
-DEEP    = "#0c3f7c"
-ABYSS   = "#071f42"
-TEAL300 = "#a3d9f4"
-MIST    = "#e2f1fb"
-MIST2   = "#f0f8fe"
-PAPER   = "#fbfdff"
-LINE    = "#d2e4f2"
-INK3    = "#6a83a3"
+# Read off the clinic's own logo: NAVY is the wordmark, TEAL300 the aqua panel it
+# sits on. DEEP is the «μπλε ραφ» the clinic asked the site to be built in.
+NAVY    = "#0d2b7d"   # the wordmark's navy, sampled from the logo itself
+BRAND   = "#89d1db"   # the logo's aqua — the highlight everywhere on a deep ground
+TEAL    = "#3b7387"
+DEEP    = "#2a4b5a"   # «μπλε ραφ»
+ABYSS   = "#16323e"
+TEAL300 = "#89d1db"
+MIST    = "#e4f0f4"
+MIST2   = "#f1f8fa"
+PAPER   = "#fafdfe"
+LINE    = "#d3e3e9"
+INK3    = "#6c8894"
 SKIN    = "#fdf1e8"
 SKIN2   = "#f6e0d1"
 SKIN_L  = "#e0c6b3"
@@ -37,17 +40,18 @@ WARN    = "#c2865a"
 ALERT   = "#c2544f"
 KERAT   = "#d9a066"
 
-FONT = ('font-family="M PLUS Rounded 1c,Manrope,-apple-system,BlinkMacSystemFont,'
+FONT = ('font-family="Manrope,Inter,-apple-system,BlinkMacSystemFont,'
         '\'Segoe UI\',Helvetica,Arial,sans-serif"')
 
 
 # ── The card's typeface, set as outlines ─────────────────────────────────────
-# The clinic's business card is set in M PLUS Rounded 1c. The pages load it from
-# Google Fonts, but an SVG viewed through <img> cannot reach a web font, so the
-# lockups below draw the wordmark as paths from a Latin+Greek subset kept in
-# brand/. The same files feed the PNG share card.
-BRAND_FONT = {400: os.path.join(ROOT, "brand", "mplus-rounded-1c-400.ttf"),
-              700: os.path.join(ROOT, "brand", "mplus-rounded-1c-700.ttf")}
+# The site is set in Manrope — a geometric sans whose circular bowls answer the
+# ones in the logo's own wordmark. The pages load it from Google Fonts, but an
+# SVG viewed through <img> cannot reach a web font, so the lockups below draw the
+# wordmark as paths from static Latin+Greek instances kept in brand/. The same
+# files feed the PNG share card.
+BRAND_FONT = {400: os.path.join(ROOT, "brand", "manrope-400.ttf"),
+              700: os.path.join(ROOT, "brand", "manrope-700.ttf")}
 _TT = {}
 
 
@@ -79,6 +83,15 @@ def text_path(text, x, y, size, *, weight=400, fill="#000", tracking=0.0,
         pos += hmtx[n][0] * k + tracking
     d = pen.getCommands()
     return f'<path d="{d}" fill="{fill}" {extra}/>' if d else ""
+
+
+def text_width(text, size, *, weight=400, tracking=0.0):
+    """Advance width of `text` set at `size`, in user units."""
+    f = _tt(weight)
+    k = size / f["head"].unitsPerEm
+    cmap, hmtx = f.getBestCmap(), f["hmtx"]
+    names = [cmap.get(ord(ch), ".notdef") for ch in text]
+    return sum(hmtx[n][0] * k for n in names) + tracking * (len(text) - 1)
 
 
 def w(name, body):
@@ -151,10 +164,10 @@ def mark_image(cx, cy, size, *, light=False, px=None):
 # The real Ensō logo is a watercolour brush circle: indigo pigment pooling in
 # blooms, thinning to a pale wash where the brush ran dry. These four steps
 # reproduce that range while staying inside the site palette.
-INK_DEEP = "#0a3a80"   # where the pigment pools
-INK_MID  = "#1a7fcf"
-INK_SOFT = "#4fbde9"   # the brand blue
-INK_PALE = "#a3d9f4"
+INK_DEEP = "#1f4a5e"   # where the pigment pools
+INK_MID  = "#3b7387"
+INK_SOFT = "#6fb4c6"   # the brand aqua
+INK_PALE = "#89d1db"
 
 # The brush lands at about one o'clock and sweeps clockwise, lifting just short
 # of where it began — so the circle stays open at the top right, as it does in
@@ -343,7 +356,7 @@ def logo(light=False, descriptor=None):
     keep it, because there it is legible."""
     if descriptor is None:
         descriptor = light
-    name = "#ffffff" if light else DEEP
+    name = "#ffffff" if light else NAVY
     second = TEAL300 if light else TEAL
     desc = TEAL300 if light else INK3
     h = 124 if descriptor else 96
@@ -352,14 +365,18 @@ def logo(light=False, descriptor=None):
     # — enough for a 2× screen, and the whole file still weighs less than the
     # drawn mark it replaced.
     mark = mark_image(58, cy, 96, light=light, px=208)
-    tail = ("\n  " + text_path("HOLISTIC PODOLOGY", 128, 95, 12.5, weight=700,
-                                fill=desc, tracking=3.2)
+    x0, size = 118.0, 32.0
+    gap = size * 0.26
+    x1 = x0 + text_width("Ensō", size, weight=400) + gap
+    width = round(x1 + text_width("Foot Clinic", size, weight=700) + 14)
+    tail = ("\n  " + text_path("HOLISTIC PODOLOGY", x0 + 2, 95, 11.5, weight=700,
+                                fill=desc, tracking=3.0)
             if descriptor else "")
-    return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 396 {h}" width="396" height="{h}"
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {h}" width="{width}" height="{h}"
   role="img" aria-label="Ensō Foot Clinic — Ολιστική ποδολογία">
   {mark}
-  {text_path("Ensō", 126, cy + 8, 34, weight=400, fill=name)}
-  {text_path("Foot Clinic", 209, cy + 8, 34, weight=700, fill=second)}{tail}
+  {text_path("Ensō", x0, cy + 8, size, weight=400, fill=name)}
+  {text_path("Foot Clinic", x1, cy + 8, size, weight=700, fill=second)}{tail}
 </svg>"""
 
 
@@ -430,7 +447,8 @@ def clinic_banner():
   </g>
   {mark_image(1170, 350, 500, light=True, px=560)}
   {text_path("Ensō", 120, 292, 76, weight=400, fill="#ffffff")}
-  {text_path("Foot Clinic", 306, 292, 76, weight=700, fill=TEAL300)}
+  {text_path("Foot Clinic", 120 + text_width("Ensō", 76, weight=400) + 20, 292, 76,
+             weight=700, fill=TEAL300)}
   {text_path("HOLISTIC PODOLOGY", 124, 352, 30, weight=700, fill=BRAND, tracking=7)}
   {text_path("Χριστοδούλου Ελπινίκη · Θεσσαλονίκη · Αθήνα · από το 2002", 122, 440, 30,
              weight=400, fill=TEAL300, extra='opacity=".9"')}
@@ -847,6 +865,7 @@ def main():
     made = []
     made.append(w("logo.svg", logo(False)))
     made.append(w("logo-light.svg", logo(True)))
+    made.append(w("logo-light-plain.svg", logo(True, descriptor=False)))
     made.append(w("favicon.svg", favicon()))
     made.append(w("hero-enso.svg", hero()))
     made.append(w("hero-enso-dark.svg", hero_dark()))
