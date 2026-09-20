@@ -593,10 +593,11 @@ def build_home():
         f'<li><b data-count="{a}">{a}</b><span>{b}</span></li>' for a, b in creds)
 
     # The entry screen the clinic asked for: its own logo on the deep ground and
-    # «Πατήστε εδώ». The logo is the clinic's actual lockup, lifted unaltered
-    # from ensofootclinic.gr at the client's request — mark, name, practitioner
-    # and descriptor are all inside the artwork, so nothing is set beside it but
-    # the current descriptor line. It is the homepage: it shows every time the
+    # «Πατήστε εδώ». The logo is the clinic's actual lockup from ensofootclinic.gr
+    # with its aqua plate lifted away — she asked for it minimal and transparent,
+    # so it sits directly on the petrol (see lockup_light() in art.py). Mark, name,
+    # practitioner and descriptor are all inside the artwork, so nothing is set
+    # beside it but the current descriptor line. It is the homepage: it shows every time the
     # page opens, and one tap fades it out. Behind it the page starts straight
     # on the conditions; the lockup is the gate, it is not repeated. The grid
     # lives on an inner span: Safari has been unreliable with grid on <button>.
@@ -604,8 +605,8 @@ def build_home():
   <span class="hero__aurora" aria-hidden="true"><i></i><i></i><i></i></span>
   <span class="hero__mesh" aria-hidden="true"></span>
   <span class="gate__inner">
-    {img("logo-lockup.png", "Ensō Foot Clinic — Christodoulou Elpiniki, Holistic Podology",
-         1004, 591, 0, cls="gate__lockup", priority=True)}
+    {img("logo-lockup-light.png", "Ensō Foot Clinic — Christodoulou Elpiniki, Holistic Podology",
+         945, 591, 0, cls="gate__lockup", priority=True)}
     <span class="gate__sub">Holistic Podology</span>
     <span class="gate__cta">Πατήστε εδώ {I['right']}</span>
   </span>

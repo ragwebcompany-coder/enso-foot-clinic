@@ -4,7 +4,8 @@
     python3 enso-new/tools/art.py
 
 Writes into site/assets/img/:
-  · logo.svg / logo-light.svg / logo-light-plain.svg / favicon.svg / favicon-144.png / og-enso.png
+  · logo.svg / logo-light.svg / logo-light-plain.svg / logo-lockup-light.png
+  · favicon.svg / favicon-144.png / og-enso.png
   · hero-enso.svg / hero-enso-dark.svg / clinic-enso.svg
   · elpiniki-christodoulou.svg
   · gal-*.svg — the fourteen schematic illustrations used by /gallery/
@@ -430,6 +431,49 @@ def enso_badge_light():
   role="img" aria-label="Το σήμα ensō του Ensō Foot Clinic">
   {mark_image(200, 200, 356, light=True, px=460)}
 </svg>"""
+
+
+# ── The clinic's own lockup, lifted off its plate ────────────────────────────
+# brand/enso-lockup-source.png is the artwork exactly as the clinic uses it:
+# mark, «Ensō Foot Clinic», the practitioner's name and the descriptor, printed
+# in navy and white on a flat aqua plate. The entry screen wants it transparent
+# and minimal, which the file cannot be as it stands — lift the plate away and
+# the navy half of the wordmark is left sitting invisibly on the deep ground.
+#
+# So the plate becomes alpha, and ink is re-mapped by tone rather than by hue:
+# what was dark (the navy wordmark, the loaded brush) takes the logo's own aqua,
+# what was light (the white wordmark, the dry brush) takes a softened white. The
+# two-tone split of the original survives, the letterforms are untouched, and
+# both halves read on the petrol. The light end is compressed because pure white
+# turns the dry-brush texture into speckle at this size.
+LOCKUP = os.path.join(ROOT, "brand", "enso-lockup-source.png")
+LOCKUP_PLATE = (137.0, 209.0, 219.0)     # the aqua the artwork is printed on
+LOCKUP_PALE = (214.0, 240.0, 245.0)
+
+
+def lockup_light():
+    from PIL import Image
+    import numpy as np
+    im = np.asarray(Image.open(LOCKUP).convert("RGB")).astype(np.float32)
+    plate = np.array(LOCKUP_PLATE)
+    aqua = np.array(hex_rgb(TEAL300), dtype=np.float32)
+    pale = np.array(LOCKUP_PALE)
+    plate_lum = float(0.2126 * plate[0] + 0.7152 * plate[1] + 0.0722 * plate[2])
+
+    # A small dead zone swallows the compression halo around the plate; the
+    # gamma then pushes everything past it towards opaque, so the brush reads as
+    # paint rather than as grey mottle with the ground showing through it.
+    d = np.linalg.norm(im - plate, axis=-1)
+    alpha = np.clip((d - 14.0) / 58.0, 0, 1) ** 0.62
+    lum = 0.2126 * im[..., 0] + 0.7152 * im[..., 1] + 0.0722 * im[..., 2]
+    t = np.clip((lum - plate_lum) / (255.0 - plate_lum), 0, 1) ** 1.6
+    rgb = aqua + (pale - aqua) * t[..., None]
+
+    out = Image.fromarray(np.dstack([rgb, alpha * 255]).astype("uint8"), "RGBA")
+    out = out.crop(out.getbbox())        # the plate left a wide empty margin
+    out.save(os.path.join(IMG, "logo-lockup-light.png"), optimize=True)
+    out.save(os.path.join(IMG, "logo-lockup-light.webp"), "WEBP", quality=92, method=6)
+    return out.size
 
 
 def clinic_banner():
@@ -876,7 +920,9 @@ def main():
     for stem, fn in GALLERY_ART.items():
         made.append(w(stem + ".svg", fn()))
     n = rasterise()
-    print(f"drew {len(made)} SVG + {n} PNG assets → {IMG}")
+    size = lockup_light()
+    print(f"drew {len(made)} SVG + {n + 2} PNG assets → {IMG}")
+    print(f"  logo-lockup-light {size[0]}×{size[1]} (transparent, from brand/enso-lockup-source.png)")
 
 
 if __name__ == "__main__":
