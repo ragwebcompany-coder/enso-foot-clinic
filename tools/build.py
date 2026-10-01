@@ -15,22 +15,27 @@ ROOT = os.path.dirname(HERE)
 sys.path.insert(0, os.path.join(ROOT, "content"))
 sys.path.insert(0, HERE)
 
-from data import (SITE, PRACTITIONER, CONDITIONS, TREATMENTS, ARTICLES, GUIDE_STEPS,
+from data import (SITE, PRACTITIONER, CENTRES, TREATMENTS, ARTICLES,
+                  ENSO_LEDE, ENSO_LEDE_BODY, ENSO_INTRO, ENSO_PILLARS, ENSO_WHY,
+                  ENSO_CLOSE, BIO_BRIEF, BIO_MORE,
                   RED_FLAGS, TRACKER, EN_PAGES, MONTHS, KIND_LABELS, MATRIX_COLS,
                   GALLERY, GALLERY_CATS, SEMINARS, SEMINAR_STATUS, SEMINAR_MODES,
                   SEMINAR_NOTIFY)
 from pagecopy import COPY
 import parts
-from parts import (I, rel, head, header, footer, overlays,
-                   anatomy_block, asset)
+from parts import I, rel, head, header, footer, overlays, asset
 
 OUT = os.path.abspath(os.environ.get("ENSO_OUT") or os.path.join(ROOT, "site"))
 # parts.asset() hashes files from here.
 parts.ASSET_ROOT = OUT
 TODAY = datetime.date.today().isoformat()
 
-CONDS = {c["slug"]: c for c in CONDITIONS}
 TREATS = {t["slug"]: t for t in TREATMENTS}
+
+
+def txt(x):
+    """HTML copy carries entities; JSON-LD and plain attributes must not."""
+    return html.unescape(x)
 
 # ── URL map ──────────────────────────────────────────────────────────────────
 # Every page of the site, keyed by its copy slug. Used by the `@/` link rewriter,
@@ -40,13 +45,11 @@ URLMAP = {
     PRACTITIONER["slug"]: PRACTITIONER["slug"] + "/",
     "epikoinonia": "epikoinonia/", "oroi-chrisis": "oroi-chrisis/",
     "arthra": "arthra/", "gallery": "gallery/",
-    "odigos-symptomaton": "odigos-symptomaton/", "frontida-podion": "frontida-podion/",
-    "pathiseis": "pathiseis/", "ypiresies": "ypiresies/", "seminaria": "seminaria/",
+    "frontida-podion": "frontida-podion/",
+    "ypiresies": "ypiresies/", "seminaria": "seminaria/",
 }
 for _s in SEMINARS:
     URLMAP[_s["slug"]] = f"seminaria/{_s['slug']}/"
-for c in CONDITIONS:
-    URLMAP[c["slug"]] = f"pathiseis/{c['slug']}/"
 for t in TREATMENTS:
     URLMAP[t["slug"]] = f"ypiresies/{t['slug']}/"
 for slug, _tag in ARTICLES:
@@ -154,6 +157,11 @@ def smart_desc(text, limit=155):
     if not out:
         out = text[:limit].rsplit(" ", 1)[0].rstrip(" ,·—-") + "…"
     return out
+
+
+def copy_title(slug, fallback):
+    """The hand-written <title> from the copy module, if the page has one."""
+    return (COPY.get(slug) or {}).get("title") or fallback
 
 
 def meta_desc(slug, fallback=""):
@@ -277,8 +285,8 @@ def clinic_ld():
         "founder": {"@id": PODOLOGIST_ID},
         "employee": {"@id": PODOLOGIST_ID},
         "availableService": [
-            {"@type": "MedicalTherapy", "name": t["title"],
-             "alternateName": t["short"], "description": t["lead"],
+            {"@type": "MedicalTherapy", "name": txt(t["title"]),
+             "alternateName": txt(t["short"]), "description": txt(t["lead"]),
              "url": f"{SITE['domain']}/ypiresies/{t['slug']}/"} for t in TREATMENTS],
         # No openingHoursSpecification: the clinic works by appointment and has
         # never published fixed hours. Inventing them would be worse than omitting.
@@ -334,7 +342,9 @@ def podologist_ld():
         "email": SITE["email"],
         "areaServed": _area_served(),
         "knowsLanguage": ["el", "en"],
-        "knowsAbout": [c["title"] for c in CONDITIONS] + [t["title"] for t in TREATMENTS],
+        "knowsAbout": [txt(t["title"]) for t in TREATMENTS] + [
+            "Διαβητικό πόδι", "Υπερκερατώσεις", "Ονυχοκρύπτωση",
+            "Ιδιοδεκτικότητα πέλματος", "Αθλητικό υπόδημα"],
         "sameAs": [SITE["social"]["facebook"], SITE["social"]["tiktok"]],
     }
 
@@ -406,7 +416,8 @@ def crumbs(items, depth, lang="el"):
         {"@type": "ListItem", "position": 1, "name": root,
          "item": SITE["domain"] + ("/en/" if lang == "en" else "/")}]}
     for n, (label, _url) in enumerate(items, start=2):
-        ld["itemListElement"].append({"@type": "ListItem", "position": n, "name": label})
+        ld["itemListElement"].append({"@type": "ListItem", "position": n,
+                                      "name": html.unescape(label)})
     return f'<ol class="crumbs">{"".join(lis)}</ol>', ld
 
 
@@ -433,78 +444,65 @@ def cta_band(depth):
 </section>"""
 
 
-def guide_section(depth, *, heading=True):
-    steps = json.dumps({
-        "phone": SITE["phone"], "phoneHref": SITE["phone_href"],
-        "steps": [{"id": s["id"], "type": s["type"], "q": s["q"], "help": s["help"],
-                   "options": [[o[0], o[1], o[2]] for o in s["options"]]} for s in GUIDE_STEPS],
-        "conditions": {c["slug"]: {
-            "title": c["title"], "lead": c["lead"], "url": rel(depth) + f"pathiseis/{c['slug']}/",
-            "treatments": [{"title": TREATS[t]["title"], "url": rel(depth) + f"ypiresies/{t}/"}
-                           for t in c["treatments"]]} for c in CONDITIONS},
-    }, ensure_ascii=False, separators=(",", ":"))
-    head_html = ""
-    if heading:
-        head_html = """<div class="sec-head sec-head--split">
-      <div class="stack">
-        <p class="eyebrow">Οδηγός συμπτωμάτων</p>
-        <h2>Πώς λέγεται αυτό που νιώθετε;</h2>
-      </div>
-      <p class="lede">Τέσσερις ερωτήσεις σε καθημερινή γλώσσα. Στο τέλος θα ξέρετε ποιον όρο
-        να αναζητήσετε και τι κάνουμε συνήθως σε τέτοιες περιπτώσεις.</p>
-    </div>"""
-    return f"""<section class="section section--mist" id="odigos">
-  <div class="wrap">
-    {head_html}
-    <div class="guide" id="guide" data-reveal>
-      <div class="guide__head">
-        <div style="display:flex;align-items:center;gap:.65rem">
-          {I['shield']}<span class="small" style="font-weight:560;color:var(--deep)">Ιδιωτικός οδηγός</span>
-        </div>
-        <div class="guide__steps guide__dots" aria-hidden="true"></div>
-      </div>
-      <div class="guide__body"><p class="muted">Φόρτωση…</p></div>
-    </div>
-    <p class="tiny muted" style="margin-top:1rem;max-width:60ch">
-      Ο οδηγός δεν αντικαθιστά την κλινική εξέταση και δεν στέλνει τις απαντήσεις σας πουθενά.
-      Αν έχετε {" ή ".join("<b>" + f.lower() + "</b>" for f in RED_FLAGS[:2])},
-      μη χρησιμοποιήσετε τον οδηγό — καλέστε μας ή απευθυνθείτε σε γιατρό.</p>
-  </div>
-  <script>window.ENSO_GUIDE={steps};</script>
-</section>"""
+def centre_figure(c, depth, *, i=0):
+    """One of the two centres.
+
+    When the clinic sends the photograph of the space — with Ms Christodoulou
+    and her collaborators in it — `photo` in content/data.py names the file and
+    this renders it. Until then it renders the centre as a location card
+    instead of captioning some other picture as a room nobody has seen.
+    """
+    if c["photo"]:
+        w, h = c["photo_size"]
+        media = img(c["photo"], c["photo_alt"], w, h, depth, cls="centre__img")
+    else:
+        media = f"""<span class="centre__plate" aria-hidden="true">
+        <img src="{asset(depth, "assets/img/enso-badge-light.svg")}" alt="" width="96" height="96">
+        <b>{c['short']}</b></span>"""
+    return f"""<figure class="centre" data-reveal="{i * 70}">
+  <div class="centre__media">{media}</div>
+  <figcaption class="centre__body">
+    <p class="eyebrow">{c['city']}</p>
+    <p class="centre__note">{c['note']}</p>
+    <ul class="info-list">
+      <li>{I['pin']}<div><a href="{c['map']}" rel="noopener" target="_blank">{c['address']},
+        {c['postcode']}</a></div></li>
+      <li>{I['phone']}<div><a href="tel:{c['phone_href']}">{c['phone']}</a></div></li>
+    </ul>
+  </figcaption>
+</figure>"""
 
 
-ZONE_LABELS = {"nail": "Νύχι μεγάλου δακτύλου", "forefoot": "Πρόσθιο πέλμα",
-               "heel": "Πτέρνα", "circulation": "Δέρμα, νεύρα & αγγεία"}
+def centres_block(depth):
+    return ('<div class="centres">'
+            + "".join(centre_figure(c, depth, i=i) for i, c in enumerate(CENTRES))
+            + "</div>")
 
 
-def anatomy_section(depth):
-    by_zone = {}
-    for c in CONDITIONS:
-        by_zone.setdefault(c["zone"], []).append(c)
-    info = {zone: {"zone": ZONE_LABELS[zone], "conditions": [
-        {"title": c["title"], "plain": c["plain"], "lead": c["lead"],
-         "url": rel(depth) + f"pathiseis/{c['slug']}/",
-         "treatments": [{"title": TREATS[t]["title"], "url": rel(depth) + f"ypiresies/{t}/"}
-                        for t in c["treatments"]]} for c in cs]}
-            for zone, cs in by_zone.items()}
-    return f"""<section class="section">
-  <div class="wrap">
-    <div class="sec-head sec-head--split">
-      <div class="stack">
-        <p class="eyebrow">Το αποτύπωμα</p>
-        <h2>Τέσσερα σημεία του πέλματος, τέσσερις απαντήσεις.</h2>
-      </div>
-      <p class="lede">Το αποτύπωμα δείχνει πού φορτίζεται το πόδι σε κάθε βήμα: στα δάχτυλα,
-        στο πρόσθιο πέλμα, στην πτέρνα — και σε όλο το δέρμα, εκεί που περνούν τα νεύρα και
-        τα αγγεία. Επιλέξτε ένα σημείο.</p>
-    </div>
-    {anatomy_block(depth)}
-    <p class="anatomy__hint" style="margin-top:1.25rem">
-      Επιλέξτε ένα σημείο στο αποτύπωμα για να δείτε τι εμφανίζεται εκεί και τι κάνουμε γι' αυτό.</p>
-  </div>
-  <script>window.ENSO_ANATOMY={json.dumps(info, ensure_ascii=False, separators=(",", ":"))};</script>
-</section>"""
+def enso_pillars(depth, *, facts=True):
+    """The four pillars of the E.N.S.O. framework, the clinic's own words."""
+    cards = "".join(f"""<div class="pillar" data-reveal="{i * 70}">
+      <span class="pillar__letter" aria-hidden="true">{p['letter']}</span>
+      <p class="pillar__name">{p['en']}<span>{p['el']}</span></p>
+      <h3>{p['head']}</h3>
+      <p>{p['body']}</p>
+      {f'<p class="pillar__fact"><b>Επιστημονικό δεδομένο</b>{p["fact"]}</p>' if facts else ''}
+    </div>""" for i, p in enumerate(ENSO_PILLARS))
+    return f'<div class="pillars">{cards}</div>'
+
+
+def bio_brief_block(depth):
+    """The short, dated CV the clinic asked for, with «περισσότερα» for the rest."""
+    def rows(items):
+        return "".join(f"<li><b>{a}</b><span>{b}</span></li>" for a, b in items)
+    return f"""<ul class="timeline">{rows(BIO_BRIEF)}</ul>
+<details class="more">
+  <summary><span class="more__open">Περισσότερα</span><span class="more__shut">Λιγότερα</span>
+    {I['chev']}</summary>
+  <ul class="timeline" style="margin-top:1.25rem">{rows(BIO_MORE)}</ul>
+  <p style="margin-top:1.25rem"><a class="link-more"
+    href="{rel(depth)}{PRACTITIONER['slug']}/">Πλήρες βιογραφικό</a></p>
+</details>"""
 
 
 def tracker_section(depth):
@@ -592,19 +590,12 @@ def compare_section(depth, *, heading=True):
 # ── Home ─────────────────────────────────────────────────────────────────────
 def build_home():
     d = 0
-    conds = "".join(f"""<a class="card" href="pathiseis/{c['slug']}/" data-reveal="{i*60}">
-      <p class="card__kicker">{c['stat'][0]} · {c['stat'][1]}</p>
-      <h3>{c['title']}</h3>
-      <p>{c['lead']}</p>
-      <p class="cond-card__voice">«{c['plain']}»</p>
-    </a>""" for i, c in enumerate(CONDITIONS))
-
     treats = "".join(f"""<a class="card" href="ypiresies/{t['slug']}/" data-reveal="{i*50}">
       <p class="card__kicker">{t['short']}</p>
       <h3>{t['title']}</h3>
       <p>{t['lead']}</p>
       <p class="card__foot"><span class="link-more">Αναλυτικά</span></p>
-    </a>""" for i, t in enumerate(TREATMENTS[:3]))
+    </a>""" for i, t in enumerate(TREATMENTS))
 
     art = "".join(f"""<a class="card" href="arthra/{slug}/" data-reveal="{i*60}">
       <p class="card__kicker">{tag}</p>
@@ -627,7 +618,8 @@ def build_home():
     # practitioner and descriptor are all inside the artwork, so nothing is set
     # beside it but the current descriptor line. It is the homepage: it shows every time the
     # page opens, and one tap fades it out. Behind it the page starts straight
-    # on the conditions; the lockup is the gate, it is not repeated. The grid
+    # on «Ποιοι είμαστε» — the clinic asked for that in place of the services;
+    # the lockup is the gate, it is not repeated. The grid
     # lives on an inner span: Safari has been unreliable with grid on <button>.
     body = f"""<button class="gate" type="button" aria-label="Είσοδος στον ιστότοπο του Ensō Foot Clinic">
   <span class="hero__aurora" aria-hidden="true"><i></i><i></i><i></i></span>
@@ -639,18 +631,18 @@ def build_home():
   </span>
 </button>
 
-<section class="section" id="pathiseis">
+<section class="section" id="poioi-eimaste">
   <div class="wrap">
     <div class="sec-head sec-head--split">
       <div class="stack">
-        <p class="eyebrow">Παθήσεις</p>
-        <h1>Πού μπορούμε να δώσουμε λύσεις.</h1>
+        <p class="eyebrow">Ποιοι είμαστε</p>
+        <h1>{ENSO_LEDE}</h1>
       </div>
-      <p class="lede">Διαβάστε τι είναι, γιατί εμφανίζεται και τι γίνεται γι' αυτό —
-        γραμμένο ώστε να το καταλάβετε πριν μπείτε στο ποδολογικό κέντρο.</p>
+      <p class="lede">{ENSO_LEDE_BODY}</p>
     </div>
-    <div class="grid grid--2">{conds}</div>
-    <p style="margin-top:2rem"><a class="link-more" href="pathiseis/">Όλες οι παθήσεις</a></p>
+    {centres_block(d)}
+    <p style="margin-top:2.25rem"><a class="link-more" href="to-kentro/">Ποιοι είμαστε,
+      αναλυτικά</a></p>
   </div>
 </section>
 
@@ -658,19 +650,31 @@ def build_home():
   <div class="wrap"><ul class="creds__list">{creds_html}</ul></div>
 </div>
 
-{anatomy_section(d)}
-
-{guide_section(d)}
+<section class="section section--mist" id="enso">
+  <div class="wrap">
+    <div class="sec-head sec-head--split">
+      <div class="stack">
+        <p class="eyebrow">E.N.S.O. Framework</p>
+        <h2>Ο κύκλος της κίνησης.</h2>
+      </div>
+      <p class="lede">{ENSO_INTRO}</p>
+    </div>
+    {enso_pillars(d, facts=False)}
+    <p style="margin-top:2.25rem"><a class="link-more" href="to-kentro/#enso">Γιατί
+      ENSO</a></p>
+  </div>
+</section>
 
 <section class="section">
   <div class="wrap">
     <div class="sec-head sec-head--split">
       <div class="stack"><p class="eyebrow">Υπηρεσίες</p>
         <h2>Πρώτα φεύγει ο πόνος. Μετά φεύγει η αιτία.</h2></div>
-      <p class="lede">Η ανακούφιση είναι εύκολη και άμεση. Το δύσκολο — και το ουσιαστικό —
-        είναι να μη ξαναγυρίσει το πρόβλημα στο ίδιο σημείο.</p>
+      <p class="lede">Τέσσερις υπηρεσίες, από την κλινική πράξη μέχρι την πρόληψη. Η
+        ανακούφιση είναι εύκολη και άμεση· το δύσκολο — και το ουσιαστικό — είναι να μη
+        ξαναγυρίσει το πρόβλημα στο ίδιο σημείο.</p>
     </div>
-    <div class="grid grid--3">{treats}</div>
+    <div class="grid grid--2">{treats}</div>
     <p style="margin-top:2rem"><a class="link-more" href="ypiresies/">Συγκρίνετε όλες τις υπηρεσίες</a></p>
   </div>
 </section>
@@ -683,9 +687,10 @@ def build_home():
       </div>
       <div class="stack">
         <p class="eyebrow">Το ποδολογικό κέντρο · Θεσσαλονίκη &amp; Αθήνα</p>
-        <h2>Μία ποδολόγος, ένα πόδι τη φορά, από το 2002.</h2>
+        <h2>Ένα πόδι τη φορά, από το 2002.</h2>
         <p class="lede">Η Ελπινίκη Χριστοδούλου έχει πάνω από 25 χρόνια στη θεραπεία του
-          άκρου ποδός. Εδώ δεν θα σας δει «η ομάδα» — θα σας δει η ίδια, κάθε φορά.</p>
+          άκρου ποδός και, μαζί με τους συνεργάτες της, δέχεται σε δύο ποδολογικά
+          κέντρα — στην Περαία Θεσσαλονίκης και στην Καλλιθέα Αθήνας.</p>
         <p class="voice">{PRACTITIONER['quote']}</p>
         <ul class="info-list" style="margin-block:.5rem">
           <li>{I['pin']}<div><b>Θεσσαλονίκη</b>
@@ -697,7 +702,7 @@ def build_home():
         </ul>
         <div class="pill-row">
           <a class="chip" href="{PRACTITIONER['slug']}/">Βιογραφικό</a>
-          <a class="chip" href="to-kentro/">Το ποδολογικό κέντρο</a>
+          <a class="chip" href="to-kentro/">Ποιοι είμαστε</a>
           <a class="chip" href="gallery/">Εικονογραφήσεις</a>
         </div>
       </div>
@@ -756,8 +761,8 @@ def build_home():
 
     page(path="", title="Ποδολόγος σε Θεσσαλονίκη & Αθήνα | Ensō Foot Clinic",
          desc="Ποδολογικό κέντρο σε Περαία Θεσσαλονίκης και Καλλιθέα Αθήνας, από το 2002. "
-              "Διαβητικό πόδι, κάλοι και "
-              "τύλοι, ραγάδες πτέρνας, είσφρηση όνυχος με ανώδυνη ορθονυχία.",
+              "Κλινική ποδολογική φροντίδα, συμβουλευτική αθλητικού υποδήματος, "
+              "ενδυνάμωση πέλματος και προληπτική φροντίδα υψηλού κινδύνου.",
          depth=0, body=body, jsonld=ld, alt=("en", "en/"),
          body_class="page--home")
 
@@ -776,7 +781,7 @@ def article_date(slug):
     return f"{year}-{MONTHS.get(mon, '01')}-{int(day):02d}", f"{day} {mon} {year}"
 
 
-# ── Condition & service pages ───────────────────────────────────────────────
+# ── Service pages ───────────────────────────────────────────────────────────
 def related_strip(depth, treat_slugs, title="Σχετικές υπηρεσίες"):
     if not treat_slugs:
         return ""
@@ -819,53 +824,6 @@ def aside_cta(depth):
 </div>"""
 
 
-def build_condition(c):
-    d, slug = 2, c["slug"]
-    body, faq_title, pairs = prose(slug, d)
-    faq_html, faq_ld = faq_block(faq_title, pairs, f"faq-{slug}")
-    crumb_html, crumb_ld = crumbs([("Παθήσεις", rel(d) + "pathiseis/"), (c["title"], None)], d)
-    head_block = f"""<section class="page-head">
-  <div class="wrap">
-    {crumb_html}
-    <div class="sec-head sec-head--split" style="margin-bottom:0">
-      <div class="stack">
-        <p class="eyebrow">{c['stat'][0]} · {c['stat'][1]}</p>
-        <h1>{c['title']}</h1>
-      </div>
-      <div class="stack">
-        <p class="voice">{c['plain']}</p>
-        <p class="lede" style="font-size:1rem">{c['lead']}</p>
-      </div>
-    </div>
-  </div>
-</section>"""
-    ld = [crumb_ld, org_graph(),
-          {"@context": "https://schema.org", "@type": "MedicalWebPage",
-           "name": c["title"], "inLanguage": "el",
-           "url": f"{SITE['domain']}/pathiseis/{slug}/",
-           "specialty": "Podiatric",
-           "lastReviewed": TODAY,
-           "reviewedBy": {"@id": PODOLOGIST_ID},
-           "about": {
-               "@type": "MedicalCondition",
-               "name": c["title"],
-               "description": c["lead"],
-               "possibleTreatment": [
-                   {"@type": "MedicalTherapy", "name": TREATS[t]["title"],
-                    "url": f"{SITE['domain']}/ypiresies/{t}/"}
-                   for t in c["treatments"] if t in TREATS]},
-           "publisher": {"@id": CLINIC_ID},
-           "provider": {"@id": CLINIC_ID}}]
-    if faq_ld:
-        ld.append(faq_ld)
-    page(path=f"pathiseis/{slug}/",
-         title=seo_title(f"{c['title']} — αίτια & θεραπεία"),
-         desc=local_desc(c.get("meta") or meta_desc(slug, c["lead"])), depth=d,
-         body=head_block + doc_layout(d, body, aside_cta(d)) + faq_html
-              + related_strip(d, c["treatments"]) + cta_band(d),
-         jsonld=ld)
-
-
 def build_treatment(t):
     d, slug = 2, t["slug"]
     body, faq_title, pairs = prose(slug, d)
@@ -882,6 +840,7 @@ def build_treatment(t):
       <div class="stack">
         <p class="eyebrow">{t['short']}</p>
         <h1>{t['title']}</h1>
+        <p class="muted" style="font-size:.92rem;letter-spacing:.02em">{t['en']}</p>
       </div>
       <div class="stack">
         <p class="lede" style="font-size:1.06rem">{t['lead']}</p>
@@ -896,20 +855,21 @@ def build_treatment(t):
 </section>"""
     ld = [crumb_ld, org_graph(),
           {"@context": "https://schema.org", "@type": "MedicalTherapy",
-           "name": t["title"], "alternateName": t["short"], "description": t["lead"],
+           "name": txt(t["title"]), "alternateName": txt(t["short"]),
+           "description": txt(t["lead"]),
            "url": f"{SITE['domain']}/ypiresies/{slug}/",
            "bodyLocation": "Άκρο πόδι",
-           "howPerformed": m["setting"],
-           "preparation": m["sensation"],
-           "followup": m["after"],
+           "howPerformed": txt(m["setting"]),
+           "preparation": txt(m["sensation"]),
+           "followup": txt(m["after"]),
            "relevantSpecialty": "Podiatric",
            "provider": {"@id": CLINIC_ID},
            "performer": {"@id": PODOLOGIST_ID},
-           "indication": [{"@type": "MedicalIndication", "name": x} for x in t["treats"]]}]
+           "indication": [{"@type": "MedicalIndication", "name": txt(x)} for x in t["treats"]]}]
     if faq_ld:
         ld.append(faq_ld)
     page(path=f"ypiresies/{slug}/",
-         title=seo_title(f"{t['title']} — {t['short']}"),
+         title=copy_title(slug, seo_title(f"{txt(t['title'])} — {txt(t['short'])}")),
          desc=local_desc(t.get("meta") or meta_desc(slug, t["lead"])), depth=d,
          body=head_block + doc_layout(d, body, aside_cta(d)) + faq_html + cta_band(d),
          jsonld=ld, active="treatments")
@@ -1173,59 +1133,13 @@ def build_seminars_hub():
 
 
 # ── Hubs ─────────────────────────────────────────────────────────────────────
-def build_conditions_hub():
-    d = 1
-    cards = "".join(f"""<a class="card" href="{rel(d)}pathiseis/{c['slug']}/" data-reveal="{i*50}">
-      <p class="card__kicker">{c['stat'][0]} · {c['stat'][1]}</p>
-      <h3>{c['title']}</h3><p>{c['lead']}</p>
-      <p class="cond-card__voice">«{c['plain']}»</p></a>""" for i, c in enumerate(CONDITIONS))
-    crumb_html, crumb_ld = crumbs([("Παθήσεις", None)], d)
-    body = f"""<section class="page-head">
-  <div class="wrap">
-    {crumb_html}
-    <div class="sec-head sec-head--split" style="margin-bottom:0">
-      <div class="stack"><p class="eyebrow">Παθήσεις</p>
-        <h1>Τέσσερις καταστάσεις που μοιράζονται ένα πόδι.</h1></div>
-      <p class="lede">Σπάνια έρχονται μόνες τους: το λάθος παπούτσι φτιάχνει και τον κάλο
-        και την ονυχοκρύπτωση. Γι' αυτό εξετάζουμε ολόκληρο το πόδι, όχι μόνο το σημείο
-        που πονάει.</p>
-    </div>
-  </div>
-</section>
-<section class="section section--tight"><div class="wrap"><div class="grid grid--2">{cards}</div></div></section>
-<section class="section section--tight section--mist">
-  <div class="wrap">
-    <div class="split split--wide-left">
-      <figure class="frame frame--photo" data-reveal>
-        {img("photo-foot-map.jpg", "Δύο πέλματα με σημειωμένες τις συχνότερες εστίες πόνου: κάλοι, ραγάδες πτέρνας, είσφρηση όνυχος, μεταταρσαλγία", 1088, 966, d)}
-        <figcaption>Οι συχνότερες εστίες πόνου στο πέλμα.</figcaption>
-      </figure>
-      <div class="stack">
-        <p class="eyebrow">Πού πονάει</p>
-        <h2>Κάθε σημείο του πέλματος λέει τη δική του ιστορία.</h2>
-        <p class="lede">Η πτέρνα, το πρόσθιο πέλμα, τα νύχια και τα δάχτυλα έχουν το καθένα
-          τα δικά του προβλήματα και τις δικές του αιτίες. Στην εξέταση δεν κοιτάμε μόνο
-          το σημείο που πονάει — κοιτάμε πώς πατάτε, πώς φοράτε, πώς περπατάτε.</p>
-        <p><a class="link-more" href="{rel(d)}odigos-symptomaton/">Βρείτε το δικό σας σημείο στον οδηγό</a></p>
-      </div>
-    </div>
-  </div>
-</section>
-{anatomy_section(d)}
-{guide_section(d)}
-{cta_band(d)}"""
-    page(path="pathiseis/", title="Παθήσεις άκρου ποδός | Ensō Foot Clinic",
-         desc="Διαβητικό πόδι, σκληρύνσεις, κάλοι και τύλοι, ξηροδερμία πελμάτων και "
-              "ραγάδες, είσφρηση όνυχος. Τι είναι και πώς αντιμετωπίζονται.",
-         depth=d, body=body, jsonld=[crumb_ld])
-
-
 def build_treatments_hub():
     d = 1
     cards = "".join(f"""<a class="card" href="{rel(d)}ypiresies/{t['slug']}/" data-reveal="{i*50}">
       <p class="card__kicker">{t['short']}</p><h3>{t['title']}</h3><p>{t['lead']}</p>
       <p class="card__foot"><span class="link-more">Αναλυτικά</span></p></a>"""
       for i, t in enumerate(TREATMENTS))
+    flags = ", ".join(f.lower() for f in RED_FLAGS[:-1]) + f", ή {RED_FLAGS[-1].lower()}"
     crumb_html, crumb_ld = crumbs([("Υπηρεσίες", None)], d)
     body = f"""<section class="page-head">
   <div class="wrap">
@@ -1233,17 +1147,25 @@ def build_treatments_hub():
     <div class="sec-head sec-head--split" style="margin-bottom:0">
       <div class="stack"><p class="eyebrow">Υπηρεσίες</p>
         <h1>Ανώδυνα, αναίμακτα, με αποστειρωμένα εργαλεία.</h1></div>
-      <p class="lede">Πέντε υπηρεσίες που καλύπτουν και την πρόληψη και τη θεραπεία.
+      <p class="lede">Τέσσερις υπηρεσίες που καλύπτουν και την πρόληψη και τη θεραπεία.
         Δείτε τι σημαίνει η καθεμία σε χρόνο, αίσθηση και συχνότητα.</p>
     </div>
   </div>
 </section>
-<section class="section section--tight"><div class="wrap"><div class="grid grid--3">{cards}</div></div></section>
+<section class="section section--tight"><div class="wrap"><div class="grid grid--2">{cards}</div></div></section>
 {compare_section(d)}
+
+<section class="section section--tight">
+  <div class="wrap wrap--narrow">
+    <div class="note"><b>Πότε δεν αρκεί η ποδολογία</b><span>Η ποδολογία έχει όρια και τα
+      δηλώνουμε. Καλέστε μας ή απευθυνθείτε σε γιατρό αν υπάρχει {flags}.</span></div>
+  </div>
+</section>
 {cta_band(d)}"""
     page(path="ypiresies/", title="Υπηρεσίες ποδολογίας — Θεσσαλονίκη & Αθήνα | Ensō Foot Clinic",
-         desc="Κλινική ποδολογία, αφαίρεση κάλων και τύλων, θεραπεία ξηροδερμίας, "
-              "ορθονυχία με νάρθηκα, έλεγχος διαβητικού ποδιού. Θεσσαλονίκη & Αθήνα.",
+         desc="Κλινική ποδολογική φροντίδα, συμβουλευτική αθλητικού υποδήματος, "
+              "ενδυνάμωση πέλματος και προληπτική φροντίδα υψηλού κινδύνου. "
+              "Θεσσαλονίκη & Αθήνα.",
          depth=d, body=body, jsonld=[crumb_ld], active="treatments")
 
 
@@ -1295,61 +1217,76 @@ def build_articles_hub():
          depth=d, body=body, jsonld=[crumb_ld], active="articles")
 
 
-# ── Clinic, practitioner, guide, tracker, gallery, contact, terms ───────────
+# ── Ποιοι είμαστε, practitioner, tracker, gallery, contact, terms ──────────
 def build_clinic():
+    """«Ποιοι είμαστε» — rebuilt to the 29/09/2026 brief.
+
+    Order is the clinic's: the two-cities line first, then the photographs of
+    the two spaces, then the meaning of the name as the E.N.S.O. framework, and
+    last the short dated biography with a «περισσότερα». Everything on it comes
+    from CENTRES / ENSO_* / BIO_BRIEF in content/data.py, so there is no prose
+    entry for this page any more.
+    """
     d = 1
-    body_html, faq_title, pairs = prose("to-kentro", d)
-    faq_html, faq_ld = faq_block(faq_title, pairs, "faq-clinic")
-    crumb_html, crumb_ld = crumbs([("Το ποδολογικό κέντρο", None)], d)
+    crumb_html, crumb_ld = crumbs([("Ποιοι είμαστε", None)], d)
+    why_head, why = ENSO_WHY[0][1], "".join(
+        f"<li><b>{a}</b><span>{b}</span></li>" for a, b in ENSO_WHY[1:])
     body = f"""<section class="page-head">
   <div class="wrap">{crumb_html}
     <div class="sec-head sec-head--split" style="margin-bottom:0">
-      <div class="stack"><p class="eyebrow">Το ποδολογικό κέντρο</p>
-        <h1>Ένας κύκλος που κλείνει με μία κίνηση.</h1></div>
-      <p class="lede">Ποδολογικό κέντρο σε Περαία Θεσσαλονίκης και Καλλιθέα Αθήνας. Αποστειρωμένα εργαλεία,
-        στεγνή τεχνική, μηδενικός πόνος — και ένα γραπτό πλάνο που φεύγει μαζί σας.</p>
+      <div class="stack"><p class="eyebrow">Ποιοι είμαστε</p>
+        <h1>{ENSO_LEDE}</h1></div>
+      <p class="lede">{ENSO_LEDE_BODY}</p>
     </div>
   </div>
 </section>
 
 <section class="section section--tight">
+  <div class="wrap">{centres_block(d)}</div>
+</section>
+
+<section class="section section--mist" id="enso">
   <div class="wrap">
-    <figure class="frame frame--photo" data-reveal>
-      {img("photo-podologos.jpg", "Βέλος ζωγραφισμένο στην άσφαλτο με τη λέξη «ΠΟΔΟΛΟΓΟΣ» και δύο πόδια με αθλητικά παπούτσια", 1054, 559, d)}
-      <figcaption>Από εδώ ξεκινά. Ένα βήμα, μία κατεύθυνση.</figcaption>
-    </figure>
+    <div class="sec-head sec-head--split">
+      <div class="stack"><p class="eyebrow">E.N.S.O. Framework</p>
+        <h2>Ο κύκλος της κίνησης.</h2></div>
+      <p class="lede">{ENSO_INTRO}</p>
+    </div>
+    {enso_pillars(d)}
+    <div class="panel panel--deep" style="margin-top:3rem">
+      <div class="stack">
+        <p class="eyebrow">Γιατί ENSO;</p>
+        <h2>{why_head}</h2>
+        <p class="lede">{ENSO_CLOSE}</p>
+      </div>
+      <ul class="timeline timeline--light">{why}</ul>
+    </div>
   </div>
 </section>
 
-{doc_layout(d, body_html, aside_cta(d))}
-{faq_html}
-
-<section class="section section--mist">
+<section class="section" id="viografiko">
   <div class="wrap">
-    <div class="sec-head"><p class="eyebrow">Ποιος θα σας δει</p><h2>Μία ποδολόγος, κάθε φορά.</h2></div>
+    <div class="sec-head"><p class="eyebrow">Ποιος θα σας δει</p>
+      <h2>Ελπινίκη Χριστοδούλου, ποδολόγος.</h2></div>
     <div class="split split--wide-left">
       <div class="frame" style="max-width:420px">
         {img(PRACTITIONER['photo'], PRACTITIONER['name'] + " — Ποδολόγος", 900, 900, d)}
       </div>
       <div class="stack">
         <p class="eyebrow">{PRACTITIONER['role']}</p>
-        <h3 style="font-family:var(--display);font-size:1.7rem">{PRACTITIONER['name']}</h3>
         <p class="lede">{PRACTITIONER['blurb']}</p>
-        <ul class="timeline">
-          {"".join(f"<li><b>{a}</b><span>{b}</span></li>" for a, b in PRACTITIONER['credentials'][:4])}
-        </ul>
-        <p><a class="link-more" href="{rel(d)}{PRACTITIONER['slug']}/">Πλήρες βιογραφικό</a></p>
+        {bio_brief_block(d)}
       </div>
     </div>
   </div>
 </section>
 {cta_band(d)}"""
     ld = [crumb_ld, org_graph()]
-    if faq_ld:
-        ld.append(faq_ld)
-    page(path="to-kentro/", title="Το ποδολογικό κέντρο — Θεσσαλονίκη & Αθήνα | Ensō Foot Clinic",
-         desc="Ποδολογικό κέντρο σε Περαία Θεσσαλονίκης και Καλλιθέα Αθήνας, από το 2002. Αποστείρωση "
-              "σε αυτόκαυστο, στεγνή τεχνική, γραπτό πλάνο φροντίδας.",
+    page(path="to-kentro/",
+         title="Ποιοι είμαστε — Ποδολογικά κέντρα σε Θεσσαλονίκη & Αθήνα | Ensō Foot Clinic",
+         desc="Δύο εξειδικευμένοι χώροι ποδολογικής φροντίδας, στην Περαία Θεσσαλονίκης και "
+              "στην Καλλιθέα Αθήνας. Το πλαίσιο E.N.S.O. και το βιογραφικό της Ελπινίκης "
+              "Χριστοδούλου.",
          depth=d, body=body, jsonld=ld, active="clinic")
 
 
@@ -1386,54 +1323,6 @@ def build_practitioner():
            "mainEntity": {"@id": PODOLOGIST_ID}}]
     page(path=f"{p['slug']}/", title=seo_title(f"{p['name']} — Ποδολόγος, Θεσσαλονίκη"),
          desc=local_desc(meta_desc(p["slug"], p["blurb"])), depth=d, body=body, jsonld=ld)
-
-
-def build_guide_page():
-    d = 1
-    crumb_html, crumb_ld = crumbs([("Οδηγός συμπτωμάτων", None)], d)
-    flags = "".join(f"<li>{f}</li>" for f in RED_FLAGS)
-    body = f"""<section class="page-head">
-  <div class="wrap">{crumb_html}
-    <div class="sec-head sec-head--split" style="margin-bottom:0">
-      <div class="stack"><p class="eyebrow">Οδηγός συμπτωμάτων</p>
-        <h1>Δεν χρειάζεται να ξέρετε πώς λέγεται.</h1></div>
-      <p class="lede">Τέσσερις ερωτήσεις, γραμμένες όπως θα το λέγατε σε φίλο. Στο τέλος
-        θα ξέρετε ποιον όρο να αναζητήσετε και ποιες είναι οι επιλογές σας.</p>
-    </div>
-  </div>
-</section>
-{guide_section(d, heading=False)}
-<section class="section section--tight">
-  <div class="wrap">
-    <div class="split">
-      <div class="stack">
-        <p class="eyebrow">Πότε να μην περιμένετε</p>
-        <h2>Κάποια σημάδια θέλουν γιατρό σήμερα.</h2>
-        <p class="lede">Ο οδηγός δεν είναι κατάλληλος αν έχετε:</p>
-        <ul class="bullets">{flags}</ul>
-        <div class="pill-row">
-          <a class="btn" href="tel:{SITE['phone_href']}">{I['phone']} Θεσσαλονίκη · {SITE['phone']}</a>
-          <a class="btn btn--ghost" href="tel:{SITE['phone_alt_href']}">{I['phone']} Αθήνα · {SITE['phone_alt']}</a>
-        </div>
-      </div>
-      <div class="stack">
-        <p class="eyebrow">Πώς λειτουργεί</p>
-        <ul class="timeline">
-          <li><b>01</b><span>Επιλέγετε όσα σας ταιριάζουν, με καθημερινά λόγια.</span></li>
-          <li><b>02</b><span>Ο οδηγός σταθμίζει τις απαντήσεις και δείχνει τις πιθανές αντιστοιχίες.</span></li>
-          <li><b>03</b><span>Παίρνετε συνδέσμους στις σχετικές σελίδες και μπορείτε να ζητήσετε ραντεβού.</span></li>
-        </ul>
-        <p class="tiny muted">Τίποτα δεν φεύγει από τη συσκευή σας: ο υπολογισμός γίνεται
-          τοπικά στον browser και δεν αποθηκεύεται πουθενά.</p>
-      </div>
-    </div>
-  </div>
-</section>
-{cta_band(d)}"""
-    page(path="odigos-symptomaton/", title="Οδηγός συμπτωμάτων ποδιού | Ensō Foot Clinic",
-         desc="Τέσσερις ερωτήσεις σε καθημερινή γλώσσα για να καταλάβετε τι μπορεί να "
-              "συμβαίνει στα πόδια σας. Ιδιωτικό, χωρίς εγγραφή.",
-         depth=d, body=body, jsonld=[crumb_ld], active="guide")
 
 
 def build_tracker_page():
@@ -1473,9 +1362,8 @@ def build_tracker_page():
           λύνονται με κρέμα και υπομονή. Χρειάζονται ποδολογική πράξη — και όσο νωρίτερα,
           τόσο πιο απλή.</p>
         <div class="pill-row">
-          <a class="chip" href="{rel(d)}pathiseis/diavitiko-podi/">Διαβητικό πόδι</a>
-          <a class="chip" href="{rel(d)}pathiseis/skliryseis-kaloi-tyloi/">Κάλοι & τύλοι</a>
-          <a class="chip" href="{rel(d)}odigos-symptomaton/">Οδηγός συμπτωμάτων</a>
+          <a class="chip" href="{rel(d)}ypiresies/kliniki-podologiki-frontida/">Κλινική ποδολογική φροντίδα</a>
+          <a class="chip" href="{rel(d)}ypiresies/prolipsi-ypsilou-kindynou/">Προληπτική φροντίδα</a>
         </div>
       </div>
     </div>
@@ -1729,14 +1617,12 @@ def build_404():
 from parts import EN_NAV
 
 # hreflang is declared only where a page has a real 1:1 counterpart.
+# The four English condition pages have no Greek counterpart since the
+# conditions catalogue was removed, so they declare none.
 EN_PAIR = {
     "en/": "",
     "en/the-clinic/": "to-kentro/",
-    "en/diabetic-foot-care/": "pathiseis/diavitiko-podi/",
-    "en/calluses-and-corns/": "pathiseis/skliryseis-kaloi-tyloi/",
-    "en/dry-cracked-heels/": "pathiseis/ksirodermia-pelmaton/",
-    "en/ingrown-toenail/": "pathiseis/eisfriksi-nychiou/",
-    "en/clinical-podology/": "ypiresies/kliniki-podologia/",
+    "en/clinical-podology/": "ypiresies/kliniki-podologiki-frontida/",
 }
 
 
@@ -1834,18 +1720,16 @@ def build_index_files():
 
     add("", "Αρχική", "Ensō Foot Clinic — ποδολογικό κέντρο σε Περαία Θεσσαλονίκης "
         "και Καλλιθέα Αθήνας, από το 2002.")
-    add("to-kentro/", "Το ποδολογικό κέντρο", plain("to-kentro", 300), "ποδολογικό κέντρο περαία")
+    add("to-kentro/", "Ποιοι είμαστε",
+        f"{ENSO_LEDE} {ENSO_LEDE_BODY} {ENSO_INTRO}",
+        "ποδολογικό κέντρο περαία καλλιθέα enso framework")
     add(f"{PRACTITIONER['slug']}/", PRACTITIONER["name"],
         plain(PRACTITIONER["slug"], 300), "ποδολόγος βιογραφικό σεμινάρια")
-    add("odigos-symptomaton/", "Οδηγός συμπτωμάτων",
-        "Τέσσερις ερωτήσεις σε καθημερινή γλώσσα για να καταλάβετε τι συμβαίνει στα πόδια σας.",
-        "τεστ συμπτώματα")
     add("frontida-podion/", "Φροντίδα ποδιών",
         "Ημερήσιος tracker με τρεις ρουτίνες φροντίδας και σερί ημερών.",
         "καθημερινή φροντίδα διαβητικό πόδι ρουτίνα")
-    add("pathiseis/", "Παθήσεις", "Διαβητικό πόδι, κάλοι και τύλοι, ξηροδερμία, είσφρηση όνυχος.")
     add("ypiresies/", "Υπηρεσίες", "Σύγκριση υπηρεσιών: χρόνος, αίσθηση, συχνότητα.")
-    add("gallery/", "Εικονογραφήσεις", "Σχηματικές εικονογραφήσεις ανατομίας, παθήσεων και θεραπειών.")
+    add("gallery/", "Εικονογραφήσεις", "Σχηματικές εικονογραφήσεις ανατομίας και θεραπειών.")
     add("epikoinonia/", "Επικοινωνία",
         f"{SITE['address']} · {SITE['phone']} · {SITE['email']}", "ραντεβού χάρτης")
     add("arthra/", "Άρθρα", "Άρθρα ποδολογίας από το Ensō Foot Clinic.")
@@ -1856,10 +1740,8 @@ def build_index_files():
         add(f"seminaria/{x['slug']}/", x["title"], plain(x["slug"], 320),
             "σεμινάριο εκπαίδευση")
     add("oroi-chrisis/", "Όροι χρήσης & απόρρητο", "Όροι χρήσης και πολιτική απορρήτου.")
-    for c in CONDITIONS:
-        add(f"pathiseis/{c['slug']}/", c["title"], plain(c["slug"], 320), c["plain"])
     for t in TREATMENTS:
-        add(f"ypiresies/{t['slug']}/", t["title"], plain(t["slug"], 320), t["short"])
+        add(f"ypiresies/{t['slug']}/", txt(t["title"]), plain(t["slug"], 320), txt(t["short"]))
     for slug, tag in ARTICLES:
         add(f"arthra/{slug}/", article_title(slug), plain(slug, 320), tag)
     add("en/", "Ensō Foot Clinic — English", "Podology in Thessaloniki and Athens, in English.", "english")
@@ -1888,12 +1770,14 @@ def build_index_files():
 # Apache, Netlify and Vercel all match against the *decoded* path — so both
 # spellings are emitted for each.
 _BIO = "/" + PRACTITIONER["slug"] + "/"
+_CARE = "/ypiresies/kliniki-podologiki-frontida/"
+_HIGH_RISK = "/ypiresies/prolipsi-ypsilou-kindynou/"
 LEGACY_URLS = [
     ("/about", _BIO),
     ("/services", "/ypiresies/"),
-    ("/services/ΔΙΑΒΗΤΙΚΟ-ΠΟΔΙ", "/pathiseis/diavitiko-podi/"),
+    ("/services/ΔΙΑΒΗΤΙΚΟ-ΠΟΔΙ", _HIGH_RISK),
     ("/services/%CE%94%CE%99%CE%91%CE%92%CE%97%CE%A4%CE%99%CE%9A%CE%9F-%CE%A0%CE%9F%CE%94%CE%99",
-     "/pathiseis/diavitiko-podi/"),
+     _HIGH_RISK),
     ("/contact", "/epikoinonia/"),
     ("/seminars", "/seminaria/"),
     ("/seminars/freeseminar", "/seminaria/1o-seminario-podologias/"),
@@ -1901,6 +1785,22 @@ LEGACY_URLS = [
     ("/privacy", "/oroi-chrisis/"),
     ("/to-iatreio", "/to-kentro/"),
     ("/en/medical-pedicure", "/en/clinical-podology/"),
+
+    # 29/09/2026: the conditions catalogue and the symptom guide were removed,
+    # and the five services became four. Everything that ranked keeps a 301 to
+    # the page that now carries its subject.
+    ("/pathiseis", "/ypiresies/"),
+    ("/pathiseis/diavitiko-podi", _HIGH_RISK),
+    ("/pathiseis/skliryseis-kaloi-tyloi", _CARE),
+    ("/pathiseis/ksirodermia-pelmaton", _CARE),
+    ("/pathiseis/eisfriksi-nychiou", _CARE),
+    ("/odigos-symptomaton", "/ypiresies/"),
+    ("/ypiresies/elenchos-diavitikou-podiou", _HIGH_RISK),
+    ("/ypiresies/kliniki-podologia", _CARE),
+    ("/ypiresies/iatriki-podologia", _CARE),
+    ("/ypiresies/afairesi-kalon-tylon", _CARE),
+    ("/ypiresies/therapeia-ksirodermias", _CARE),
+    ("/ypiresies/orthonychia-narthikes", _CARE),
     ("/Διαδικτυακά-Μαθήματα", "/"),
     ("/%CE%94%CE%B9%CE%B1%CE%B4%CE%B9%CE%BA%CF%84%CF%85%CE%B1%CE%BA%CE%AC-%CE%9C%CE%B1%CE%B8%CE%AE%CE%BC%CE%B1%CF%84%CE%B1", "/"),
 ]
@@ -1908,12 +1808,13 @@ LEGACY_URLS = [
 
 def build_redirects():
     rules = list(LEGACY_URLS)
-    # Pages renamed after launch: every treatment or condition whose slug moved
-    # keeps a 301 from where it used to live.
+    # Pages renamed after launch keep a 301 from where they used to live. The
+    # slugs retired in the 29/09/2026 restructure are listed in LEGACY_URLS
+    # above, so only still-live renames are generated here.
+    seen = {a for a, _b in rules}
     rules += [(f"/ypiresies/{t['legacy']}", f"/ypiresies/{t['slug']}/")
-              for t in TREATMENTS if t["legacy"] != t["slug"]]
-    rules += [(f"/pathiseis/{c['legacy']}", f"/pathiseis/{c['slug']}/")
-              for c in CONDITIONS if c["legacy"] != c["slug"]]
+              for t in TREATMENTS
+              if t["legacy"] != t["slug"] and f"/ypiresies/{t['legacy']}" not in seen]
 
     write("_redirects", "".join(f"{a}  {b}  301\n" for a, b in rules))
     ht = ["RewriteEngine On"]
@@ -1960,14 +1861,12 @@ def build_redirects():
 
 def main():
     build_home()
-    for c in CONDITIONS:
-        build_condition(c)
     for t in TREATMENTS:
         build_treatment(t)
     for slug, tag in ARTICLES:
         build_article(slug, tag)
-    build_conditions_hub(); build_treatments_hub(); build_articles_hub()
-    build_clinic(); build_practitioner(); build_guide_page(); build_tracker_page()
+    build_treatments_hub(); build_articles_hub()
+    build_clinic(); build_practitioner(); build_tracker_page()
     build_seminars_hub()
     for _s in SEMINARS:
         build_seminar(_s)

@@ -17,12 +17,12 @@
     },
     {
       "source": "/services/ΔΙΑΒΗΤΙΚΟ-ΠΟΔΙ/",
-      "destination": "/pathiseis/diavitiko-podi/",
+      "destination": "/ypiresies/prolipsi-ypsilou-kindynou/",
       "permanent": true
     },
     {
       "source": "/services/%CE%94%CE%99%CE%91%CE%92%CE%97%CE%A4%CE%99%CE%9A%CE%9F-%CE%A0%CE%9F%CE%94%CE%99/",
-      "destination": "/pathiseis/diavitiko-podi/",
+      "destination": "/ypiresies/prolipsi-ypsilou-kindynou/",
       "permanent": true
     },
     {
@@ -61,6 +61,66 @@
       "permanent": true
     },
     {
+      "source": "/pathiseis/",
+      "destination": "/ypiresies/",
+      "permanent": true
+    },
+    {
+      "source": "/pathiseis/diavitiko-podi/",
+      "destination": "/ypiresies/prolipsi-ypsilou-kindynou/",
+      "permanent": true
+    },
+    {
+      "source": "/pathiseis/skliryseis-kaloi-tyloi/",
+      "destination": "/ypiresies/kliniki-podologiki-frontida/",
+      "permanent": true
+    },
+    {
+      "source": "/pathiseis/ksirodermia-pelmaton/",
+      "destination": "/ypiresies/kliniki-podologiki-frontida/",
+      "permanent": true
+    },
+    {
+      "source": "/pathiseis/eisfriksi-nychiou/",
+      "destination": "/ypiresies/kliniki-podologiki-frontida/",
+      "permanent": true
+    },
+    {
+      "source": "/odigos-symptomaton/",
+      "destination": "/ypiresies/",
+      "permanent": true
+    },
+    {
+      "source": "/ypiresies/elenchos-diavitikou-podiou/",
+      "destination": "/ypiresies/prolipsi-ypsilou-kindynou/",
+      "permanent": true
+    },
+    {
+      "source": "/ypiresies/kliniki-podologia/",
+      "destination": "/ypiresies/kliniki-podologiki-frontida/",
+      "permanent": true
+    },
+    {
+      "source": "/ypiresies/iatriki-podologia/",
+      "destination": "/ypiresies/kliniki-podologiki-frontida/",
+      "permanent": true
+    },
+    {
+      "source": "/ypiresies/afairesi-kalon-tylon/",
+      "destination": "/ypiresies/kliniki-podologiki-frontida/",
+      "permanent": true
+    },
+    {
+      "source": "/ypiresies/therapeia-ksirodermias/",
+      "destination": "/ypiresies/kliniki-podologiki-frontida/",
+      "permanent": true
+    },
+    {
+      "source": "/ypiresies/orthonychia-narthikes/",
+      "destination": "/ypiresies/kliniki-podologiki-frontida/",
+      "permanent": true
+    },
+    {
       "source": "/Διαδικτυακά-Μαθήματα/",
       "destination": "/",
       "permanent": true
@@ -68,11 +128,6 @@
     {
       "source": "/%CE%94%CE%B9%CE%B1%CE%B4%CE%B9%CE%BA%CF%84%CF%85%CE%B1%CE%BA%CE%AC-%CE%9C%CE%B1%CE%B8%CE%AE%CE%BC%CE%B1%CF%84%CE%B1/",
       "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/ypiresies/iatriki-podologia/",
-      "destination": "/ypiresies/kliniki-podologia/",
       "permanent": true
     }
   ],

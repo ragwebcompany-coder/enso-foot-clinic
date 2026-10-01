@@ -7,15 +7,13 @@ rewrites to the right relative path for each page's depth.
 
 Named `pagecopy` rather than `copy` so it never shadows the standard library.
 
-Split across five modules purely so each file stays readable:
-  copy_conditions.py · the four conditions
-  copy_services.py   · the five services
-  copy_pages.py      · clinic, practitioner, legal
+Split across modules purely so each file stays readable:
+  copy_services.py   · the four services
+  copy_pages.py      · «Ποιοι είμαστε», practitioner, legal
   copy_articles.py   · the nine articles
   copy_seminars.py   · the seminars hub and each seminar
   copy_en.py         · the English pages
 """
-from copy_conditions import CONDITIONS_COPY
 from copy_services import SERVICES_COPY
 from copy_pages import PAGES_COPY
 from copy_articles import ARTICLES_COPY
@@ -23,7 +21,7 @@ from copy_seminars import SEMINARS_COPY
 from copy_en import EN_COPY
 
 COPY = {}
-for _part in (CONDITIONS_COPY, SERVICES_COPY, PAGES_COPY, ARTICLES_COPY,
+for _part in (SERVICES_COPY, PAGES_COPY, ARTICLES_COPY,
               SEMINARS_COPY, EN_COPY):
     for _k, _v in _part.items():
         if _k in COPY:

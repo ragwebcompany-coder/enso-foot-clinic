@@ -449,72 +449,8 @@ a.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border
 .card--stat { background: var(--mist-2); border-color: transparent; }
 .card--stat b { font-family: var(--display); font-size: clamp(2.2rem, 4vw, 3.1rem); line-height: 1; color: var(--deep); display: block; }
 
-/* Condition cards carry the plain-language line, so a person recognises
-   themselves before they meet the medical term. */
-.cond-card__voice {
-  font-family: var(--display); font-weight: 500; font-size: 1.06rem;
-  color: var(--ink-2); line-height: 1.45;
-  padding-top: .8rem; border-top: 1px solid var(--line-soft);
-}
 
-/* ── Symptom guide ────────────────────────────────────────────────────── */
-.guide {
-  background: #fff; border: 1px solid var(--line-soft); border-radius: var(--r-xl);
-  box-shadow: var(--shadow-lg); overflow: hidden;
-}
-.guide__head {
-  padding: clamp(1.25rem, 3vw, 2rem) clamp(1.25rem, 3vw, 2.25rem);
-  border-bottom: 1px solid var(--line-soft);
-  display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between;
-}
-.guide__steps { display: flex; align-items: center; gap: .45rem; }
-.guide__dot {
-  width: 26px; height: 4px; border-radius: 2px; background: var(--mist);
-  transition: background-color .3s var(--ease);
-}
-.guide__dot.is-done { background: var(--teal-300); }
-.guide__dot.is-now  { background: var(--teal); }
-.guide__body { padding: clamp(1.4rem, 3.4vw, 2.5rem) clamp(1.25rem, 3vw, 2.25rem); }
-.guide__q { display: grid; gap: .5rem; margin-bottom: 1.5rem; }
-.guide__opts { display: grid; gap: .55rem; }
-@media (min-width: 720px) { .guide__opts--2col { grid-template-columns: 1fr 1fr; } }
-
-.opt {
-  display: flex; align-items: flex-start; gap: .85rem;
-  padding: .9rem 1.05rem; border: 1px solid var(--line); border-radius: var(--r);
-  background: #fff; text-align: left; font-size: .955rem; line-height: 1.5;
-  transition: border-color .2s var(--ease), background-color .2s var(--ease), transform .16s var(--ease);
-}
-.opt:hover { border-color: var(--teal-300); background: var(--mist-2); }
-.opt:active { transform: scale(.995); }
-.opt__box {
-  flex: none; width: 21px; height: 21px; border-radius: 6px; margin-top: .16rem;
-  border: 1.6px solid var(--line); display: grid; place-items: center;
-  transition: border-color .2s var(--ease), background-color .2s var(--ease);
-}
-.opt--radio .opt__box { border-radius: 50%; }
-.opt__box svg { opacity: 0; transform: scale(.6); transition: opacity .18s var(--ease), transform .18s var(--ease); color: #fff; }
-.opt[aria-pressed="true"] { border-color: var(--teal); background: rgba(43,127,150,.055); }
-.opt[aria-pressed="true"] .opt__box { background: var(--teal); border-color: var(--teal); }
-.opt[aria-pressed="true"] .opt__box svg { opacity: 1; transform: scale(1); }
-
-.guide__foot {
-  display: flex; flex-wrap: wrap; gap: .8rem; align-items: center; justify-content: space-between;
-  margin-top: 1.75rem; padding-top: 1.35rem; border-top: 1px solid var(--line-soft);
-}
-.guide__privacy { display: flex; align-items: center; gap: .45rem; font-size: .78rem; color: var(--ink-3); }
-
-.result { display: grid; gap: 1.5rem; }
-.result__match {
-  display: grid; gap: .8rem; padding: 1.25rem 1.4rem;
-  border: 1px solid var(--line-soft); border-radius: var(--r-lg); background: var(--mist-2);
-}
-.result__rank {
-  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-}
-.meter { height: 5px; border-radius: 3px; background: var(--mist); overflow: hidden; }
-.meter i { display: block; height: 100%; background: var(--teal); border-radius: 3px; transition: width .7s var(--ease-out); }
-.result__links { display: flex; flex-wrap: wrap; gap: .5rem; }
+/* ── Chips & notes ────────────────────────────────────────────────────── */
 .chip {
   display: inline-flex; align-items: center; gap: .35rem;
   padding: .38rem .8rem; border-radius: 100px; border: 1px solid var(--line);
@@ -529,61 +465,6 @@ a.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border
 }
 .note b { color: var(--sand); }
 
-/* ── Foot diagram ─────────────────────────────────────────────────────── */
-.anatomy { display: grid; gap: clamp(1.5rem, 3.5vw, 3rem); align-items: center; }
-@media (min-width: 940px) { .anatomy { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); } }
-.anatomy__stage {
-  position: relative; background: #fff; border: 1px solid var(--line-soft);
-  border-radius: var(--r-xl); padding: clamp(1rem, 2.5vw, 1.75rem);
-  box-shadow: var(--shadow-sm);
-}
-.anatomy__svg { width: 100%; height: auto; touch-action: manipulation; }
-.hot { cursor: pointer; transition: opacity .22s var(--ease); }
-.hot__hit { fill: transparent; }
-.hot__shape { fill: #fff; stroke: var(--teal); stroke-width: 2; transition: fill .3s var(--ease), stroke .3s var(--ease); }
-.hot__num { font-family: var(--text); font-size: 12.5px; font-weight: 700; fill: var(--teal); text-anchor: middle; pointer-events: none; transition: fill .3s var(--ease); }
-.hot__ring { stroke: var(--teal-hi); stroke-width: 1.5; opacity: 0; transform-box: fill-box; transform-origin: center; }
-.hot__label { font-family: var(--text); font-size: 14px; font-weight: 700; fill: var(--deep); pointer-events: none; }
-.hot__sub { font-family: var(--text); font-size: 11.5px; fill: var(--ink-3); pointer-events: none; }
-.hot__lead { stroke: var(--line); stroke-width: 1.5; pointer-events: none; transition: stroke .3s var(--ease); }
-.hot.is-active .hot__shape, .hot:hover .hot__shape { fill: var(--teal); }
-.hot.is-active .hot__num, .hot:hover .hot__num { fill: #fff; }
-.hot.is-active .hot__label, .hot:hover .hot__label { fill: var(--teal); }
-.hot.is-active .hot__lead { stroke: var(--teal-hi); }
-.hot.is-active .hot__ring { opacity: 1; animation: hot-pulse 2.2s var(--ease) infinite; }
-@keyframes hot-pulse { 0% { transform: scale(.7); opacity: .9; } 100% { transform: scale(1.35); opacity: 0; } }
-/* On a phone the print fills the card and the labels move to a legend below it,
-   which is also tappable — the same four hotspots, in HTML. */
-.anatomy__legend { display: none; }
-@media (max-width: 600px) {
-  .anatomy__stage { overflow: hidden; }
-  .anatomy__svg { width: 168%; max-width: none; margin-left: 2%; }
-  .anatomy__svg .hot__label, .anatomy__svg .hot__sub, .anatomy__svg .hot__lead { display: none; }
-  .anatomy__legend {
-    display: grid; grid-template-columns: 1fr 1fr; gap: .5rem .75rem;
-    list-style: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--line-soft);
-  }
-  .anatomy__legend li { display: flex; align-items: center; gap: .55rem; font-size: .84rem; color: var(--ink-2); line-height: 1.3; }
-  .anatomy__legend b {
-    flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center;
-    border: 2px solid var(--teal); color: var(--teal); font-size: .74rem; font-weight: 700;
-    transition: background-color .25s var(--ease), color .25s var(--ease);
-  }
-  .anatomy__legend li.is-active b { background: var(--teal); color: #fff; }
-  .anatomy__legend li.is-active span { color: var(--teal); font-weight: 700; }
-}
-.anatomy__toggle {
-  position: absolute; top: clamp(1rem, 2.5vw, 1.75rem); right: clamp(1rem, 2.5vw, 1.75rem);
-  display: inline-flex; background: var(--mist-2); border-radius: 100px; padding: 3px; gap: 2px;
-}
-.anatomy__toggle button {
-  padding: .38rem .85rem; border-radius: 100px; font-size: .78rem; font-weight: 500; color: var(--ink-2);
-  transition: background-color .24s var(--ease), color .24s var(--ease);
-}
-.anatomy__toggle button[aria-pressed="true"] { background: #fff; color: var(--deep); box-shadow: var(--shadow-sm); }
-.anatomy__panel { display: grid; gap: 1rem; align-content: start; min-height: 220px; }
-.anatomy__panel .voice { margin-block: .25rem; }
-.anatomy__hint { font-size: .8rem; color: var(--ink-3); display: flex; align-items: center; gap: .45rem; }
 
 /* ── Comparison table ─────────────────────────────────────────────────── */
 .compare__filters { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1.5rem; }
@@ -971,12 +852,6 @@ a.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border
 .timeline b { font-family: var(--display); font-size: 1.05rem; color: var(--teal); }
 .timeline span { color: var(--ink-2); font-size: .93rem; }
 
-.hot:focus-visible { outline: none; }
-.hot:focus-visible .hot__shape { stroke: var(--teal); stroke-width: 2.6; }
-.hot:focus-visible .hot__label { fill: var(--teal); }
-.anatomy__panel .result__links { margin-top: .3rem; }
-.anatomy__cond { display: grid; gap: .55rem; padding-top: 1rem; border-top: 1px solid var(--line-soft); }
-.anatomy__cond:first-of-type { border-top: 0; padding-top: 0; }
 
 /* ── Adjustments ──────────────────────────────────────────────────────── */
 .nav__link { white-space: nowrap; }
@@ -1308,9 +1183,9 @@ body:has(.cookies.is-shown) .totop { bottom: 15rem; }
   60% { box-shadow: 0 0 0 16px rgba(137,209,219,0); }
 }
 
-/* The homepage starts straight on the conditions, right under the header. */
-.page--home #pathiseis { padding-top: clamp(2.5rem, 6vw, 5rem); }
-.page--home #pathiseis h1 { font-size: clamp(2rem, 1.4rem + 2.6vw, 3.4rem); }
+/* The homepage starts straight on «Ποιοι είμαστε», right under the header. */
+.page--home #poioi-eimaste { padding-top: clamp(2.5rem, 6vw, 5rem); }
+.page--home #poioi-eimaste h1 { font-size: clamp(2rem, 1.4rem + 2.6vw, 3.4rem); }
 
 /* Photographs. A figure with a caption under it; the frame stays the same. */
 .frame--photo { margin: 0; background: var(--white); }
@@ -1319,3 +1194,106 @@ body:has(.cookies.is-shown) .totop { bottom: 15rem; }
   padding: .8rem 1.1rem; font-size: .8rem; color: var(--ink-3);
   border-top: 1px solid var(--line-soft);
 }
+
+
+/* ── The two centres ──────────────────────────────────────────────────────
+   One figure per centre: the photograph of the space on top, the address and
+   the phone of that city under it. Until the photographs arrive, `.centre__plate`
+   stands in — a branded plate with the city on it, not a stretched stand-in
+   photograph of somewhere else. */
+.centres { display: grid; gap: var(--gap); }
+@media (min-width: 760px) { .centres { grid-template-columns: 1fr 1fr; } }
+.centre {
+  margin: 0; display: grid; grid-template-rows: auto 1fr;
+  background: var(--white); border: 1px solid var(--line-soft);
+  border-radius: var(--r-xl); overflow: hidden; box-shadow: var(--shadow-md);
+}
+.centre__media { position: relative; aspect-ratio: 4 / 3; background: var(--mist-2); }
+.centre__img, .centre__media picture, .centre__media img {
+  display: block; width: 100%; height: 100%; object-fit: cover;
+}
+.centre__plate {
+  position: absolute; inset: 0; display: grid; place-content: center;
+  justify-items: center; gap: .9rem;
+  background: linear-gradient(135deg, var(--deep), var(--abyss) 70%);
+}
+.centre__plate img { width: 124px; height: 124px; opacity: .92; }
+.centre__plate b {
+  font-family: var(--display); font-weight: 500; font-size: 1.15rem;
+  letter-spacing: .02em; color: var(--teal-300);
+}
+.centre__body { display: grid; gap: 1rem; padding: clamp(1.25rem, 2.6vw, 1.9rem); }
+.centre__note { font-size: .93rem; color: var(--ink-2); line-height: 1.6; }
+.centre__body .info-list { gap: .9rem; }
+.centre__body .info-list b { display: none; }
+
+/* ── E.N.S.O. pillars ─────────────────────────────────────────────────────
+   Endurance · Neuromuscular balance · Strength · Optimal flexibility. The
+   letter sits behind the card as a watermark, so the acronym reads down the
+   row without shouting. */
+.pillars { display: grid; gap: var(--gap); }
+@media (min-width: 680px) { .pillars { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1100px) { .pillars { grid-template-columns: repeat(4, 1fr); } }
+.pillar {
+  position: relative; isolation: isolate; overflow: hidden;
+  display: grid; gap: .55rem; align-content: start;
+  padding: clamp(1.4rem, 2.6vw, 1.9rem);
+  background: var(--white); border: 1px solid var(--line-soft);
+  border-radius: var(--r-lg); box-shadow: var(--shadow-sm);
+}
+.pillar__letter {
+  position: absolute; z-index: -1; top: -.28em; right: .12em;
+  font-family: var(--display); font-weight: 700; font-size: 6.2rem; line-height: 1;
+  color: var(--mist); user-select: none;
+}
+.pillar__name {
+  font-size: .74rem; letter-spacing: .13em; text-transform: uppercase;
+  font-weight: 700; color: var(--teal);
+}
+.pillar__name span { display: block; color: var(--ink-3); font-weight: 600; letter-spacing: .08em; }
+.pillar h3 { font-family: var(--display); font-size: 1.1rem; color: var(--deep); }
+.pillar > p { font-size: .91rem; color: var(--ink-2); line-height: 1.65; }
+.pillar__fact {
+  margin-top: .3rem; padding-top: .85rem; border-top: 1px solid var(--line-soft);
+  font-size: .83rem; color: var(--ink-3); line-height: 1.6;
+}
+.pillar__fact b {
+  display: block; font-size: .68rem; letter-spacing: .13em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: .25rem;
+}
+
+/* The timeline inside a deep panel, for «Γιατί ENSO;». */
+.timeline--light li::before { background: var(--teal-300); border-color: var(--deep); }
+.timeline--light b { color: var(--teal-300); }
+.timeline--light span { color: #cbe4ea; }
+
+/* ── «Περισσότερα» disclosure ────────────────────────────────────────────
+   Used for the rest of the biography. The marker is removed so the summary
+   can be a chip; the chevron rotates when it opens. */
+.more { margin-top: 1.25rem; }
+.more > summary {
+  display: inline-flex; align-items: center; gap: .4rem; cursor: pointer;
+  padding: .45rem .9rem; border-radius: 100px; border: 1px solid var(--line);
+  background: var(--white); font-size: .84rem; font-weight: 500; color: var(--deep);
+  transition: border-color .2s var(--ease), color .2s var(--ease);
+}
+.more > summary::-webkit-details-marker { display: none; }
+.more > summary::marker { content: ""; }
+.more > summary:hover { border-color: var(--teal); color: var(--teal); }
+.more > summary svg { transition: transform .25s var(--ease); }
+.more[open] > summary svg { transform: rotate(180deg); }
+.more .more__shut, .more[open] .more__open { display: none; }
+.more[open] .more__shut { display: inline; }
+
+/* Two service kinds joined the comparison filters in the 29/09/2026 brief. */
+.tag--advice { background: rgba(94,159,182,.14); color: var(--teal); }
+.tag--training { background: rgba(137,209,219,.2); color: var(--deep); }
+
+/* The services mega-menu ends on a full-width link to the comparison. */
+.mega__foot {
+  grid-column: 1 / -1; display: flex; align-items: center; gap: .4rem;
+  margin-top: .2rem; padding: .7rem; border-top: 1px solid var(--line-soft);
+  font-size: .84rem; font-weight: 500; color: var(--teal); text-decoration: none;
+}
+.mega__foot svg { transition: transform .2s var(--ease); }
+.mega__foot:hover svg { transform: translateX(3px); }

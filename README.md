@@ -16,10 +16,10 @@ enso-new/
 ├── content/
 │   ├── data.py           ← δομή, στοιχεία επικοινωνίας, μενού, υπηρεσίες
 │   ├── pagecopy.py       ← συγκεντρώνει όλα τα κείμενα σε ένα dict
-│   ├── copy_conditions.py · copy_services.py · copy_pages.py
+│   ├── copy_services.py  · copy_pages.py
 │   ├── copy_articles.py  · copy_seminars.py · copy_en.py
 └── tools/
-    ├── parts.py          header, footer, dialogs, διάγραμμα ποδιού
+    ├── parts.py          header, footer, dialogs
     ├── art.py            λογότυπο, favicon, OG card, 14 εικονογραφήσεις
     └── build.py          όλα τα παραπάνω → site/
 ```
@@ -67,9 +67,10 @@ cd enso-new/site && python3 -m http.server 8899
 |---|---|
 | Τηλέφωνα, email, διεύθυνση, ωράριο, social | `content/data.py` → `SITE` |
 | Βιογραφικό & προσόντα της Ελπινίκης | `content/data.py` → `PRACTITIONER` |
-| Τις 4 παθήσεις (τίτλοι, στατιστικά, κάρτες) | `content/data.py` → `CONDITIONS` |
-| Τις 5 υπηρεσίες & τον πίνακα σύγκρισης | `content/data.py` → `TREATMENTS` |
-| Ερωτήσεις του οδηγού συμπτωμάτων | `content/data.py` → `GUIDE_STEPS` |
+| Τις 4 υπηρεσίες & τον πίνακα σύγκρισης | `content/data.py` → `TREATMENTS` |
+| **Τα δύο κέντρα** (διεύθυνση, τηλέφωνο, **φωτογραφία χώρου**) | `content/data.py` → `CENTRES` |
+| Το πλαίσιο E.N.S.O. («Ποιοι είμαστε») | `content/data.py` → `ENSO_PILLARS`, `ENSO_WHY` |
+| Σύντομο βιογραφικό + «Περισσότερα» | `content/data.py` → `BIO_BRIEF`, `BIO_MORE` |
 | Ρουτίνες του tracker φροντίδας | `content/data.py` → `TRACKER` |
 | Λίστα άρθρων και κατηγορίες | `content/data.py` → `ARTICLES` |
 | **Σεμινάρια** | `content/data.py` → `SEMINARS` + `content/copy_seminars.py` |
@@ -97,10 +98,8 @@ cd enso-new/site && python3 -m http.server 8899
 
 | Στοιχείο | Πού | Τι κάνει |
 |---|---|---|
-| Οδηγός συμπτωμάτων | αρχική, `/odigos-symptomaton/`, `/pathiseis/` | 4 ερωτήσεις σε καθημερινή γλώσσα → σταθμισμένη αντιστοίχιση με τις 4 παθήσεις και τις υπηρεσίες τους. Υπολογίζεται τοπικά στον browser. |
-| Αποτύπωμα πέλματος | αρχική, `/pathiseis/` | Custom SVG αποτύπωμα (πελματιαία όψη, «pressure map»). Τέσσερα αριθμημένα σημεία: νύχι / πρόσθιο πέλμα / νεύρα & αγγεία / πτέρνα. Στο κινητό οι ετικέτες γίνονται λεζάντα από κάτω. Προσβάσιμο με πληκτρολόγιο. |
 | Tracker φροντίδας ποδιών | `/frontida-podion/`, αρχική | 3 ρουτίνες (διαβητικό πόδι, καθημερινή φροντίδα, μετά τη συνεδρία), ημερήσιο checklist, δακτύλιος προόδου και σερί ημερών σε localStorage. |
-| Σύγκριση υπηρεσιών | `/ypiresies/` | Πίνακας με φίλτρα (πρόληψη / ποδολογική πράξη / θεραπευτική εφαρμογή). |
+| Σύγκριση υπηρεσιών | `/ypiresies/` | Πίνακας με φίλτρα (ποδολογική πράξη / συμβουλευτική / επανεκπαίδευση / πρόληψη). |
 | Ραντεβού | παντού | **Μόνο τηλεφωνικά.** Κάθε «Κλείστε/Ζητήστε ραντεβού» είναι `tel:` σύνδεσμος — δεν υπάρχει φόρμα πουθενά στον ιστότοπο. |
 | Αναζήτηση ιστότοπου | παντού (`Ctrl/⌘ + K`) | Client-side, με απαλοιφή τόνων και τελικού σίγμα. |
 | Εικονογραφήσεις | `/gallery/` | 14 πρωτότυπες σχηματικές εικόνες, φίλτρα ανά θέμα, lightbox με πλοήγηση πληκτρολογίου. |
@@ -190,7 +189,7 @@ CSS** — και η σελίδα εμφανίζεται με markup που το 
 
 | Πλάτος | Στοιχεία στο μενού |
 |---|---|
-| ≥ 1210px | Το κέντρο · Παθήσεις & υπηρεσίες · Οδηγός · Σεμινάρια · Άρθρα · Επικοινωνία |
+| ≥ 1210px | Ποιοι είμαστε · Υπηρεσίες · Φροντίδα ποδιών · Σεμινάρια · Άρθρα · Επικοινωνία |
 | 1024–1210px | ίδια, χωρίς «Άρθρα» |
 | < 1024px | συρτάρι (όλα τα στοιχεία) |
 
@@ -206,11 +205,10 @@ flex και τα στοιχεία ξεχειλίζουν *έξω* από το κ
 
 | Ενότητα | Μοτίβο |
 |---|---|
-| Παθήσεις | `/pathiseis/<slug>/` — `diavitiko-podi`, `skliryseis-kaloi-tyloi`, `ksirodermia-pelmaton`, `eisfriksi-nychiou` |
-| Υπηρεσίες | `/ypiresies/<slug>/` — `elenchos-diavitikou-podiou`, `kliniki-podologia`, `afairesi-kalon-tylon`, `therapeia-ksirodermias`, `orthonychia-narthikes` |
+| Υπηρεσίες | `/ypiresies/<slug>/` — `kliniki-podologiki-frontida`, `athlitiko-ypodima`, `foot-core-training`, `prolipsi-ypsilou-kindynou` |
 | Σεμινάρια | `/seminaria/` · `/seminaria/<slug>/` |
 | Άρθρα | `/arthra/<slug>/` |
-| Σελίδες | `/to-kentro/`, `/elpiniki-christodoulou/`, `/odigos-symptomaton/`, `/frontida-podion/`, `/gallery/`, `/epikoinonia/`, `/oroi-chrisis/` |
+| Σελίδες | `/to-kentro/` (Ποιοι είμαστε), `/elpiniki-christodoulou/`, `/frontida-podion/`, `/gallery/`, `/epikoinonia/`, `/oroi-chrisis/` |
 | Αγγλικά | `/en/`, `/en/<slug>/` |
 
 ## Τοπικό SEO (Περαία / Θεσσαλονίκη)
@@ -219,7 +217,7 @@ flex και τα στοιχεία ξεχειλίζουν *έξω* από το κ
   (`medicalSpecialty: Podiatric`) και το πρόσωπο της ποδολόγου σε κάθε σελίδα,
   με `geo` (40.5067925, 22.9252194 — από το pin του πελάτη), `hasMap`,
   `areaServed` (10 όμορες περιοχές + Χαλκιδική + Αθήνα), `availableService` με
-  τις πέντε υπηρεσίες, `contactPoint` για Θεσσαλονίκη και Αθήνα, `knowsLanguage`.
+  τις τέσσερις υπηρεσίες, `contactPoint` για Θεσσαλονίκη και Αθήνα, `knowsLanguage`.
 - **Ανά σελίδα**: `MedicalWebPage` με `MedicalCondition`/`possibleTreatment`,
   `MedicalTherapy` με `howPerformed`/`preparation`/`followup`/`indication`,
   `FAQPage`, `BreadcrumbList`, `ContactPage`, `ProfilePage`, `Article`.
@@ -345,6 +343,39 @@ wordmark ξαναστήνεται σε Manrope. **Η διάταξη δεν εί�
 γκρίζο. Και η επιλογή οριζόντιας/στοιβαγμένης εκδοχής γίνεται με `<source media>`,
 **όχι** με `display:none` στο CSS: κάθε SVG κουβαλά δικό του αντίγραφο του σήματος
 (~190KB) και ο browser κατεβάζει και τα κρυμμένα.
+
+## Η αναδιάρθρωση της 29/09/2026
+
+Η πελάτισσα ξαναόρισε τι δείχνει ο ιστότοπος:
+
+- **Οι «Παθήσεις» αφαιρέθηκαν εντελώς** — σελίδες, hub, μενού, footer,
+  αναζήτηση, το αποτύπωμα πέλματος στην αρχική και το `copy_conditions.py`.
+- **Ο «Οδηγός συμπτωμάτων» αφαιρέθηκε εντελώς** — σελίδα, widget, `GUIDE_STEPS`,
+  ο κώδικάς του σε `enso.js` / `enso.css`. Οι **κόκκινες σημαίες** (`RED_FLAGS`)
+  επιβίωσαν: τυπώνονται πλέον στο `/ypiresies/`.
+- **Πέντε υπηρεσίες έγιναν τέσσερις**, με τα ονόματα και τα κείμενα που έδωσε η
+  ίδια. Το κλινικό υλικό των παλιών σελίδων δεν χάθηκε — μεταφέρθηκε κάτω από την
+  υπηρεσία που το καλύπτει τώρα.
+- **Το `/to-kentro/` έγινε «Ποιοι είμαστε»** και παράγεται πλέον από δεδομένα
+  (`CENTRES`, `ENSO_PILLARS`, `ENSO_WHY`, `BIO_BRIEF`), όχι από πεζό κείμενο —
+  γι' αυτό δεν έχει εγγραφή στο `copy_pages.py`.
+- **Η αρχική ξεκινά από το «Ποιοι είμαστε»** αντί για τις παθήσεις: αυτό βλέπει
+  ο επισκέπτης μόλις πατήσει «Πατήστε εδώ» στην πύλη.
+- Κάθε URL που καταργήθηκε έχει **301** προς τη σελίδα που κουβαλά πλέον το θέμα
+  του (δείτε το `LEGACY_URLS` στο `build.py`).
+
+### Εκκρεμεί: οι δύο φωτογραφίες των χώρων
+
+Η πελάτισσα ζήτησε **δύο φωτογραφίες από τους χώρους σε Καλλιθέα και Περαία, με
+την ίδια και τους συνεργάτες της** — και δεν τις έστειλε. Μέχρι να έρθουν, το
+`photo` στο `CENTRES` είναι `None` και η σελίδα δείχνει μια **κάρτα τοποθεσίας**
+σε brand χρώματα, όχι φωτογραφία άλλου χώρου με λάθος λεζάντα. Μόλις φτάσουν:
+
+```python
+dict(id="thessaloniki", ..., photo="centre-peraia.jpg", photo_size=(1600, 1200))
+```
+
+και `python3 tools/build.py`. Τίποτα άλλο.
 
 ## ⚠ Πριν τη δημοσίευση
 

@@ -93,8 +93,9 @@ SEMINARS_COPY = {
 <h2>Πού να συνεχίσετε</h2>
 
 <p>Το υλικό του σεμιναρίου καλύπτεται σε μεγάλο βαθμό από τις σελίδες του ποδολογικού κέντρου:
-το <a href="@/pathiseis/diavitiko-podi/">διαβητικό πόδι</a>, η
-<a href="@/ypiresies/kliniki-podologia/">κλινική ποδολογία</a> και η διάκριση
+η <a href="@/ypiresies/kliniki-podologiki-frontida/">κλινική ποδολογική φροντίδα</a>, η
+<a href="@/ypiresies/prolipsi-ypsilou-kindynou/">προληπτική φροντίδα υψηλού κινδύνου</a>
+και η διάκριση
 <a href="@/arthra/podologia-i-pedicure-poia-i-diafora/">ποδολογία ή pedicure</a>.</p>
 """),
 }

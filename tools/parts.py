@@ -2,7 +2,7 @@
 """Shared markup: head, header, drawer, footer, overlays, icons, foot diagram."""
 import json, sys, os, hashlib, html as _html
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "content"))
-from data import SITE, CONDITIONS, TREATMENTS, PRACTITIONER
+from data import SITE, TREATMENTS, PRACTITIONER
 
 I = {
  "search": '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.8"/><path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
@@ -63,14 +63,13 @@ def asset(depth, path):
 T = {
     "el": dict(
         skip="Μετάβαση στο περιεχόμενο", nav_label="Κύρια πλοήγηση",
-        clinic="Το κέντρο", conditions="Παθήσεις", treatments="Υπηρεσίες",
-        both="Παθήσεις & υπηρεσίες", guide="Οδηγός συμπτωμάτων",
+        clinic="Ποιοι είμαστε", treatments="Υπηρεσίες", centre="Το κέντρο",
         tracker="Φροντίδα ποδιών", seminars="Σεμινάρια",
         articles="Άρθρα", gallery="Εικονογραφήσεις", contact="Επικοινωνία",
         book="Ραντεβού", search="Αναζήτηση (Ctrl+K)", menu="Μενού", other_lang="EN",
         city_thess="Θεσσαλονίκη", city_athens="Αθήνα",
-        all_conditions="Όλες οι παθήσεις", compare="Σύγκριση υπηρεσιών",
-        search_ph="Πάθηση, υπηρεσία ή άρθρο…", search_hint="Γράψτε τουλάχιστον 2 χαρακτήρες.",
+        compare="Σύγκριση υπηρεσιών", all_services="Όλες οι υπηρεσίες",
+        search_ph="Υπηρεσία ή άρθρο…", search_hint="Γράψτε τουλάχιστον 2 χαρακτήρες.",
         hours="Ωράριο", terms="Όροι χρήσης & απόρρητο", other_lang_full="English",
         tagline="Ποδολογικό κέντρο σε Θεσσαλονίκη και Αθήνα, από το 2002. "
                 "Θεραπεία και φροντίδα του άκρου ποδός.",
@@ -84,14 +83,14 @@ T = {
     ),
     "en": dict(
         skip="Skip to content", nav_label="Main navigation",
-        clinic="The clinic", conditions="Conditions", treatments="Services",
-        both="Conditions & services", guide="Symptom guide",
+        clinic="About us", treatments="Services", centre="The clinic",
+        conditions="Conditions",
         tracker="Foot care", seminars="Seminars",
         articles="Articles", gallery="Illustrations", contact="Contact",
         book="Book", search="Search (Ctrl+K)", menu="Menu", other_lang="ΕΛ",
         city_thess="Thessaloniki", city_athens="Athens",
-        all_conditions="All conditions", compare="Compare services",
-        search_ph="Condition, service or article…", search_hint="Type at least 2 characters.",
+        compare="Compare services", all_services="All services",
+        search_ph="Service or article…", search_hint="Type at least 2 characters.",
         hours="Opening hours", terms="Terms & privacy", other_lang_full="Ελληνικά",
         tagline="Podology centre in Thessaloniki and Athens, practising since 2002.",
         call="Call", top="Back to top", close="Close",
@@ -192,19 +191,14 @@ def drawer(depth, lang="el"):
     <a class="btn btn--ghost btn--block" href="mailto:{SITE['email']}">{I['mail']} {SITE['email']}</a>
   </div>
 </div>"""
-    conds = "".join(f'<a href="{b}pathiseis/{c["slug"]}/">{c["title"]}</a>' for c in CONDITIONS)
     treats = "".join(f'<a href="{b}ypiresies/{x["slug"]}/">{x["title"]}</a>' for x in TREATMENTS)
     return f"""<div class="drawer" id="drawer">
   <div class="drawer__group"><a class="drawer__top" href="{b}to-kentro/">{t['clinic']}</a></div>
   <div class="drawer__group">
-    <button class="drawer__top" aria-expanded="false">{t['conditions']} {I['chev']}</button>
-    <div class="drawer__panel"><a href="{b}pathiseis/">{t['all_conditions']}</a>{conds}</div>
-  </div>
-  <div class="drawer__group">
     <button class="drawer__top" aria-expanded="false">{t['treatments']} {I['chev']}</button>
     <div class="drawer__panel"><a href="{b}ypiresies/">{t['compare']}</a>{treats}</div>
   </div>
-  <div class="drawer__group"><a class="drawer__top" href="{b}odigos-symptomaton/">{t['guide']}</a></div>
+  <div class="drawer__group"><a class="drawer__top" href="{b}{PRACTITIONER['slug']}/">{PRACTITIONER['name']}</a></div>
   <div class="drawer__group"><a class="drawer__top" href="{b}frontida-podion/">{t['tracker']}</a></div>
   <div class="drawer__group"><a class="drawer__top" href="{b}seminaria/">{t['seminars']}</a></div>
   <div class="drawer__group"><a class="drawer__top" href="{b}arthra/">{t['articles']}</a></div>
@@ -232,22 +226,23 @@ def header(depth, active="", lang="el", over_dark=False):
       </nav>"""
         lang_link = f'<a class="lang" href="{b}" hreflang="el">{t["other_lang"]}</a>'
     else:
-        conds = "".join(
-            f'<a class="mega__link" href="{b}pathiseis/{c["slug"]}/"><b>{c["title"]}</b>'
-            f'<span>{c["plain"]}</span></a>' for c in CONDITIONS)
-        treats = "".join(
+        # Four services, two per column — the mega no longer carries a second
+        # topic since the conditions catalogue was removed.
+        cells = ["".join(
             f'<a class="mega__link" href="{b}ypiresies/{x["slug"]}/"><b>{x["title"]}</b>'
-            f'<span>{x["short"]}</span></a>' for x in TREATMENTS)
+            f'<span>{x["short"]}</span></a>' for x in half)
+            for half in (TREATMENTS[:2], TREATMENTS[2:])]
         nav = f"""<nav class="nav" aria-label="{t['nav_label']}">
         <div class="nav__item"><a class="nav__link" href="{b}to-kentro/"{cur('clinic')}>{t['clinic']}</a></div>
         <div class="nav__item" data-mega>
-          <button class="nav__link" aria-expanded="false">{t['both']} {I['chev']}</button>
+          <button class="nav__link" aria-expanded="false">{t['treatments']} {I['chev']}</button>
           <div class="mega">
-            <div class="mega__col"><p class="mega__title">{t['conditions']}</p>{conds}</div>
-            <div class="mega__col"><p class="mega__title">{t['treatments']}</p>{treats}</div>
+            <div class="mega__col">{cells[0]}</div>
+            <div class="mega__col">{cells[1]}</div>
+            <a class="mega__foot" href="{b}ypiresies/">{t['compare']} {I['right']}</a>
           </div>
         </div>
-        <div class="nav__item"><a class="nav__link" href="{b}odigos-symptomaton/"{cur('guide')}>{t['guide']}</a></div>
+        <div class="nav__item"><a class="nav__link" href="{b}frontida-podion/"{cur('tracker')}>{t['tracker']}</a></div>
         <div class="nav__item"><a class="nav__link" href="{b}seminaria/"{cur('seminars')}>{t['seminars']}</a></div>
         <div class="nav__item nav__item--optional"><a class="nav__link" href="{b}arthra/"{cur('articles')}>{t['articles']}</a></div>
         <div class="nav__item"><a class="nav__link" href="{b}epikoinonia/"{cur('contact')}>{t['contact']}</a></div>
@@ -292,11 +287,17 @@ def footer(depth, lang="el"):
         addr, addr2 = SITE["address_en"], SITE["address_athens_en"]
         city1, city2 = "Thessaloniki", "Athens"
     else:
-        col1 = "".join(f'<li><a href="{b}pathiseis/{c["slug"]}/">{c["title"]}</a></li>' for c in CONDITIONS)
-        col2 = "".join(f'<li><a href="{b}ypiresies/{x["slug"]}/">{x["title"]}</a></li>' for x in TREATMENTS)
+        col1 = "".join(f'<li><a href="{b}ypiresies/{x["slug"]}/">{x["title"]}</a></li>' for x in TREATMENTS)
+        col2 = "".join(f'<li><a href="{b}{u}">{n}</a></li>' for u, n in (
+            ("to-kentro/", t["clinic"]),
+            (PRACTITIONER["slug"] + "/", PRACTITIONER["name"]),
+            ("frontida-podion/", t["tracker"]),
+            ("arthra/", t["articles"]),
+            ("gallery/", t["gallery"]),
+        ))
         addr, addr2 = SITE["address"], SITE["address_athens"]
         city1, city2 = "Θεσσαλονίκη", "Αθήνα"
-    h1, h2 = t["conditions"], t["treatments"]
+    h1, h2 = (t["conditions"], t["treatments"]) if lang == "en" else (t["treatments"], t["centre"])
     return f"""<footer class="footer">
   <div class="wrap">
     <div class="footer__grid">
@@ -379,92 +380,4 @@ def overlays(depth=0, lang="el"):
 <div class="actionbar">
   <a class="btn btn--sm btn--block" href="tel:{SITE['phone_href']}">{I['phone']} {t['city_thess']}</a>
   <a class="btn btn--sm btn--block" href="tel:{SITE['phone_alt_href']}">{I['phone']} {t['city_athens']}</a>
-</div>"""
-
-
-# ── Foot diagram ─────────────────────────────────────────────────────────────
-# A footprint — the sole seen from below, the way a pressure plate or an ink
-# print shows it. The client asked for exactly this in place of the anatomical
-# cross-section: modern, plain, no drawn skin. Pressure pools where the foot
-# loads in every step (heel, ball, big toe), and four numbered points mark the
-# zones the site's conditions live in. Each point is a focusable hotspot; the
-# panel beside the print explains the zone.
-ZONES = [  # (zone id, marker x, marker y, label)
-    ("nail", 258, 118, "Νύχι μεγάλου δακτύλου"),
-    ("forefoot", 188, 250, "Πρόσθιο πέλμα"),
-    ("circulation", 178, 378, "Νεύρα &amp; αγγεία"),
-    ("heel", 168, 498, "Πτέρνα"),
-]
-
-
-def _zone_sub(zone):
-    """The condition(s) that live in a zone, for the label's second line."""
-    return " · ".join(c["title"] for c in CONDITIONS if c["zone"] == zone)
-
-
-def _footprint_svg():
-    sole = ("M112 235C130 190 200 170 250 195C290 218 292 275 280 320"
-            "C268 365 250 400 252 445C254 490 245 540 205 555"
-            "C165 570 120 545 112 500C104 450 106 390 104 330C102 290 100 262 112 235Z")
-    toes = [(258, 128, 36, 44, -8), (196, 108, 20, 27, -6), (150, 122, 18, 24, -4),
-            (112, 145, 16, 21, 0), (82, 175, 15, 19, 6)]
-    toes_svg = "".join(
-        f'<ellipse cx="{cx}" cy="{cy}" rx="{rx}" ry="{ry}" transform="rotate({rot} {cx} {cy})"/>'
-        for cx, cy, rx, ry, rot in toes)
-    hots = ""
-    for n, (zone, x, y, label) in enumerate(ZONES, start=1):
-        lx = 400
-        hots += f"""
-  <g class="hot" data-zone="{zone}" tabindex="0" role="button"
-     aria-label="{label.replace('&amp;', '&')}: {_zone_sub(zone)}">
-    <path class="hot__lead" d="M{x + 14} {y}H{lx - 14}" fill="none"/>
-    <circle class="hot__ring" cx="{x}" cy="{y}" r="22" fill="none"/>
-    <circle class="hot__shape" cx="{x}" cy="{y}" r="13"/>
-    <text class="hot__num" x="{x}" y="{y + 4.5}">{n}</text>
-    <text class="hot__label" x="{lx}" y="{y - 2}">{label}</text>
-    <text class="hot__sub" x="{lx}" y="{y + 15}">{_zone_sub(zone)}</text>
-    <rect class="hot__hit" x="{x - 26}" y="{y - 26}" width="{lx + 250 - x}" height="52"/>
-  </g>"""
-    return f"""<svg class="anatomy__svg" viewBox="40 60 640 540" role="img"
-  aria-label="Αποτύπωμα πέλματος με τέσσερα σημεία: νύχι μεγάλου δακτύλου, πρόσθιο πέλμα, νεύρα και αγγεία, πτέρνα">
-  <defs>
-    <clipPath id="fp-clip"><path d="{sole}"/>{toes_svg}</clipPath>
-    <radialGradient id="fp-heel" cx="168" cy="505" r="95" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#3b7387" stop-opacity=".55"/><stop offset="1" stop-color="#3b7387" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="fp-ball" cx="190" cy="245" r="110" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#3b7387" stop-opacity=".5"/><stop offset="1" stop-color="#3b7387" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="fp-toe" cx="258" cy="130" r="55" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#3b7387" stop-opacity=".45"/><stop offset="1" stop-color="#3b7387" stop-opacity="0"/>
-    </radialGradient>
-  </defs>
-
-  <!-- The print: a light wash, then the pressure pooling where the foot loads. -->
-  <g clip-path="url(#fp-clip)">
-    <rect x="40" y="60" width="290" height="530" fill="#89d1db" opacity=".55"/>
-    <rect x="40" y="60" width="290" height="530" fill="url(#fp-heel)"/>
-    <rect x="40" y="60" width="290" height="530" fill="url(#fp-ball)"/>
-    <rect x="40" y="60" width="290" height="530" fill="url(#fp-toe)"/>
-  </g>
-  <g fill="none" stroke="#3b7387" stroke-opacity=".35" stroke-width="1.5">
-    <path d="{sole}"/>{toes_svg}
-  </g>
-{hots}
-</svg>"""
-
-
-FOOT_SVG = _footprint_svg()
-
-
-def anatomy_block(depth):
-    return f"""<div class="anatomy" id="anatomy" data-default="nail">
-  <div class="anatomy__stage">
-    {FOOT_SVG}
-    <ol class="anatomy__legend" aria-label="Τα τέσσερα σημεία">
-      {"".join(f'<li class="hot" data-zone="{z}" tabindex="0" role="button"><b>{n}</b><span>{label.replace("&amp;", "&")}</span></li>'
-               for n, (z, _x, _y, label) in enumerate(ZONES, start=1))}
-    </ol>
-  </div>
-  <div class="anatomy__panel" aria-live="polite"></div>
 </div>"""
