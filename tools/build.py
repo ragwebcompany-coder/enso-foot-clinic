@@ -658,9 +658,11 @@ def build_home():
   <span class="gate__inner">
     <span class="gate__ring">
       <img class="gate__mark" src="{asset(0, "assets/img/enso-badge-light.svg")}" alt="" width="400" height="400" fetchpriority="high">
-      <span class="gate__word">Ensō</span>
-      <span class="gate__word2">Foot Clinic</span>
-      <span class="gate__enter">Enter {I['right']}</span>
+      <span class="gate__center">
+        <span class="gate__word">Ensō</span>
+        <span class="gate__word2">Foot Clinic</span>
+        <span class="gate__enter">Enter {I['right']}</span>
+      </span>
     </span>
     <span class="gate__sub"><span>Holistic Podology</span><span>Christodoulou Elpiniki</span></span>
   </span>
@@ -1586,8 +1588,8 @@ def en_shell(*, path, title, desc, depth, inner, active=""):
       <div class="stack" style="justify-items:stretch">
         <a class="btn btn--light btn--block" href="mailto:{SITE['email']}">{I['mail']} {SITE['email']}</a>
         <a class="btn btn--outline-light btn--block" href="tel:{SITE['phone_href']}">{I['phone']} {SITE['phone_href']}</a>
-        <p class="tiny" style="color:#92b5c0">{SITE['address_en']}, {SITE['postcode']}<br>{SITE['address_athens_en']}</p>
-        <div class="footer__hours" style="color:#a7c6d0">{hours}</div>
+        <p class="tiny" style="color:#8fb5d6">{SITE['address_en']}, {SITE['postcode']}<br>{SITE['address_athens_en']}</p>
+        <div class="footer__hours" style="color:#a9c8e6">{hours}</div>
       </div>
     </div>
   </div>

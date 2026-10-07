@@ -2,7 +2,7 @@
   role="img" aria-label="Το υδατογραφικό σήμα ensō του ποδολογικού κέντρου">
   <defs>
     <linearGradient id="hbg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#f1f8fa"/><stop offset="1" stop-color="#e4f0f4"/>
+      <stop offset="0" stop-color="#f0f8fe"/><stop offset="1" stop-color="#e2f1fb"/>
     </linearGradient>
   </defs>
   <rect width="500" height="620" fill="url(#hbg)"/>

@@ -23,16 +23,16 @@ IMG = os.path.join(ROOT, "site", "assets", "img")
 # Read off the clinic's own logo: NAVY is the wordmark, TEAL300 the aqua panel it
 # sits on. DEEP is the «μπλε ραφ» the clinic asked the site to be built in.
 NAVY    = "#0d2b7d"   # the wordmark's navy, sampled from the logo itself
-BRAND   = "#89d1db"   # the logo's aqua — the highlight everywhere on a deep ground
-TEAL    = "#3b7387"
-DEEP    = "#2a4b5a"   # «μπλε ραφ»
-ABYSS   = "#16323e"
-TEAL300 = "#89d1db"
-MIST    = "#e4f0f4"
-MIST2   = "#f1f8fa"
-PAPER   = "#fafdfe"
-LINE    = "#d3e3e9"
-INK3    = "#6c8894"
+BRAND   = "#45b3e8"   # the sea blue — the highlight everywhere on a deep ground
+TEAL    = "#1673bd"
+DEEP    = "#0c3f7c"   # «μπλε ραφ»
+ABYSS   = "#071f42"
+TEAL300 = "#a3d9f4"
+MIST    = "#e2f1fb"
+MIST2   = "#f0f8fe"
+PAPER   = "#fbfdff"
+LINE    = "#d2e4f2"
+INK3    = "#6a83a3"
 SKIN    = "#fdf1e8"
 SKIN2   = "#f6e0d1"
 SKIN_L  = "#e0c6b3"
@@ -180,10 +180,10 @@ def mark_image(cx, cy, size, *, light=False, tint=False, px=None):
 # The real Ensō logo is a watercolour brush circle: indigo pigment pooling in
 # blooms, thinning to a pale wash where the brush ran dry. These four steps
 # reproduce that range while staying inside the site palette.
-INK_DEEP = "#1f4a5e"   # where the pigment pools
-INK_MID  = "#3b7387"
-INK_SOFT = "#6fb4c6"   # the brand aqua
-INK_PALE = "#89d1db"
+INK_DEEP = "#0a3a80"   # where the pigment pools
+INK_MID  = "#1673bd"
+INK_SOFT = "#4fbde9"   # the brand aqua
+INK_PALE = "#a3d9f4"
 
 # The brush lands at about one o'clock and sweeps clockwise, lifting just short
 # of where it began — so the circle stays open at the top right, as it does in

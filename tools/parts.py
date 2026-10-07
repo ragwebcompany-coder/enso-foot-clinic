@@ -122,7 +122,7 @@ def head(title, desc, depth, canonical, *, lang="el", alt=None, jsonld=None,
 <meta name="description" content="{desc}">
 <link rel="canonical" href="{SITE['domain']}/{canonical.lstrip('/')}">
 <link rel="alternate" hreflang="{lang}" href="{SITE['domain']}/{canonical.lstrip('/')}">{alt_links}
-<meta name="theme-color" content="#2a4b5a">
+<meta name="theme-color" content="#0c3f7c">
 <meta name="geo.region" content="{SITE['region_iso']}">
 <meta name="geo.placename" content="{SITE['locality']}, {SITE['region']}">
 <meta name="geo.placename" content="Καλλιθέα, Αθήνα">
@@ -295,7 +295,7 @@ def footer(depth, lang="el"):
     <div class="footer__grid">
       <div class="footer__brand">
         <img src="{asset(depth, "assets/img/logo-light.svg")}" alt="{SITE['name']}" width="196" height="64" loading="lazy">
-        <p class="small" style="margin-top:1.1rem;max-width:34ch;color:#9ec0cb">{t['tagline']}</p>
+        <p class="small" style="margin-top:1.1rem;max-width:34ch;color:#9dc0de">{t['tagline']}</p>
         <div class="socials" style="margin-top:1.5rem">
           <a href="{SITE['social']['facebook']}" rel="noopener" target="_blank" aria-label="Facebook">{I['fb']}</a>
           <a href="{SITE['social']['tiktok']}" rel="noopener" target="_blank" aria-label="TikTok">{I['tiktok']}</a>
