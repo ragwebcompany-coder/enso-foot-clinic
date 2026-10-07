@@ -1433,3 +1433,174 @@ body:has(.cookies.is-shown) .totop { bottom: 15rem; }
   }
   .gate__center .gate__enter svg { width: 12px; height: 12px; }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   Futuristic layer, 07/10/2026. Decoration over a page that is complete
+   without it; the reduced-motion reset at the top of this file switches the
+   movement off and the JS does not add the classes at all in that case.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ── The logo's flight from the entry screen to the header ─────────────── */
+.gate-fly {
+  position: fixed; z-index: 400; pointer-events: none; margin: 0;
+  transform-origin: 50% 50%; will-change: transform, opacity, filter;
+}
+.gate-open .header .brand img,
+.brand-landing .header .brand img { opacity: 0; }
+.header .brand img { transition: opacity .45s var(--ease); }
+.brand-landed .header .brand { animation: brand-land 1.2s var(--ease-out); }
+@keyframes brand-land {
+  0%   { filter: drop-shadow(0 0 14px rgba(69,179,232,.9)); }
+  100% { filter: drop-shadow(0 0 0 rgba(69,179,232,0)); }
+}
+.gate.is-leaving .gate__center,
+.gate.is-leaving .gate__sub { opacity: 0; transform: translate(-50%, -50%) scale(.92); transition: opacity .3s, transform .4s var(--ease); }
+.gate.is-leaving .gate__sub { transform: translateY(10px); }
+
+/* ── Reveal: rise out of a blur, staggered ─────────────────────────────── */
+.js .fx-rise[data-reveal] { opacity: 0; transform: translateY(26px); filter: blur(8px); }
+.js .fx-rise[data-reveal].is-in {
+  opacity: 1; transform: none; filter: none;
+  transition: opacity .9s var(--ease-out), transform .9s var(--ease-out), filter .9s var(--ease-out);
+}
+.js .footer .fx-rise[data-reveal] { filter: none; }
+
+/* The motto, word by word. */
+.fx-word { display: inline-block; opacity: 0; transform: translateY(.6em) rotateX(-60deg); filter: blur(6px);
+  transform-origin: 50% 100%; }
+.motto__lead.is-in .fx-word { opacity: 1; transform: none; filter: none;
+  transition: opacity .7s var(--ease-out), transform .9s var(--ease-out), filter .7s var(--ease-out);
+  transition-delay: calc(var(--i) * 90ms); }
+.js .motto__lead[data-reveal] { opacity: 1; transform: none; }
+
+/* Headings lean into fast scrolling (JS writes --fx-skew). */
+.fx-skew { transform: skewY(var(--fx-skew, 0deg)); transform-origin: 0 50%; }
+.fx-skew.fx-rise[data-reveal].is-in { transform: skewY(var(--fx-skew, 0deg)); }
+
+/* ── A light that follows the pointer along card edges ─────────────────── */
+.fx-glow { position: relative; isolation: isolate; }
+.fx-glow::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  padding: 1px; z-index: 3; opacity: 0; transition: opacity .35s var(--ease);
+  background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 50%),
+              rgba(69,179,232,.95), rgba(163,217,244,.35) 35%, transparent 65%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+}
+.fx-glow::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  z-index: -1; opacity: 0; transition: opacity .35s var(--ease);
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(69,179,232,.10), transparent 60%);
+}
+.fx-glow:hover::after, .fx-glow:hover::before { opacity: 1; }
+.card.fx-glow, .place.fx-glow, .sem-card.fx-glow, .pillar.fx-glow {
+  transition: transform .45s var(--ease-out), box-shadow .45s var(--ease-out), border-color .3s;
+}
+.card.fx-glow:hover, .place.fx-glow:hover, .sem-card.fx-glow:hover, .pillar.fx-glow:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 50px rgba(12,63,124,.14), 0 0 0 1px rgba(69,179,232,.25);
+}
+
+/* ── Buttons: a sheen that sweeps across on hover ──────────────────────── */
+.btn { position: relative; overflow: hidden; }
+.btn > svg, .btn { z-index: 0; }
+.btn:not(.btn--ghost)::before {
+  content: ""; position: absolute; inset: -2px auto -2px -60%; width: 45%; pointer-events: none;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.45), transparent);
+  transform: skewX(-20deg); transition: left .7s var(--ease-out); display: block; opacity: 1; z-index: 2;
+}
+.btn:not(.btn--ghost):hover::before { left: 120%; }
+.btn:not(.btn--ghost) { background-image: linear-gradient(120deg, var(--deep), var(--teal) 140%); }
+.btn--light:not(.btn--ghost) { background-image: none; }
+
+/* ── Page heads: a living grid and a slow orb behind the title ─────────── */
+.page-head { position: relative; isolation: isolate; overflow: hidden; }
+.page-head::before {
+  content: ""; position: absolute; inset: -20% -10% -10%; z-index: -1; pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(22,115,189,.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(22,115,189,.07) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(70% 80% at 75% 30%, #000 10%, transparent 70%);
+  mask-image: radial-gradient(70% 80% at 75% 30%, #000 10%, transparent 70%);
+  animation: grid-drift 30s linear infinite;
+}
+.page-head::after {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  width: 46vw; aspect-ratio: 1; right: -12vw; top: -22vw; border-radius: 50%;
+  background: radial-gradient(circle, rgba(69,179,232,.22), rgba(22,115,189,.08) 45%, transparent 70%);
+  filter: blur(30px); animation: orb 16s var(--ease) infinite alternate;
+}
+@keyframes grid-drift { to { background-position: 56px 56px, 56px 56px; } }
+@keyframes orb { to { transform: translate(-6vw, 5vw) scale(1.15); } }
+
+/* Titles in a moving gradient of the brand blues. */
+.page-head h1, .about__who h1, #poioi-eimaste h1 {
+  background: linear-gradient(100deg, var(--abyss) 0%, var(--deep) 35%, var(--teal) 55%, var(--deep) 75%, var(--abyss) 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: title-flow 9s ease-in-out infinite alternate;
+}
+@keyframes title-flow { from { background-position: 0% 0; } to { background-position: 100% 0; } }
+
+/* The eyebrow's hairline draws itself in. */
+.fx-rise .eyebrow::before, .eyebrow.fx-rise::before { transform-origin: 0 50%; transform: scaleX(0);
+  transition: transform 1s .25s var(--ease-out); }
+.fx-rise.is-in .eyebrow::before, .eyebrow.fx-rise.is-in::before { transform: scaleX(1); }
+.about__who .eyebrow::before { transform: none; }
+
+/* ── Dark bands: aurora, scan line, grid ───────────────────────────────── */
+.section--deep, .footer { position: relative; isolation: isolate; overflow: hidden; }
+.section--deep::before, .footer::before {
+  content: ""; position: absolute; inset: -30%; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(35% 45% at 20% 30%, rgba(22,115,189,.45), transparent 70%),
+    radial-gradient(30% 40% at 80% 70%, rgba(69,179,232,.28), transparent 70%),
+    radial-gradient(25% 35% at 60% 10%, rgba(10,58,128,.5), transparent 70%);
+  filter: blur(40px); animation: aurora-sway 22s var(--ease) infinite alternate;
+}
+.section--deep::after, .footer::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(163,217,244,.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(163,217,244,.06) 1px, transparent 1px);
+  background-size: 64px 64px;
+  -webkit-mask-image: radial-gradient(80% 90% at 50% 50%, #000 20%, transparent 80%);
+  mask-image: radial-gradient(80% 90% at 50% 50%, #000 20%, transparent 80%);
+}
+@keyframes aurora-sway { to { transform: translate3d(6%, -4%, 0) rotate(8deg) scale(1.1); } }
+.motto { padding-block: clamp(5rem, 11vw, 9rem); }
+.motto .wrap { position: relative; }
+.motto .wrap::after {
+  content: ""; position: absolute; left: 50%; top: -3rem; bottom: -3rem; width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(163,217,244,.5), transparent);
+  transform: translateX(-50%); opacity: .35; z-index: -1;
+}
+.motto__lead { text-shadow: 0 0 40px rgba(69,179,232,.35); }
+.motto__rule { box-shadow: 0 0 18px rgba(69,179,232,.8); animation: rule-pulse 3.2s ease-in-out infinite; }
+@keyframes rule-pulse { 50% { width: 5rem; opacity: .7; } }
+
+/* ── Header: an animated hairline once it sticks ───────────────────────── */
+.header::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; pointer-events: none;
+  background: linear-gradient(90deg, transparent, var(--teal-hi), var(--teal-300), transparent);
+  background-size: 200% 100%; opacity: 0; transition: opacity .4s;
+  animation: hairline 6s linear infinite;
+}
+.header.is-stuck::after { opacity: .8; }
+@keyframes hairline { to { background-position: -200% 0; } }
+.progress { background: linear-gradient(90deg, var(--teal), var(--teal-hi), var(--teal-300)); box-shadow: 0 0 12px rgba(69,179,232,.7); }
+
+/* ── Small touches ─────────────────────────────────────────────────────── */
+.nav__link { position: relative; }
+.nav__link::after {
+  content: ""; position: absolute; left: 50%; right: 50%; bottom: .2rem; height: 2px; border-radius: 2px;
+  background: linear-gradient(90deg, var(--teal), var(--teal-hi)); transition: left .35s var(--ease-out), right .35s var(--ease-out);
+}
+.nav__link:hover::after, .nav__link[aria-current="page"]::after { left: .6rem; right: .6rem; }
+.info-list svg { filter: drop-shadow(0 0 6px rgba(69,179,232,.45)); }
+.about__mark { animation: mark-spin 40s linear infinite; }
+@keyframes mark-spin { to { transform: rotate(360deg); } }
+.legal > div { transition: background-color .3s; }
+.legal > div:hover { background: var(--mist-2); }
+::selection { background: rgba(69,179,232,.3); }

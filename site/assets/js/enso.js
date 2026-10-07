@@ -84,6 +84,15 @@
   function reveal() {
     var items = $$("[data-reveal]");
     if (!items.length) return;
+    // Behind the entry screen nothing should play yet: the page builds itself
+    // once the gate is opened, as the logo lands.
+    if ($(".gate")) {
+      document.addEventListener("enso:reveal", function () { start(items); }, { once: true });
+      return;
+    }
+    start(items);
+  }
+  function start(items) {
     if (reduced || !("IntersectionObserver" in window)) {
       items.forEach(function (i) { i.classList.add("is-in"); });
       return;
@@ -547,16 +556,122 @@
     function open() {
       if (opened) return;
       opened = true;
+      var flew = !reduced && fly(g);
+      setTimeout(function () { document.dispatchEvent(new Event("enso:reveal")); }, flew ? 450 : 0);
       g.classList.add("is-leaving");
       root.classList.remove("gate-open");
       var done = function () {
         g.remove();
         document.dispatchEvent(new Event("enso:gate"));
       };
-        if (reduced) done(); else setTimeout(done, 750);
+      if (reduced) done(); else setTimeout(done, flew ? 1150 : 750);
     }
     g.addEventListener("click", open);
     lean(g);
+  }
+
+  /* ENTER: the ring lifts off the entry screen and lands on the mark of the
+     header logo, top left, spinning once on the way. A clone flies on top of
+     everything; the gate fades behind it; the header logo is held invisible
+     until the clone touches down, then the two cross-fade, so there is never a
+     second copy of the mark on screen. The geometry is the two marks' own
+     squares: the badge carries the mark inset 22/400 on every side, the header
+     logo carries it at x 10–106 of a 379×96 viewBox. */
+  function fly(g) {
+    var src = $(".gate__mark", g), brand = $(".header .brand img");
+    if (!src || !brand || !src.animate) return false;
+    var a = src.getBoundingClientRect(), b = brand.getBoundingClientRect();
+    if (!a.width || !b.width) return false;
+    var inset = 22 / 400, markA = a.width * (1 - 2 * inset);
+    var markB = b.height, bx = b.left + b.width * (10 / 379), by = b.top;
+    var k = markB / markA;
+    var dx = (bx + markB / 2) - (a.left + a.width / 2);
+    var dy = (by + markB / 2) - (a.top + a.height / 2);
+
+    var clone = src.cloneNode(true);
+    clone.className = "gate-fly";
+    clone.removeAttribute("fetchpriority");
+    clone.style.cssText = "left:" + a.left + "px;top:" + a.top + "px;width:" + a.width +
+      "px;height:" + a.height + "px";
+    document.body.appendChild(clone);
+    src.style.visibility = "hidden";
+    document.documentElement.classList.add("brand-landing");
+
+    var anim = clone.animate([
+      { transform: "translate(0,0) scale(1) rotate(0deg)", opacity: 1, filter: "drop-shadow(0 0 0 rgba(69,179,232,0))" },
+      { transform: "translate(" + dx * .55 + "px," + dy * .35 + "px) scale(" + (1 + (k - 1) * .5) + ") rotate(200deg)",
+        opacity: 1, filter: "drop-shadow(0 0 28px rgba(69,179,232,.75))", offset: .55 },
+      { transform: "translate(" + dx + "px," + dy + "px) scale(" + k + ") rotate(360deg)", opacity: 1,
+        filter: "drop-shadow(0 0 6px rgba(69,179,232,.5))" }
+    ], { duration: 1100, easing: "cubic-bezier(.65,0,.25,1)", fill: "forwards" });
+
+    var landed = false;
+    function land() {
+      if (landed) return;
+      landed = true;
+      document.documentElement.classList.remove("brand-landing");
+      document.documentElement.classList.add("brand-landed");
+      clone.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 380, fill: "forwards" })
+        .onfinish = function () { clone.remove(); };
+      setTimeout(function () { document.documentElement.classList.remove("brand-landed"); }, 1400);
+    }
+    anim.onfinish = land;
+    setTimeout(land, 1150);   // in case the finish event never arrives
+    return true;
+  }
+
+  /* ── Futuristic layer ──────────────────────────────────────────────── */
+  /* Everything here is decoration over a page that is complete without it:
+     staggered blur-in reveals for every block, a light that follows the
+     pointer around card edges, the motto set word by word, and a scroll
+     velocity skew on the big headings. Off for reduced motion. */
+  function futurist() {
+    if (reduced) return;
+    var SEL = [".sec-head", ".page-head .crumbs", ".page-head h1", ".page-head .lede",
+      ".card", ".place", ".sem-card", ".pillar", ".centre", ".mapcard", ".legal > div",
+      ".faq__item", ".info-list > li", ".about__who > *", ".about__text > p",
+      ".prose > *", ".compare", ".creds__list li", ".timeline li", ".note",
+      ".motto__rule", ".footer__grid > *"].join(",");
+    $$(SEL).forEach(function (el) {
+      if (el.hasAttribute("data-reveal") || el.closest(".gate")) return;
+      var sib = 0, p = el.previousElementSibling;
+      while (p && sib < 6) { if (p.matches(SEL)) sib++; p = p.previousElementSibling; }
+      el.setAttribute("data-reveal", String(sib * 80));
+      el.classList.add("fx-rise");
+    });
+
+    // The motto arrives word by word.
+    $$(".motto__lead").forEach(function (h) {
+      var words = h.textContent.trim().split(/\s+/);
+      h.innerHTML = words.map(function (w, i) {
+        return '<span class="fx-word" style="--i:' + i + '">' + w + "</span>";
+      }).join(" ");
+      h.setAttribute("data-reveal", "0");
+    });
+
+    // A light that follows the pointer along the edges of every card.
+    if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+      $$(".card, .place, .sem-card, .pillar, .centre, .mapcard, .legal, .faq__item, .compare__scroll, .btn")
+        .forEach(function (el) {
+          el.classList.add("fx-glow");
+          el.addEventListener("pointermove", function (e) {
+            var r = el.getBoundingClientRect();
+            el.style.setProperty("--mx", (e.clientX - r.left) + "px");
+            el.style.setProperty("--my", (e.clientY - r.top) + "px");
+          }, { passive: true });
+        });
+    }
+
+    // Big headings lean a touch into fast scrolling, then settle.
+    var heads = $$("h1, .sec-head h2, .motto__lead"), last = scrollY, raf = 0, skew = 0;
+    function tick() {
+      var v = scrollY - last; last = scrollY;
+      skew += (Math.max(-6, Math.min(6, v * .12)) - skew) * .18;
+      document.documentElement.style.setProperty("--fx-skew", skew.toFixed(2) + "deg");
+      raf = Math.abs(skew) > .02 ? requestAnimationFrame(tick) : 0;
+    }
+    addEventListener("scroll", function () { if (!raf) raf = requestAnimationFrame(tick); }, { passive: true });
+    heads.forEach(function (h) { h.classList.add("fx-skew"); });
   }
 
   /* The lockup leans towards the pointer, and a wash of the logo's aqua follows
@@ -611,7 +726,7 @@
   }
 
   function init() {
-    gate(); header(); reveal(); counters(); search(); compare();
+    gate(); header(); futurist(); reveal(); counters(); search(); compare();
     tracker(); faq(); doc(); gallery(); articleFilter(); chrome(); cookies();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
