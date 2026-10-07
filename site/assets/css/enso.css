@@ -1415,3 +1415,21 @@ body:has(.cookies.is-shown) .totop { bottom: 15rem; }
   padding: calc(var(--ring) * .018) calc(var(--ring) * .045);
   font-size: clamp(.62rem, calc(var(--ring) * .021), .95rem); letter-spacing: .2em;
 }
+/* 07/10/2026: a smaller ring, and the block centred on the ring's opening —
+   the circle the eye reads — not on the image box. The brush is heavier on
+   the left, so that opening sits right of and below the box centre
+   (measured from brand/enso-mark.png: 0.609, 0.549 of the badge). */
+.gate__ring { --ring: min(58vh, 82vw, 600px); --cx: .609; --cy: .549; }
+.gate__center { gap: calc(var(--ring) * .03); }
+.gate__center .gate__word { font-size: calc(var(--ring) * .085); }
+.gate__center .gate__word2 { font-size: calc(var(--ring) * .033); }
+.gate__center .gate__enter { font-size: clamp(.6rem, calc(var(--ring) * .024), .9rem); }
+@media (max-width: 600px) {
+  .gate__ring { --ring: min(58vh, 90vw); }
+  .gate__center { gap: calc(var(--ring) * .022); }
+  .gate__center .gate__enter {
+    padding: calc(var(--ring) * .014) calc(var(--ring) * .038);
+    font-size: .58rem; letter-spacing: .18em; gap: .35rem;
+  }
+  .gate__center .gate__enter svg { width: 12px; height: 12px; }
+}
