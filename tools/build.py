@@ -333,7 +333,7 @@ def podologist_ld():
         "alternateName": PRACTITIONER["name_en"],
         "jobTitle": "Ποδολόγος",
         "description": re.sub(r"<[^>]+>", "", PRACTITIONER["blurb"]),
-        "url": f"{SITE['domain']}/#viografiko",
+        "url": f"{SITE['domain']}/",
         "medicalSpecialty": "Podiatric",
         "worksFor": {"@id": CLINIC_ID},
         "workLocation": {"@type": "Place", "name": SITE["name"],
@@ -636,12 +636,10 @@ def compare_section(depth, *, heading=True):
 def build_home():
     """The home page is «Ποιοι είμαστε» and nothing else (07/10/2026): the
     clinic asked for the general summary of the site — services, foot care,
-    articles, seminars — to come off it. Order: the entry screen, the two-cities
-    line and the two centres, the E.N.S.O. framework in her words, her own text,
-    the motto band, then contact details for both centres."""
+    articles, seminars — to come off it. Order: the entry screen, her own text and
+    nothing else («αυστηρά στο Ποιοι είμαστε»), the motto band, then contact
+    details for both centres."""
     d = 0
-    why_head, why = ENSO_WHY[0][1], "".join(
-        f"<li><b>{a}</b><span>{b}</span></li>" for a, b in ENSO_WHY[1:])
     paras = [html.escape(x) for x in ABOUT_TEXT]
     paras[0] = '<span class="qm">«</span>' + paras[0]
     paras[-1] = paras[-1] + '<span class="qm">»</span>'
@@ -668,45 +666,14 @@ def build_home():
   </span>
 </button>
 
-<section class="section" id="poioi-eimaste">
-  <div class="wrap">
-    <div class="sec-head sec-head--split">
-      <div class="stack">
-        <p class="eyebrow">Ποιοι είμαστε</p>
-        <h1>{ENSO_LEDE}</h1>
-      </div>
-      <p class="lede">{ENSO_LEDE_BODY}</p>
-    </div>
-    {centres_block(d)}
-  </div>
-</section>
-
-<section class="section section--mist" id="enso">
-  <div class="wrap">
-    <div class="sec-head sec-head--split">
-      <div class="stack"><p class="eyebrow">E.N.S.O. Framework</p>
-        <h2>Ο κύκλος της κίνησης.</h2></div>
-      <p class="lede">{ENSO_INTRO}</p>
-    </div>
-    {enso_pillars(d)}
-    <div class="panel panel--deep" style="margin-top:3rem">
-      <div class="stack">
-        <p class="eyebrow">Γιατί ENSO;</p>
-        <h2>{why_head}</h2>
-        <p class="lede">{ENSO_CLOSE}</p>
-      </div>
-      <ul class="timeline timeline--light">{why}</ul>
-    </div>
-  </div>
-</section>
-
-<section class="section about" id="viografiko">
+<section class="section about" id="poioi-eimaste">
   <div class="wrap">
     <div class="about__grid">
       <div class="about__who">
-        <p class="eyebrow">Ποιος θα σας δει</p>
-        <h2>{ABOUT_NAME}</h2>
+        <p class="eyebrow">Ποιοι είμαστε</p>
+        <h1>{ABOUT_NAME}</h1>
         <p class="about__role">{html.escape(ABOUT_ROLE)}</p>
+        <img class="about__mark" src="{asset(0, "assets/img/enso-badge.svg")}" alt="" width="400" height="400" loading="lazy">
       </div>
       <div class="about__text">{about}</div>
     </div>

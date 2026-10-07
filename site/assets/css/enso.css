@@ -1395,3 +1395,6 @@ body:has(.cookies.is-shown) .totop { bottom: 15rem; }
 .legal b { font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; align-self: center; }
 .legal .pending { color: var(--sand); font-style: italic; }
 .prose .legal { margin-top: 1.2em; }
+.page--home #poioi-eimaste h1 { font-size: clamp(2.2rem, 1.4rem + 3vw, 3.6rem); }
+.about__mark { width: min(240px, 60%); margin-top: 1rem; }
+@media (max-width: 939px) { .about__mark { display: none; } }
