@@ -15,7 +15,7 @@ SEMINARS_COPY = {
     date=["Ιαν", "15", "2026"],
     html="""
 <p>Ένα μεγάλο μέρος αυτής της δουλειάς γίνεται εκτός κέντρου: στην εκπαίδευση
-επαγγελματιών. Η <a href="@/elpiniki-christodoulou/">Ελπινίκη Χριστοδούλου</a>
+επαγγελματιών. Η <a href="@/#viografiko">Ελπινίκη Χριστοδούλου</a>
 οργανώνει και εισηγείται επαγγελματικά σεμινάρια, workshops και masterclasses
 ποδολογίας, διδάσκει ποδολογία και τεχνική νυχιών στο <b>Ι.ΙΕΚ Ξίνη</b> στα Μουδανιά
 Χαλκιδικής, και από το 2006 έως το 2015 ήταν <b>Academy Instructor της NBM Germany</b>
@@ -93,9 +93,7 @@ SEMINARS_COPY = {
 <h2>Πού να συνεχίσετε</h2>
 
 <p>Το υλικό του σεμιναρίου καλύπτεται σε μεγάλο βαθμό από τις σελίδες του ποδολογικού κέντρου:
-η <a href="@/ypiresies/kliniki-podologiki-frontida/">κλινική ποδολογική φροντίδα</a>, η
-<a href="@/ypiresies/prolipsi-ypsilou-kindynou/">προληπτική φροντίδα υψηλού κινδύνου</a>
-και η διάκριση
-<a href="@/arthra/podologia-i-pedicure-poia-i-diafora/">ποδολογία ή pedicure</a>.</p>
+η <a href="@/ypiresies/kliniki-podologiki-frontida/">κλινική ποδολογική φροντίδα</a> και η
+<a href="@/ypiresies/prolipsi-ypsilou-kindynou/">προληπτική φροντίδα υψηλού κινδύνου</a>.</p>
 """),
 }

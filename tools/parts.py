@@ -192,19 +192,16 @@ def drawer(depth, lang="el"):
   </div>
 </div>"""
     treats = "".join(f'<a href="{b}ypiresies/{x["slug"]}/">{x["title"]}</a>' for x in TREATMENTS)
+    # The whole site is four entries (07/10/2026): Ποιοι είμαστε, Υπηρεσίες,
+    # Σεμινάρια, Επικοινωνία.
     return f"""<div class="drawer" id="drawer">
-  <div class="drawer__group"><a class="drawer__top" href="{b}to-kentro/">{t['clinic']}</a></div>
+  <div class="drawer__group"><a class="drawer__top" href="{b or './'}">{t['clinic']}</a></div>
   <div class="drawer__group">
     <button class="drawer__top" aria-expanded="false">{t['treatments']} {I['chev']}</button>
-    <div class="drawer__panel"><a href="{b}ypiresies/">{t['compare']}</a>{treats}</div>
+    <div class="drawer__panel"><a href="{b}ypiresies/">{t['all_services']}</a>{treats}</div>
   </div>
-  <div class="drawer__group"><a class="drawer__top" href="{b}{PRACTITIONER['slug']}/">{PRACTITIONER['name']}</a></div>
-  <div class="drawer__group"><a class="drawer__top" href="{b}frontida-podion/">{t['tracker']}</a></div>
   <div class="drawer__group"><a class="drawer__top" href="{b}seminaria/">{t['seminars']}</a></div>
-  <div class="drawer__group"><a class="drawer__top" href="{b}arthra/">{t['articles']}</a></div>
-  <div class="drawer__group"><a class="drawer__top" href="{b}gallery/">{t['gallery']}</a></div>
   <div class="drawer__group"><a class="drawer__top" href="{b}epikoinonia/">{t['contact']}</a></div>
-  <div class="drawer__group"><a class="drawer__top" href="{b}en/">{t['other_lang_full']}</a></div>
   <div class="drawer__cta">
     <a class="btn btn--block" href="tel:{SITE['phone_href']}">{I['phone']} {t['city_thess']} · {SITE['phone']}</a>
     <a class="btn btn--block" href="tel:{SITE['phone_alt_href']}">{I['phone']} {t['city_athens']} · {SITE['phone_alt']}</a>
@@ -233,7 +230,7 @@ def header(depth, active="", lang="el", over_dark=False):
             f'<span>{x["short"]}</span></a>' for x in half)
             for half in (TREATMENTS[:2], TREATMENTS[2:])]
         nav = f"""<nav class="nav" aria-label="{t['nav_label']}">
-        <div class="nav__item"><a class="nav__link" href="{b}to-kentro/"{cur('clinic')}>{t['clinic']}</a></div>
+        <div class="nav__item"><a class="nav__link" href="{b or './'}"{cur('clinic')}>{t['clinic']}</a></div>
         <div class="nav__item" data-mega>
           <button class="nav__link" aria-expanded="false">{t['treatments']} {I['chev']}</button>
           <div class="mega">
@@ -242,9 +239,7 @@ def header(depth, active="", lang="el", over_dark=False):
             <a class="mega__foot" href="{b}ypiresies/">{t['compare']} {I['right']}</a>
           </div>
         </div>
-        <div class="nav__item"><a class="nav__link" href="{b}frontida-podion/"{cur('tracker')}>{t['tracker']}</a></div>
         <div class="nav__item"><a class="nav__link" href="{b}seminaria/"{cur('seminars')}>{t['seminars']}</a></div>
-        <div class="nav__item nav__item--optional"><a class="nav__link" href="{b}arthra/"{cur('articles')}>{t['articles']}</a></div>
         <div class="nav__item"><a class="nav__link" href="{b}epikoinonia/"{cur('contact')}>{t['contact']}</a></div>
       </nav>"""
         lang_link = f'<a class="lang" href="{b}en/" hreflang="en">{t["other_lang"]}</a>'
@@ -265,16 +260,13 @@ def header(depth, active="", lang="el", over_dark=False):
     <a class="brand" href="{(b + 'en/') if lang == 'en' else (b or './')}">{brand_img}</a>
     {nav}
     <div class="header__tools">
-      <button class="icon-btn" data-search-open aria-label="{t['search']}">{I['search']}</button>
-      {lang_link}
       <a class="btn btn--sm" href="{book_href}">{t['book']}</a>
       <button class="icon-btn burger" aria-label="{t['menu']}" aria-expanded="false" aria-controls="drawer">
         <span></span><span></span><span></span></button>
     </div>
   </div>
 </header>
-{drawer(depth, lang)}
-{search_overlay(lang)}"""
+{drawer(depth, lang)}"""
 
 
 def footer(depth, lang="el"):
@@ -289,15 +281,15 @@ def footer(depth, lang="el"):
     else:
         col1 = "".join(f'<li><a href="{b}ypiresies/{x["slug"]}/">{x["title"]}</a></li>' for x in TREATMENTS)
         col2 = "".join(f'<li><a href="{b}{u}">{n}</a></li>' for u, n in (
-            ("to-kentro/", t["clinic"]),
-            (PRACTITIONER["slug"] + "/", PRACTITIONER["name"]),
-            ("frontida-podion/", t["tracker"]),
-            ("arthra/", t["articles"]),
-            ("gallery/", t["gallery"]),
-        ))
+            ("", t["clinic"]),
+            ("ypiresies/", t["treatments"]),
+            ("seminaria/", t["seminars"]),
+            ("epikoinonia/", t["contact"]),
+            ("oroi-chrisis/", t["terms"]),
+        )).replace('href=""', 'href="./"')
         addr, addr2 = SITE["address"], SITE["address_athens"]
         city1, city2 = "Θεσσαλονίκη", "Αθήνα"
-    h1, h2 = (t["conditions"], t["treatments"]) if lang == "en" else (t["treatments"], t["centre"])
+    h1, h2 = (t["conditions"], t["treatments"]) if lang == "en" else (t["treatments"], "Ο ιστότοπος")
     return f"""<footer class="footer">
   <div class="wrap">
     <div class="footer__grid">
@@ -329,9 +321,7 @@ def footer(depth, lang="el"):
     <div class="footer__bottom">
       <span>© {SITE['founded']}–2026 {SITE['name']} · {city1} &amp; {city2}</span>
       <span style="display:flex;gap:1.25rem;flex-wrap:wrap;align-items:center">
-        <a href="{b}seminaria/">{t['seminars']}</a>
         <a href="{b}oroi-chrisis/">{t['terms']}</a>
-        <a href="{(b + 'en/') if lang == 'el' else b}">{t['other_lang_full']}</a>
         <a class="credit" href="{_html.escape(SITE['credit']['url'], quote=True)}" target="_blank" rel="noopener noreferrer">
           {t['madeby']} <b>{SITE['credit']['name']}</b></a>
       </span>
