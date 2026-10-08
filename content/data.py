@@ -15,7 +15,7 @@ Both addresses and all three phone lines come from the clinic's business card
 
 SITE = {
     "name": "Ensō Foot Clinic",
-    "legal": "Ensō Foot Clinic — Χριστοδούλου Ελπινίκη, Ποδολόγος",
+    "legal": "ENSO FOOT CLINIC ΜΟΝΟΠΡΟΣΩΠΗ Ι.Κ.Ε.",
     "short": "Ensō Foot Clinic",
     "domain": "https://www.ensofootclinic.gr",
     "phone": "23920 21702",
@@ -540,12 +540,14 @@ MOTTO = ("Η βαρύτητα είναι η σταθερά μας.",
 # Company details for /epikoinonia/ and the terms page. A value left as None is
 # shown as «θα συμπληρωθεί» and the build prints a reminder — fill in and rebuild.
 LEGAL_ROWS = [
-    ("Επωνυμία", "Χριστοδούλου Ελπινίκη — Ensō Foot Clinic"),
-    ("Δραστηριότητα", "Ποδολογικό κέντρο"),
-    ("Έδρα", "Ρωμανού 11, 570 19 Περαία Θεσσαλονίκης (3ος όροφος)"),
-    ("Υποκατάστημα", "Λεωφ. Ελ. Βενιζέλου 180, 176 75 Καλλιθέα Αθήνας"),
-    ("ΑΦΜ", None),
-    ("ΔΟΥ", None),
-    ("Αρ. ΓΕΜΗ", None),
+    # From the ΓΕΜΗ «Ανακοίνωση – Βεβαίωση σύστασης εταιρείας», 23/07/2026.
+    ("Επωνυμία", "ENSO FOOT CLINIC ΜΟΝΟΠΡΟΣΩΠΗ Ι.Κ.Ε."),
+    ("Διακριτικός τίτλος", "ENSO FOOT CLINIC"),
+    ("Δραστηριότητα", "Υπηρεσίες θεραπευτή νυχιών και κάλων (ΚΑΔ 86960007)"),
+    ("Έδρα", "Λεωφ. Ελ. Βενιζέλου 180, 176 75 Καλλιθέα Αθήνας"),
+    ("Κέντρο Θεσσαλονίκης", "Ρωμανού 11, 570 19 Περαία Θεσσαλονίκης (3ος όροφος)"),
+    ("ΑΦΜ", "803357198"),
+    ("ΔΟΥ", "ΚΕΦΟΔΕ Αττικής"),
+    ("Αρ. ΓΕΜΗ", "195249603000"),
     ("Email", "podopure@gmail.com"),
 ]
