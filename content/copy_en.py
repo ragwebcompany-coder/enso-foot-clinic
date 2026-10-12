@@ -56,7 +56,7 @@ so they do not come back.</li>
 hydration second.</li>
 <li><a href="@/en/ingrown-toenail/">Ingrown toenail</a> — painless correction with a
 glass-fibre brace.</li>
-<li><a href="@/en/clinical-podology/">Clinical podology</a> — the clinic's core session.</li>
+<li><a href="@/en/medical-pedicure/">Medical pedicure</a> — the clinic's core session.</li>
 </ul>
 
 <h2>Practical details</h2>
@@ -128,7 +128,7 @@ advice.</p>
 <div class="note"><b>Do not wait for an appointment</b><span>An ulcer that will not heal,
 spreading redness, pus, fever, or an area turning black — see a doctor today.</span></div>
 
-<p>See also <a href="@/en/clinical-podology/">clinical podology</a> and
+<p>See also <a href="@/en/medical-pedicure/">medical pedicure</a> and
 <a href="@/en/calluses-and-corns/">calluses and corns</a>.</p>
 """),
 
@@ -306,10 +306,10 @@ or after repeated failure of conservative treatment.</p>
 and always if you have diabetes or circulatory problems.</span></div>
 """),
 
-"en/clinical-podology": dict(
-    h1="Clinical Podology",
-    title="Clinical Podology — Clinical Foot Care | Ensō Foot Clinic",
-    description="Clinical podology: sterile, painless clinical treatment of the skin and "
+"en/medical-pedicure": dict(
+    h1="Medical Pedicure",
+    title="Medical Pedicure — Clinical Foot Care | Ensō Foot Clinic",
+    description="Medical pedicure: sterile, painless clinical treatment of the skin and "
                 "nails of the foot. Not a cosmetic pedicure — a therapeutic procedure.",
     date=["Jan", "15", "2026"],
     html="""

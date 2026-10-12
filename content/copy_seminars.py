@@ -92,8 +92,8 @@ SEMINARS_COPY = {
 
 <h2>Πού να συνεχίσετε</h2>
 
-<p>Το υλικό του σεμιναρίου καλύπτεται σε μεγάλο βαθμό από τις σελίδες του ποδολογικού κέντρου:
-η <a href="@/ypiresies/kliniki-podologiki-frontida/">κλινική ποδολογική φροντίδα</a> και η
-<a href="@/ypiresies/prolipsi-ypsilou-kindynou/">προληπτική φροντίδα υψηλού κινδύνου</a>.</p>
+<p>Το υλικό του σεμιναρίου καλύπτεται σε μεγάλο βαθμό από τις σελίδες των υπηρεσιών:
+ο <a href="@/ypiresies/elenchos-diavitikou-podiou/">έλεγχος διαβητικού ποδιού</a> και η
+<a href="@/ypiresies/iatriki-podologia/">ιατρική ποδολογία</a>.</p>
 """),
 }

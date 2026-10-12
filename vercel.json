@@ -17,12 +17,12 @@
     },
     {
       "source": "/services/ΔΙΑΒΗΤΙΚΟ-ΠΟΔΙ/",
-      "destination": "/ypiresies/prolipsi-ypsilou-kindynou/",
+      "destination": "/ypiresies/elenchos-diavitikou-podiou/",
       "permanent": true
     },
     {
       "source": "/services/%CE%94%CE%99%CE%91%CE%92%CE%97%CE%A4%CE%99%CE%9A%CE%9F-%CE%A0%CE%9F%CE%94%CE%99/",
-      "destination": "/ypiresies/prolipsi-ypsilou-kindynou/",
+      "destination": "/ypiresies/elenchos-diavitikou-podiou/",
       "permanent": true
     },
     {
@@ -51,7 +51,22 @@
       "permanent": true
     },
     {
+      "source": "/Διαδικτυακά-Μαθήματα/",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/%CE%94%CE%B9%CE%B1%CE%B4%CE%B9%CE%BA%CF%84%CF%85%CE%B1%CE%BA%CE%AC-%CE%9C%CE%B1%CE%B8%CE%AE%CE%BC%CE%B1%CF%84%CE%B1/",
+      "destination": "/",
+      "permanent": true
+    },
+    {
       "source": "/to-iatreio/",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/elpiniki-christodoulou/",
       "destination": "/",
       "permanent": true
     },
@@ -62,22 +77,22 @@
     },
     {
       "source": "/pathiseis/diavitiko-podi/",
-      "destination": "/ypiresies/prolipsi-ypsilou-kindynou/",
+      "destination": "/ypiresies/elenchos-diavitikou-podiou/",
       "permanent": true
     },
     {
       "source": "/pathiseis/skliryseis-kaloi-tyloi/",
-      "destination": "/ypiresies/kliniki-podologiki-frontida/",
+      "destination": "/ypiresies/afairesi-kalon-tylon/",
       "permanent": true
     },
     {
       "source": "/pathiseis/ksirodermia-pelmaton/",
-      "destination": "/ypiresies/kliniki-podologiki-frontida/",
+      "destination": "/ypiresies/therapeia-ksirodermias/",
       "permanent": true
     },
     {
       "source": "/pathiseis/eisfriksi-nychiou/",
-      "destination": "/ypiresies/kliniki-podologiki-frontida/",
+      "destination": "/ypiresies/orthonychia-narthikes/",
       "permanent": true
     },
     {
@@ -86,53 +101,8 @@
       "permanent": true
     },
     {
-      "source": "/ypiresies/elenchos-diavitikou-podiou/",
-      "destination": "/ypiresies/prolipsi-ypsilou-kindynou/",
-      "permanent": true
-    },
-    {
-      "source": "/ypiresies/kliniki-podologia/",
-      "destination": "/ypiresies/kliniki-podologiki-frontida/",
-      "permanent": true
-    },
-    {
-      "source": "/ypiresies/iatriki-podologia/",
-      "destination": "/ypiresies/kliniki-podologiki-frontida/",
-      "permanent": true
-    },
-    {
-      "source": "/ypiresies/afairesi-kalon-tylon/",
-      "destination": "/ypiresies/kliniki-podologiki-frontida/",
-      "permanent": true
-    },
-    {
-      "source": "/ypiresies/therapeia-ksirodermias/",
-      "destination": "/ypiresies/kliniki-podologiki-frontida/",
-      "permanent": true
-    },
-    {
-      "source": "/ypiresies/orthonychia-narthikes/",
-      "destination": "/ypiresies/kliniki-podologiki-frontida/",
-      "permanent": true
-    },
-    {
-      "source": "/to-kentro/",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/elpiniki-christodoulou/",
-      "destination": "/",
-      "permanent": true
-    },
-    {
       "source": "/frontida-podion/",
       "destination": "/ypiresies/",
-      "permanent": true
-    },
-    {
-      "source": "/gallery/",
-      "destination": "/",
       "permanent": true
     },
     {
@@ -141,97 +111,12 @@
       "permanent": true
     },
     {
-      "source": "/arthra/diavitiko-podi-kathimerinos-elenchos/",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/arthra/kaloi-kai-tyloi-giati-epistrefoun/",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/arthra/ragades-pternas-ti-na-kanete/",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/arthra/onychokryptosi-narthikas-i-cheirourgeio/",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/arthra/onychomykitiasi-anagnorisi-antimetopisi/",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/arthra/sosta-ypodimata-pos-ta-epilegoume/",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/arthra/podologia-i-pedicure-poia-i-diafora/",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/arthra/frontida-podion-sto-spiti/",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/arthra/idrosi-kai-kakosmia-podion/",
+      "source": "/gallery/",
       "destination": "/",
       "permanent": true
     },
     {
       "source": "/en/",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/en/the-clinic/",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/en/diabetic-foot-care/",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/en/calluses-and-corns/",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/en/dry-cracked-heels/",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/en/ingrown-toenail/",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/en/clinical-podology/",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/en/medical-pedicure/",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/Διαδικτυακά-Μαθήματα/",
-      "destination": "/",
-      "permanent": true
-    },
-    {
-      "source": "/%CE%94%CE%B9%CE%B1%CE%B4%CE%B9%CE%BA%CF%84%CF%85%CE%B1%CE%BA%CE%AC-%CE%9C%CE%B1%CE%B8%CE%AE%CE%BC%CE%B1%CF%84%CE%B1/",
       "destination": "/",
       "permanent": true
     }
