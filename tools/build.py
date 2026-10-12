@@ -174,7 +174,8 @@ def write_root(path, markup):
 
 def page(*, path, title, desc, depth, body, active="", jsonld=None,
          og_image="assets/img/og-enso.png", body_class=""):
-    markup = (head(title, desc, depth, path or "", jsonld=jsonld, og_image=og_image)
+    markup = (head(title, desc, depth, path or "", jsonld=jsonld, og_image=og_image,
+                   rooted=(path == "404.html"))
               + f'\n<body{" class=" + chr(34) + body_class + chr(34) if body_class else ""}>'
               + f'\n<div class="progress" aria-hidden="true"></div>\n'
               + header(depth, active)
@@ -328,7 +329,7 @@ def img(name, alt, w, h, depth, *, cls="", loading="lazy", priority=False):
 
 def crumbs(items, depth):
     """items: [(label, url_or_None)] — last one is the current page."""
-    lis = [f'<li><a href="{rel(depth) or "./"}">Ποιοι είμαστε</a></li>']
+    lis = [f'<li><a href="{rel(depth)}#poioi-eimaste">Ποιοι είμαστε</a></li>']
     for label, url in items:
         lis.append(f'<li><a href="{url}">{label}</a></li>' if url else f"<li>{label}</li>")
     ld = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [

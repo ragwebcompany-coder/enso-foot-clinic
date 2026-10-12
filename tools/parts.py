@@ -74,7 +74,11 @@ T = dict(
 )
 
 
-def head(title, desc, depth, canonical, *, jsonld=None, og_image="assets/img/og-enso.png"):
+def head(title, desc, depth, canonical, *, jsonld=None, og_image="assets/img/og-enso.png",
+         rooted=False):
+    """`rooted`: the page is served at arbitrary URLs (the 404), so every
+    relative link must resolve from the site root — <base href="/"> and no
+    indexing."""
     b = rel(depth)
     ld = "".join('<script type="application/ld+json">%s</script>'
                  % json.dumps(x, ensure_ascii=False, separators=(",", ":")) for x in (jsonld or []))
@@ -82,7 +86,7 @@ def head(title, desc, depth, canonical, *, jsonld=None, og_image="assets/img/og-
 <html lang="el" data-base="{b or './'}">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+{'<base href="/">\n<meta name="robots" content="noindex">\n' if rooted else ""}<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <link rel="canonical" href="{SITE['domain']}/{canonical.lstrip('/')}">

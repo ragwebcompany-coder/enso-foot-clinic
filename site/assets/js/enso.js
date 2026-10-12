@@ -164,7 +164,6 @@
      session — otherwise the menu would loop back to the entry screen. */
   function gate() {
     var g = $(".gate");
-    if (!g) return;
     var root = document.documentElement;
     var seen = function (val) {
       try {
@@ -172,6 +171,9 @@
         sessionStorage.setItem("enso-gate", val);
       } catch (e) { return null; }
     };
+    // Any other page counts as having entered the site: the logo or a
+    // breadcrumb back to the homepage must not open on the entry screen.
+    if (!g) { seen("1"); return; }
     if (location.hash || seen()) {
       g.remove();
       document.dispatchEvent(new Event("enso:gate"));
