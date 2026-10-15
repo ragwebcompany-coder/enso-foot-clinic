@@ -278,7 +278,7 @@ def clinic_ld():
              "url": f"{SITE['domain']}/ypiresies/{t['slug']}/"} for t in TREATMENTS],
         # No openingHoursSpecification: the clinic works by appointment and has
         # never published fixed hours. Inventing them would be worse than omitting.
-        "sameAs": [SITE["social"]["facebook"], SITE["social"]["tiktok"]],
+        "sameAs": list(SITE["social"].values()),
     }
     if _legal_value("ΑΦΜ"):
         d["vatID"] = "EL" + _legal_value("ΑΦΜ")
@@ -306,7 +306,7 @@ def podologist_ld():
         "areaServed": _area_served(),
         "knowsLanguage": ["el", "en"],
         "knowsAbout": [t["title"] for t in TREATMENTS],
-        "sameAs": [SITE["social"]["facebook"], SITE["social"]["tiktok"]],
+        "sameAs": list(SITE["social"].values()),
     }
 
 

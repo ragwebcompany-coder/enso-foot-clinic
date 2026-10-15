@@ -98,8 +98,10 @@ SITE = {
     "credit": {"name": "CLINICBRAIN",
                "url": "https://clinicbrain.gr/?utm_source=client-site"
                       "&utm_medium=footer&utm_campaign=made-by"},
+    # Corrected by the clinic, 16/10/2026.
     "social": {
-        "facebook": "https://www.facebook.com/lpodology",
+        "facebook": "https://www.facebook.com/Lpodologyperaia",
+        "instagram": "https://www.instagram.com/enso_foot_clinic/",
         "tiktok": "https://www.tiktok.com/@enso.foot.clinic",
     },
 }
