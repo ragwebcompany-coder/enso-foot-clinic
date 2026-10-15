@@ -62,7 +62,7 @@ T = dict(
     skip="Μετάβαση στο περιεχόμενο", nav_label="Κύρια πλοήγηση",
     treatments="Υπηρεσίες", contact="Επικοινωνία", site="Ο ιστότοπος",
     book="Ραντεβού", menu="Μενού",
-    hours="Ωράριο", terms="Όροι χρήσης & απόρρητο",
+    hours="Ωράριο", terms="Όροι χρήσης & απόρρητο", company="Στοιχεία επιχείρησης",
     tagline="Ποδολογικό κέντρο σε Θεσσαλονίκη και Αθήνα, από το 2002. "
             "Θεραπεία και φροντίδα του άκρου ποδός.",
     top="Επιστροφή στην κορυφή", close="Κλείσιμο",
@@ -116,7 +116,7 @@ def head(title, desc, depth, canonical, *, jsonld=None, og_image="assets/img/og-
 <link rel="apple-touch-icon" href="{asset(depth, "assets/img/favicon-144.png")}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;400;500;700&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;400;500;700&amp;family=M+PLUS+1p:wght@500;700&amp;display=swap">
 <link rel="stylesheet" href="{asset(depth, "assets/css/enso.css")}">
 <script>document.documentElement.className+=" js";</script>
 {ld}</head>"""
@@ -196,6 +196,7 @@ def footer(depth):
       <span>© {SITE['founded']}–2026 {SITE['name']} · {PRACTITIONER['name']} · {SITE['locality']}, {SITE['region']}</span>
       <span style="display:flex;gap:1.25rem;flex-wrap:wrap;align-items:center">
         <a href="{b}oroi-chrisis/">{T['terms']}</a>
+        <a href="{b}stoicheia-epicheirisis/">{T['company']}</a>
         <a class="credit" href="{_html.escape(SITE['credit']['url'], quote=True)}" target="_blank" rel="noopener noreferrer">
           {T['madeby']} <b>{SITE['credit']['name']}</b></a>
       </span>

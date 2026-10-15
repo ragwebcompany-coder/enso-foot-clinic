@@ -94,6 +94,6 @@ SEMINARS_COPY = {
 
 <p>Το υλικό του σεμιναρίου καλύπτεται σε μεγάλο βαθμό από τις σελίδες των υπηρεσιών:
 ο <a href="@/ypiresies/elenchos-diavitikou-podiou/">έλεγχος διαβητικού ποδιού</a> και η
-<a href="@/ypiresies/iatriki-podologia/">ιατρική ποδολογία</a>.</p>
+<a href="@/ypiresies/kliniki-podologiki-frontida/">κλινική ποδολογική φροντίδα</a>.</p>
 """),
 }

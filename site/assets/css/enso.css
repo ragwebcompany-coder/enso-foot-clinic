@@ -30,6 +30,9 @@
 
   --display: "M PLUS Rounded 1c", "Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --text: "M PLUS Rounded 1c", "Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  /* The same skeleton with square terminals — for the name only (entry screen,
+     «Ποιοι είμαστε»), which she found too round at display sizes (Oct 2026). */
+  --name: "M PLUS 1p", "M PLUS Rounded 1c", "Helvetica Neue", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
   --r-sm: 6px;
   --r:    12px;
@@ -1245,64 +1248,59 @@ body:has(.cookies.is-shown) .totop { bottom: 15rem; }
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   Entry screen, Oct 2026 — the clinic's own sketch: the ring nearly the height
-   of the screen, ENSŌ at its top, FOOT CLINIC in the middle, ENTER below, and
-   under the ring HOLISTIC PODOLOGY / CHRISTODOULOU ELPINIKI.
+   Entry screen, Oct 2026 (second round): the ring nearly filling the screen,
+   ENSŌ / FOOT CLINIC centred inside it, a round ENTER button under the name.
+   No hairline grid, nothing under the ring.
    ══════════════════════════════════════════════════════════════════════════ */
-.gate__inner { align-content: center; gap: clamp(.6rem, 2vh, 1.4rem); padding-block: 2vh; }
+.gate__inner { align-content: center; gap: 0; padding: 1.5vh var(--pad-x); }
 .gate__ring {
-  --ring: min(78vh, 94vw, 880px);
-  position: relative; z-index: 2;
+  --ring: min(96vh, 96vw, 1280px);
+  position: relative; z-index: 2; display: block;
   width: var(--ring); height: var(--ring);
-  display: grid; grid-template-rows: 1fr auto auto 1fr; justify-items: center;
-  align-items: center; row-gap: calc(var(--ring) * .05);
-  /* The text sits inside the ring's open centre, not on the brush. */
-  padding: calc(var(--ring) * .3) calc(var(--ring) * .2) calc(var(--ring) * .27) calc(var(--ring) * .3);
-  /* the brush is heavier on the left, so the open centre sits right of the image's centre */
-  row-gap: calc(var(--ring) * .03);
   animation: gate-in 1.1s var(--ease-out) both;
+}
+/* The name sits at the centre of the ring's OPENING, not of the screen. The
+   brush is heavier on the left and top, so the clear circle inside the ring is
+   centred at 61% / 54.6% of the image (measured from the badge, radius ≈ 23%). */
+.gate__core {
+  position: absolute; left: 61%; top: 54.6%; transform: translate(-50%, -50%);
+  width: calc(var(--ring) * .46);
+  display: grid; justify-items: center; align-content: center;
+  row-gap: calc(var(--ring) * .045);
 }
 .gate__mark {
   position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1;
   filter: drop-shadow(0 24px 60px rgba(0,0,0,.4));
 }
-.gate__word, .gate__word2 { font-family: var(--display); text-transform: uppercase; line-height: 1; }
+.gate__lockup { display: grid; justify-items: center; row-gap: calc(var(--ring) * .022); white-space: nowrap; }
+.gate__word, .gate__word2 { font-family: var(--name); text-transform: uppercase; line-height: 1; }
 .gate__word {
-  align-self: end; font-weight: 400; letter-spacing: .14em;
-  font-size: calc(var(--ring) * .085); color: #fff; padding-left: .14em;
+  font-weight: 500; letter-spacing: .12em; padding-left: .12em;
+  font-size: calc(var(--ring) * .095); color: #fff;
 }
 .gate__word2 {
-  font-weight: 700; letter-spacing: .18em; padding-left: .18em; white-space: nowrap;
-  font-size: calc(var(--ring) * .034); color: var(--teal-300);
+  font-weight: 700; letter-spacing: .2em; padding-left: .2em; white-space: nowrap;
+  font-size: calc(var(--ring) * .036); color: var(--teal-300);
 }
 .gate__enter {
-  align-self: start; margin-top: calc(var(--ring) * .02);
-  display: inline-flex; align-items: center; gap: .55rem;
-  padding: calc(var(--ring) * .022) calc(var(--ring) * .06);
-  border: 1px solid rgba(255,255,255,.6); border-radius: 100px;
-  font-size: clamp(.8rem, calc(var(--ring) * .024), 1.05rem);
-  font-weight: 700; letter-spacing: .22em; text-transform: uppercase;
-  transition: background-color .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
+  --enter: clamp(64px, calc(var(--ring) * .115), 128px);
+  display: inline-grid; place-items: center;
+  width: var(--enter); height: var(--enter); border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,.65);
+  font-family: var(--name); font-size: clamp(.68rem, calc(var(--enter) * .15), 1rem);
+  font-weight: 700; letter-spacing: .18em; text-indent: .18em; text-transform: uppercase;
+  transition: background-color .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease), transform .25s var(--ease);
   animation: gate-pulse 2.6s 1s ease-in-out infinite;
 }
-.gate__enter svg { transition: transform .25s var(--ease); }
-.gate:hover .gate__enter { background: #fff; color: var(--deep); border-color: #fff; }
-.gate:hover .gate__enter svg { transform: translateX(3px); }
+.gate:hover .gate__enter { background: #fff; color: var(--deep); border-color: #fff; transform: scale(1.05); }
 .gate:focus-visible .gate__enter { outline: 2px solid #fff; outline-offset: 4px; }
-.gate .gate__sub {
-  position: relative; z-index: 2; text-transform: uppercase; color: var(--teal-300);
-  font-weight: 500; display: grid; gap: .45rem; margin-top: 0; justify-items: center;
-  font-size: clamp(.72rem, .6rem + .5vw, .95rem); letter-spacing: .3em;
-  animation: gate-in 1.1s .15s var(--ease-out) both;
-}
-.gate .gate__sub span:first-child { color: #fff; font-weight: 700; }
 
 /* ── Ποιοι είμαστε ──────────────────────────────────────────────────── */
 .about__grid { display: grid; gap: clamp(2rem, 5vw, 5rem); align-items: start; }
 @media (min-width: 940px) { .about__grid { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); } }
 .about__who { display: grid; gap: 1rem; justify-items: start; }
 @media (min-width: 940px) { .about__who { position: sticky; top: calc(var(--header-h) + 2rem); } }
-.about__who h1 { font-size: clamp(2.2rem, 1.4rem + 3vw, 3.6rem); }
+.about__who h1 { font-family: var(--name); font-weight: 700; font-size: clamp(2.2rem, 1.4rem + 3vw, 3.6rem); }
 .about__role {
   font-size: .82rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
   color: var(--teal); line-height: 1.6; max-width: 34ch;
@@ -1326,8 +1324,8 @@ body:has(.cookies.is-shown) .totop { bottom: 15rem; }
 .about__bio .eyebrow { margin-bottom: .6rem; }
 .about__bio-title { font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.1rem); margin-bottom: 1.25rem; }
 .about__bio .timeline b { font-family: var(--text); font-weight: 700; font-size: .8rem; letter-spacing: .1em; }
-@media (min-width: 620px) { .about__bio .timeline li { grid-template-columns: 120px 1fr; } }
-.about__bio .timeline b { white-space: nowrap; }
+@media (min-width: 620px) { .about__bio .timeline li { grid-template-columns: 140px 1fr; } }
+.about__bio .timeline b { white-space: normal; line-height: 1.45; }
 #poioi-eimaste { scroll-margin-top: var(--header-h); }
 
 /* ── «Περισσότερα» disclosure ────────────────────────────────────────────
@@ -1347,6 +1345,32 @@ body:has(.cookies.is-shown) .totop { bottom: 15rem; }
 .more[open] > summary svg { transform: rotate(180deg); }
 .more .more__shut, .more[open] .more__open { display: none; }
 .more[open] .more__shut { display: inline; }
+
+/* ── The full CV («Λεπτομέρειες») ────────────────────────────────────────
+   What the disclosure under the brief timeline opens. Plain, documentary:
+   a profile line, then one block per section of her CV. */
+.cv { margin-top: 1.5rem; display: grid; gap: clamp(1.6rem, 3vw, 2.4rem); }
+.cv__profile { color: var(--ink-2); font-size: 1rem; line-height: 1.7; max-width: 66ch; }
+.cv__section h3 {
+  font-size: .76rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: .9rem; padding-bottom: .5rem; border-bottom: 1px solid var(--line-soft);
+}
+.cv__list { list-style: none; display: grid; gap: 1.1rem; }
+.cv__entry { display: grid; gap: .25rem; }
+.cv__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .25rem 1rem; }
+.cv__head h4 { font-size: 1rem; margin: 0; }
+.cv__when { font-size: .8rem; font-weight: 700; letter-spacing: .08em; color: var(--ink-3); white-space: nowrap; }
+.cv__sub { font-size: .9rem; color: var(--teal); font-weight: 500; }
+.cv__entry p:not(.cv__sub), .cv__bullets li { font-size: .93rem; color: var(--ink-2); line-height: 1.65; }
+.cv__bullets { padding-left: 1.1rem; display: grid; gap: .35rem; }
+
+/* ── Note at the foot of the services ────────────────────────────────────
+   Her legal wording: discreet, small, set apart with a hairline. */
+.disclaimer {
+  margin-top: clamp(2rem, 4vw, 3rem); padding-top: 1.25rem; border-top: 1px solid var(--line-soft);
+  font-size: .82rem; line-height: 1.65; color: var(--ink-3); max-width: 80ch;
+}
+.disclaimer--inline { margin-top: 2.5rem; }
 
 /* ── The clinic's motto band (replaced «Επόμενο βήμα») ───────────────── */
 .motto { text-align: center; }

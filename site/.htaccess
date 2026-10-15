@@ -22,4 +22,5 @@ RewriteRule ^frontida-podion/?$ /ypiresies/ [R=301,L,NE]
 RewriteRule ^arthra/?$ / [R=301,L,NE]
 RewriteRule ^gallery/?$ / [R=301,L,NE]
 RewriteRule ^en/?$ / [R=301,L,NE]
+RewriteRule ^ypiresies/iatriki-podologia/?$ /ypiresies/kliniki-podologiki-frontida/ [R=301,L,NE]
 ErrorDocument 404 /404.html

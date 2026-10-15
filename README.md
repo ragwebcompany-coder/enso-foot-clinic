@@ -17,10 +17,13 @@
 > |---|---|
 > | Κείμενο «Ποιοι είμαστε», τίτλος ιδιότητας | `content/data.py` → `PRACTITIONER["about"]`, `["role"]` |
 > | Η ζώνη «Η βαρύτητα είναι η σταθερά μας» | `content/data.py` → `SITE["motto"]` |
-> | ΑΦΜ, ΔΟΥ, ΓΕΜΗ (σελίδα επικοινωνίας & όροι) | `content/data.py` → `SITE["legal_rows"]` |
-> | Βιογραφικό (χρονολόγιο + «Περισσότερα», κάτω από το «Ποιοι είμαστε», `/#viografiko`) | `content/data.py` → `BIO_BRIEF`, `BIO_MORE` |
+> | ΑΦΜ, ΔΟΥ, ΓΕΜΗ (δική τους σελίδα `/stoicheia-epicheirisis/`, λινκ μόνο στο footer, και όροι) | `content/data.py` → `SITE["legal_rows"]` |
+> | Βιογραφικό (χρονολόγιο + κουμπί «Λεπτομέρειες» με ολόκληρο το CV, `/#viografiko`) | `content/data.py` → `BIO_BRIEF`, `BIO_FULL_PROFILE`, `BIO_FULL` |
+> | Υπηρεσίες (6 — πρώτη η «Κλινική συμβουλευτική & εμβιομηχανική αξιολόγηση»· η «Ιατρική ποδολογία» έγινε «Κλινική ποδολογική φροντίδα», 301 από το παλιό URL) | `content/data.py` → `TREATMENTS`, `content/copy_services.py` |
+> | Σημείωση-disclaimer στο κάτω μέρος του `/ypiresies/` | `content/data.py` → `SERVICES_DISCLAIMER` |
+> | Οθόνη εισόδου: γραμματοσειρά ονόματος (M PLUS 1p, η «τετράγωνη» αδελφή της Rounded) | `site/assets/css/enso.css` → `--name` |
 > | Μενού («Ποιοι είμαστε» → `/#poioi-eimaste`, ώστε να μην ξαναβγαίνει η οθόνη εισόδου) | `tools/parts.py` → `NAV` |
-> | Οθόνη εισόδου (κύκλος, ENTER) | `tools/build.py` → `build_home()`, CSS «Entry screen, Oct 2026» |
+> | Οθόνη εισόδου (κύκλος σχεδόν όλη η οθόνη, ENSŌ FOOT CLINIC στο κέντρο, στρογγυλό ENTER) | `tools/build.py` → `build_home()`, CSS «Entry screen, Oct 2026» |
 >
 > Τα `content/copy_conditions.py`, `copy_articles.py`, `copy_en.py` δεν
 > χρησιμοποιούνται πια· έμειναν μόνο ως αρχείο.
@@ -228,7 +231,7 @@ flex και τα στοιχεία ξεχειλίζουν *έξω* από το κ
 | Ενότητα | Μοτίβο |
 |---|---|
 | Παθήσεις | `/pathiseis/<slug>/` — `diavitiko-podi`, `skliryseis-kaloi-tyloi`, `ksirodermia-pelmaton`, `eisfriksi-nychiou` |
-| Υπηρεσίες | `/ypiresies/<slug>/` — `elenchos-diavitikou-podiou`, `iatriki-podologia`, `afairesi-kalon-tylon`, `therapeia-ksirodermias`, `orthonychia-narthikes` |
+| Υπηρεσίες | `/ypiresies/<slug>/` — `symvouleftiki-emviomichaniki-axiologisi`, `elenchos-diavitikou-podiou`, `kliniki-podologiki-frontida`, `afairesi-kalon-tylon`, `therapeia-ksirodermias`, `orthonychia-narthikes` |
 | Σεμινάρια | `/seminaria/` · `/seminaria/<slug>/` |
 | Άρθρα | `/arthra/<slug>/` |
 | Σελίδες | `/to-iatreio/`, `/elpiniki-christodoulou/`, `/odigos-symptomaton/`, `/frontida-podion/`, `/gallery/`, `/epikoinonia/`, `/oroi-chrisis/` |

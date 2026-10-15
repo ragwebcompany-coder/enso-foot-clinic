@@ -119,6 +119,11 @@
       "source": "/en/",
       "destination": "/",
       "permanent": true
+    },
+    {
+      "source": "/ypiresies/iatriki-podologia/",
+      "destination": "/ypiresies/kliniki-podologiki-frontida/",
+      "permanent": true
     }
   ],
   "headers": [
