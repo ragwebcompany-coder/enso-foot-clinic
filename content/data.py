@@ -95,9 +95,15 @@ SITE = {
               "Το πώς την αποδέχονται τα πέλματά μας καθορίζει όλη μας την κίνηση. "
               "Ας φροντίσουμε ώστε οι αποδέκτες αυτοί να είναι υγιείς και "
               "λειτουργικοί καθημερινά."),
-    "credit": {"name": "CLINICBRAIN",
-               "url": "https://clinicbrain.gr/?utm_source=client-site"
-                      "&utm_medium=footer&utm_campaign=made-by"},
+    # «Made by» at the foot of every page — both studios, each with its link.
+    "credits": [
+        {"name": "CLINICBRAIN",
+         "url": "https://clinicbrain.gr/?utm_source=client-site"
+                "&utm_medium=footer&utm_campaign=made-by"},
+        {"name": "ASTRA",
+         "url": "https://astramarketing.gr/?utm_source=client-site"
+                "&utm_medium=footer&utm_campaign=made-by"},
+    ],
     # Corrected by the clinic, 16/10/2026.
     "social": {
         "facebook": "https://www.facebook.com/Lpodologyperaia",

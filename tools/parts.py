@@ -199,8 +199,9 @@ def footer(depth):
       <span style="display:flex;gap:1.25rem;flex-wrap:wrap;align-items:center">
         <a href="{b}oroi-chrisis/">{T['terms']}</a>
         <a href="{b}stoicheia-epicheirisis/">{T['company']}</a>
-        <a class="credit" href="{_html.escape(SITE['credit']['url'], quote=True)}" target="_blank" rel="noopener noreferrer">
-          {T['madeby']} <b>{SITE['credit']['name']}</b></a>
+        <span class="credit">{T['madeby']} {" &amp; ".join(
+            f'<a href="{_html.escape(c["url"], quote=True)}" target="_blank" rel="noopener noreferrer"><b>{c["name"]}</b></a>'
+            for c in SITE["credits"])}</span>
       </span>
     </div>
   </div>
