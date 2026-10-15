@@ -489,6 +489,7 @@ def build_home():
     # enso.js.
     body = f"""<button class="gate" type="button" aria-label="Είσοδος στον ιστότοπο του Ensō Foot Clinic">
   <span class="hero__aurora" aria-hidden="true"><i></i><i></i><i></i></span>
+  <span class="gate__glow" aria-hidden="true"></span>
   <span class="gate__inner">
     <span class="gate__ring">
       {img("enso-badge-light.svg", "", 400, 400, 0, cls="gate__mark", priority=True)}
