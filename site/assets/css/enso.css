@@ -1321,6 +1321,21 @@ body:has(.cookies.is-shown) .totop { bottom: 15rem; }
 .gate:hover .gate__enter { background: #fff; color: var(--deep); border-color: #fff; transform: scale(1.05); }
 .gate:focus-visible .gate__enter { outline: 2px solid #fff; outline-offset: 4px; }
 
+/* Phones in portrait: the name alone is centred in the ring's opening and the
+   ENTER sits under the ring, where the thumb is. The ring moves up a little so
+   ring + button are centred as a group. */
+@media (max-width: 719px) and (orientation: portrait) {
+  .gate__inner { padding-bottom: calc(var(--enter-gap, 1.25rem) + 5rem); }
+  .gate__core { left: 0; top: 0; width: 100%; height: 100%; transform: none; display: block; }
+  .gate__lockup { position: absolute; left: 61%; top: 54.6%; transform: translate(-50%, -50%); }
+  .gate__enter {
+    position: absolute; left: 50%; top: calc(100% + 1.25rem); transform: translateX(-50%);
+    --enter: 72px;
+  }
+  .gate:hover .gate__enter { transform: translateX(-50%) scale(1.05); }
+  .gate.is-leaving .gate__core { transform: scale(.92); }
+}
+
 /* ── Ποιοι είμαστε ──────────────────────────────────────────────────── */
 .about__grid { display: grid; gap: clamp(2rem, 5vw, 5rem); align-items: start; }
 @media (min-width: 940px) { .about__grid { grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); } }
