@@ -1621,3 +1621,105 @@ body:has(.cookies.is-shown) .totop { bottom: 15rem; }
 .legal > div { transition: background-color .3s; }
 .legal > div:hover { background: var(--mist-2); }
 ::selection { background: rgba(69,179,232,.3); }
+
+
+/* ── Seminar checkout (/seminaria/egrafi/) ───────────────────────────────
+   Participant form + order summary. The consent block follows the Visa/
+   MasterCard rule Worldline quoted: checkbox first, then the Terms and the
+   Cancellation Policy as expand/collapse panels that scroll in place. */
+.checkout {
+  display: grid; gap: var(--gap); align-items: start;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+}
+.checkout__main { display: grid; gap: 1.5rem; min-width: 0; }
+.checkout__aside { position: sticky; top: calc(var(--header-h) + 1.25rem); }
+.fieldset {
+  border: 1px solid var(--line-soft); border-radius: var(--r-lg); background: #fff;
+  padding: clamp(1.25rem, 2.4vw, 1.75rem); margin: 0; min-width: 0;
+}
+.fieldset > legend {
+  float: left; width: 100%; margin: 0 0 1.1rem; padding: 0;
+  font-family: var(--display); font-weight: 700; font-size: 1.1rem; color: var(--ink);
+}
+.fieldset > legend + * { clear: both; }
+.field-grid { display: grid; gap: 1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+.field { display: grid; gap: .4rem; min-width: 0; }
+.field--full { grid-column: 1 / -1; }
+.field label { font-size: .86rem; font-weight: 500; color: var(--ink-2); }
+.field small { font-size: .78rem; color: var(--ink-3); line-height: 1.5; }
+.field input, .field select {
+  width: 100%; min-height: 48px; padding: .7rem .95rem; font: inherit; font-size: .95rem;
+  color: var(--ink); background: var(--paper); border: 1px solid var(--line);
+  border-radius: var(--r); outline: none; appearance: none; -webkit-appearance: none;
+  transition: border-color .2s var(--ease), box-shadow .2s var(--ease);
+}
+.field select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M2.5 4.5L6 8l3.5-3.5' stroke='%233a5578' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right .95rem center; padding-right: 2.4rem;
+}
+.field input:focus, .field select:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(22,115,189,.15); }
+.field input:user-invalid { border-color: #c0392b; }
+.field select:disabled { color: var(--ink-3); }
+.check {
+  display: flex; gap: .75rem; align-items: flex-start; cursor: pointer; margin-top: 1rem;
+  font-size: .92rem; color: var(--ink);
+}
+.check input {
+  flex: none; width: 20px; height: 20px; margin: .1rem 0 0; accent-color: var(--teal); cursor: pointer;
+}
+.check small { display: block; margin-top: .25rem; font-size: .8rem; color: var(--ink-3); line-height: 1.5; }
+.check--consent { margin-top: 0; font-weight: 500; }
+.invoice-fields { margin-top: 1rem; }
+.invoice-fields[hidden] { display: none; }
+
+/* Terms / Cancellation panels, inline under the consent checkbox */
+.folds { display: grid; gap: .6rem; margin-top: 1rem; }
+.fold {
+  border: 1px solid var(--line); border-radius: var(--r); background: var(--paper); overflow: hidden;
+}
+.fold > summary {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem; cursor: pointer;
+  padding: .85rem 1rem; font-size: .9rem; color: var(--deep); list-style: none;
+}
+.fold > summary::-webkit-details-marker { display: none; }
+.fold > summary::marker { content: ""; }
+.fold > summary svg { flex: none; transition: transform .25s var(--ease); }
+.fold[open] > summary { border-bottom: 1px solid var(--line-soft); }
+.fold[open] > summary svg { transform: rotate(180deg); }
+.fold__scroll {
+  max-height: 18rem; overflow-y: auto; padding: 1rem 1.1rem; font-size: .86rem;
+  -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+}
+.fold__scroll:focus-visible { outline: 2px solid var(--teal); outline-offset: -2px; }
+.prose--compact h2 { font-size: 1.02rem; margin-top: 1.5rem; }
+.prose--compact h3 { font-size: .94rem; margin-top: 1.1rem; }
+.prose--compact > :first-child { margin-top: 0; }
+.prose--compact p, .prose--compact li { font-size: .86rem; line-height: 1.6; }
+.prose--compact table { font-size: .84rem; }
+
+/* Order summary */
+.order {
+  display: grid; gap: .8rem; background: var(--mist-2); border-radius: var(--r-lg);
+  padding: clamp(1.25rem, 2.4vw, 1.75rem);
+}
+.order__title { font-size: 1.1rem; margin: 0; }
+.order__rows { display: grid; gap: .5rem; margin: .4rem 0 0; padding-top: .9rem; border-top: 1px solid var(--line); }
+.order__rows > div { display: flex; justify-content: space-between; gap: 1rem; font-size: .92rem; }
+.order__rows dt { color: var(--ink-2); } .order__rows dd { margin: 0; font-weight: 500; }
+.order__total { padding-top: .5rem; border-top: 1px dashed var(--line); font-size: 1.05rem !important; }
+.order__total dd { font-weight: 700; color: var(--deep); }
+.order .btn { margin-top: .4rem; }
+.btn[disabled] { opacity: .45; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+.order__secure { color: var(--ink-3); }
+.form-note {
+  margin: .9rem 0 0; padding: .85rem 1rem; border-radius: var(--r); font-size: .86rem; line-height: 1.55;
+  background: #fff7e8; border: 1px solid #f1d9a6; color: #6b4d12;
+}
+.form-note[hidden] { display: none; }
+@media (max-width: 879px) {
+  .checkout { grid-template-columns: 1fr; }
+  .checkout__aside { position: static; }
+}
+@media (max-width: 559px) {
+  .field-grid { grid-template-columns: 1fr; }
+}

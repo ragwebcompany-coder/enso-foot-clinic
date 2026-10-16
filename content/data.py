@@ -384,7 +384,8 @@ MATRIX_COLS = [("setting", "Πού γίνεται"), ("sensation", "Αίσθησ
 #        mode="onsite", venue="Ρωμανού 11, Περαία Θεσσαλονίκης",
 #        level="Για ποδολόγους & σπουδαστές", duration="7 ώρες",
 #        seats=12, price="120 € (προεγγραφή 100 €)", price_eur=120,
-#        register=("email", SITE["email"]),
+#        register=("pay", None),      # → /seminaria/egrafi/?s=<slug> (card payment)
+#        # or register=("email", SITE["email"]) for a free seminar
 #        lead="…", topics=["…", "…"]),
 
 SEMINARS = [
@@ -417,6 +418,21 @@ SEMINAR_STATUS = {
 }
 SEMINAR_MODES = {"online": "Διαδικτυακό", "onsite": "Με φυσική παρουσία",
                  "hybrid": "Υβριδικό"}
+
+# ── Online payment (Worldline ePOS) ─────────────────────────────────────────
+# The seminar checkout at /seminaria/egrafi/ posts to `action`. While it is None
+# the page is complete (participant form, consent checkbox with the wording
+# Visa/MasterCard require, Terms and Cancellation Policy inline under it) but
+# the pay button explains that card payment is being activated. Once Worldline
+# issues the ePOS, point `action` at the payment endpoint and rebuild.
+PAYMENT = dict(
+    provider="Worldline Greece",
+    action=None,
+    currency="EUR",
+    pending_note="Η πληρωμή με κάρτα ενεργοποιείται μόλις ολοκληρωθεί η πιστοποίηση "
+                 "της σύνδεσης με τη Worldline. Μέχρι τότε, στείλτε τη δήλωση συμμετοχής "
+                 "στο podopure@gmail.com και θα σας απαντήσουμε με οδηγίες πληρωμής.",
+)
 
 # Where «ενημερώστε με» goes while there is no platform. One place to change.
 SEMINAR_NOTIFY = ("mailto:" + SITE["email"]

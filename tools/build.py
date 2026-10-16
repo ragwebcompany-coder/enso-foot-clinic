@@ -26,7 +26,7 @@ sys.path.insert(0, HERE)
 
 from data import (SITE, PRACTITIONER, TREATMENTS, KIND_LABELS, MATRIX_COLS,
                   BIO_BRIEF, BIO_FULL, BIO_FULL_PROFILE, SERVICES_DISCLAIMER,
-                  SEMINARS, SEMINAR_STATUS, SEMINAR_MODES, SEMINAR_NOTIFY)
+                  SEMINARS, SEMINAR_STATUS, SEMINAR_MODES, SEMINAR_NOTIFY, PAYMENT)
 from pagecopy import COPY
 import parts
 from parts import I, rel, head, header, footer, overlays, asset
@@ -44,6 +44,7 @@ URLMAP = {
     "home": "", "epikoinonia": "epikoinonia/", "oroi-chrisis": "oroi-chrisis/",
     "stoicheia-epicheirisis": "stoicheia-epicheirisis/",
     "ypiresies": "ypiresies/", "seminaria": "seminaria/",
+    "egrafi": "seminaria/egrafi/",
 }
 for _s in SEMINARS:
     URLMAP[_s["slug"]] = f"seminaria/{_s['slug']}/"
@@ -686,6 +687,9 @@ def _seminar_cta(sem, *, block=False):
     if kind == "url":
         return (f'<a class="{cls}" href="{value}" target="_blank" rel="noopener">'
                 f'Εγγραφή στο σεμινάριο</a>')
+    if kind == "pay":
+        return (f'<a class="{cls}" href="{rel(2)}seminaria/egrafi/?s={sem["slug"]}">'
+                f'Εγγραφή &amp; πληρωμή</a>')
     if kind == "email":
         subject = urllib.parse.quote(f"Εγγραφή — {sem['title']}")
         body = urllib.parse.quote(
@@ -854,6 +858,9 @@ def build_seminars_hub():
   <div class="wrap">
     <div class="sec-head"><p class="eyebrow">Επόμενο</p></div>
     {next_block}
+    <p class="small muted" style="margin-top:1.25rem">Εγγραφές και πληρωμή με κάρτα γίνονται από τη σελίδα
+      <a href="{rel(d)}seminaria/egrafi/">Εγγραφή &amp; πληρωμή</a>. Διαβάστε την
+      <a href="{rel(d)}oroi-chrisis/#politiki-akyrosis">πολιτική ακύρωσης</a> πριν δηλώσετε συμμετοχή.</p>
   </div>
 </section>
 
@@ -1025,7 +1032,9 @@ def build_company():
 def build_terms():
     d = 1
     body_html, _, _ = prose("oroi-chrisis", d)
-    body_html = body_html.replace("<!--LEGAL-->", legal_table())
+    cancel_html, _, _ = prose("politiki-akyrosis", d)
+    body_html = (body_html.replace("<!--LEGAL-->", legal_table())
+                          .replace("<!--CANCELLATION-->", cancel_html))
     crumb_html, crumb_ld = crumbs([("Όροι χρήσης & απόρρητο", None)], d)
     body = f"""<section class="page-head">
   <div class="wrap wrap--narrow">{crumb_html}
@@ -1039,6 +1048,163 @@ def build_terms():
          desc="Όροι χρήσης, πολιτική απορρήτου και διαχείριση προσωπικών δεδομένων "
               "για τον ιστότοπο του Ensō Foot Clinic.",
          depth=d, body=body, jsonld=[crumb_ld])
+
+
+# ── Seminar checkout ─────────────────────────────────────────────────────────
+# One page for every paid seminar: /seminaria/egrafi/?s=<slug>. Built to the
+# Visa/MasterCard rules Worldline quoted for the ePOS application (Oct 2026):
+# a consent checkbox with the exact English wording, and the Terms and the
+# Cancellation Policy opening inline, expand/collapse and scrollable, directly
+# under the checkbox — never a redirect to another page.
+CONSENT_WORDING = "I have read and agree to Terms and Conditions &amp; Cancellation Policy"
+
+
+def _legal_fold(key, label_en, label_el, inner_html):
+    return f"""<details class="fold" id="fold-{key}">
+  <summary><span><b>{label_en}</b> · {label_el}</span>{I['chev']}</summary>
+  <div class="fold__scroll prose prose--compact" tabindex="0" aria-label="{label_el}">{inner_html}</div>
+</details>"""
+
+
+def build_checkout():
+    d = 2
+    payable = [s for s in SEMINARS if s["status"] in ("open", "announced")
+               and (s.get("price_eur") or 0) > 0]
+    crumb_html, crumb_ld = crumbs([("Σεμινάρια", rel(d) + "seminaria/"),
+                                   ("Εγγραφή & πληρωμή", None)], d)
+    terms_html, _, _ = prose("oroi-chrisis", d)
+    cancel_html, _, _ = prose("politiki-akyrosis", d)
+    terms_html = (terms_html.replace("<!--LEGAL-->", legal_table())
+                            .replace("<!--CANCELLATION-->", cancel_html))
+
+    if payable:
+        options = "".join(
+            f'<option value="{s["slug"]}" data-title="{html.escape(s["title"], quote=True)}" '
+            f'data-when="{html.escape(s["human"], quote=True)}" data-price="{s["price_eur"]}" '
+            f'data-mode="{SEMINAR_MODES[s["mode"]]}">{s["title"]} — {s["human"]}</option>'
+            for s in payable)
+        select = f'<select id="seminar" name="seminar" required>{options}</select>'
+        empty_note = ""
+    else:
+        select = ('<select id="seminar" name="seminar" required disabled>'
+                  '<option value="">— Δεν υπάρχει σεμινάριο με ανοιχτές εγγραφές —</option></select>')
+        empty_note = (f'<p class="form-note" role="status">Δεν υπάρχει αυτή τη στιγμή σεμινάριο με '
+                      f'ανοιχτές εγγραφές. <a href="{SEMINAR_NOTIFY}">Δηλώστε ενδιαφέρον</a> και '
+                      f'θα ενημερωθείτε πρώτοι.</p>')
+
+    action = PAYMENT["action"] or ""
+    pending = "" if PAYMENT["action"] else ' data-pending="1"'
+    body = f"""<section class="page-head">
+  <div class="wrap">{crumb_html}
+    <div class="sec-head sec-head--split" style="margin-bottom:0">
+      <div class="stack"><p class="eyebrow">Σεμινάρια</p>
+        <h1>Εγγραφή &amp; πληρωμή.</h1></div>
+      <p class="lede">Συμπληρώστε τα στοιχεία σας, διαβάστε και αποδεχθείτε τους όρους και
+        ολοκληρώστε την πληρωμή με κάρτα στο ασφαλές περιβάλλον της {PAYMENT['provider']}.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section section--tight">
+  <div class="wrap">
+    <form class="checkout" method="post" action="{action}"{pending} novalidate="">
+      <input type="hidden" name="currency" value="{PAYMENT['currency']}">
+      <input type="hidden" name="amount" id="amount" value="">
+      <div class="checkout__main">
+        <fieldset class="fieldset">
+          <legend>1. Σεμινάριο</legend>
+          <div class="field">
+            <label for="seminar">Επιλέξτε σεμινάριο</label>
+            {select}
+          </div>
+          {empty_note}
+        </fieldset>
+
+        <fieldset class="fieldset">
+          <legend>2. Στοιχεία συμμετέχοντα</legend>
+          <div class="field-grid">
+            <div class="field field--full">
+              <label for="name">Ονοματεπώνυμο</label>
+              <input id="name" name="name" type="text" autocomplete="name" required>
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" autocomplete="email" required>
+              <small>Εδώ θα σταλεί η επιβεβαίωση και ο σύνδεσμος παρακολούθησης.</small>
+            </div>
+            <div class="field">
+              <label for="phone">Τηλέφωνο</label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" required>
+            </div>
+            <div class="field field--full">
+              <label for="role">Ιδιότητα</label>
+              <select id="role" name="role" required>
+                <option value="podologos">Ποδολόγος</option>
+                <option value="spoudastis">Σπουδαστής/-τρια ποδολογίας</option>
+                <option value="ygeia">Άλλος επαγγελματίας υγείας</option>
+                <option value="allo">Άλλο</option>
+              </select>
+            </div>
+          </div>
+          <label class="check">
+            <input type="checkbox" id="invoice" name="invoice" value="1">
+            <span>Θέλω τιμολόγιο (αντί για απόδειξη)</span>
+          </label>
+          <div class="field-grid invoice-fields" hidden>
+            <div class="field field--full">
+              <label for="company">Επωνυμία</label>
+              <input id="company" name="company" type="text" autocomplete="organization">
+            </div>
+            <div class="field">
+              <label for="vat">ΑΦΜ</label>
+              <input id="vat" name="vat" type="text" inputmode="numeric" pattern="[0-9]{{9}}">
+            </div>
+            <div class="field">
+              <label for="tax-office">ΔΟΥ</label>
+              <input id="tax-office" name="tax_office" type="text">
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="fieldset">
+          <legend>3. Όροι &amp; πληρωμή</legend>
+          <label class="check check--consent">
+            <input type="checkbox" id="agree" name="agree" value="1" required>
+            <span>{CONSENT_WORDING}<small>Έχω διαβάσει και αποδέχομαι τους Όρους &amp; Προϋποθέσεις
+              και την Πολιτική Ακύρωσης.</small></span>
+          </label>
+          <div class="folds">
+            {_legal_fold("terms", "Terms and Conditions", "Όροι &amp; Προϋποθέσεις", terms_html)}
+            {_legal_fold("cancellation", "Cancellation Policy", "Πολιτική Ακύρωσης", cancel_html)}
+          </div>
+        </fieldset>
+      </div>
+
+      <aside class="checkout__aside">
+        <div class="order">
+          <p class="eyebrow" style="margin-bottom:.6rem">Η εγγραφή σας</p>
+          <h3 class="order__title" data-order="title">{payable[0]['title'] if payable else 'Σεμινάριο'}</h3>
+          <p class="small muted" data-order="when">{payable[0]['human'] if payable else '—'}</p>
+          <dl class="order__rows">
+            <div><dt>Συμμετοχή</dt><dd><span data-order="price">{payable[0]['price_eur'] if payable else '—'}</span> €</dd></div>
+            <div class="order__total"><dt>Σύνολο</dt><dd><span data-order="total">{payable[0]['price_eur'] if payable else '—'}</span> €</dd></div>
+          </dl>
+          <p class="small muted">Τελική τιμή. Εκδίδεται νόμιμο παραστατικό από την {SITE['legal']}.</p>
+          <button class="btn btn--block" type="submit" disabled>Συνέχεια στην ασφαλή πληρωμή</button>
+          <p class="form-note" data-pending-note hidden>{PAYMENT['pending_note']}</p>
+          <p class="order__secure small">Η πληρωμή γίνεται στο περιβάλλον της {PAYMENT['provider']}
+            (Visa, Mastercard). Τα στοιχεία της κάρτας σας δεν περνούν από τον ιστότοπό μας.</p>
+          <p class="small"><a href="{rel(d)}oroi-chrisis/">Όροι χρήσης &amp; απόρρητο</a> ·
+            <a href="{rel(d)}oroi-chrisis/#politiki-akyrosis">Πολιτική ακύρωσης</a></p>
+        </div>
+      </aside>
+    </form>
+  </div>
+</section>"""
+    page(path="seminaria/egrafi/", title="Εγγραφή & πληρωμή σεμιναρίου | Ensō Foot Clinic",
+         desc="Δηλώστε συμμετοχή σε σεμινάριο ποδολογίας του Ensō Foot Clinic και πληρώστε "
+              "με κάρτα στο ασφαλές περιβάλλον της Worldline.",
+         depth=d, body=body, jsonld=[crumb_ld, org_graph()], active="seminars")
 
 
 def build_404():
@@ -1065,6 +1231,7 @@ def build_404():
 # ── Sitemap, robots ─────────────────────────────────────────────────────────
 def build_index_files():
     urls = [("", "1.0"), ("ypiresies/", "0.8"), ("seminaria/", "0.8"),
+            ("seminaria/egrafi/", "0.5"),
             ("epikoinonia/", "0.8"), ("oroi-chrisis/", "0.3"),
             ("stoicheia-epicheirisis/", "0.3")]
     urls += [(f"ypiresies/{t['slug']}/", "0.7") for t in TREATMENTS]
@@ -1168,6 +1335,7 @@ def main():
     build_seminars_hub()
     for _s in SEMINARS:
         build_seminar(_s)
+    build_checkout()
     build_contact(); build_company(); build_terms(); build_404()
     indexed = build_index_files()
     n = build_redirects()

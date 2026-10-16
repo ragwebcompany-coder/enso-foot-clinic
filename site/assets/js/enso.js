@@ -297,9 +297,11 @@
       ".card", ".place", ".sem-card", ".mapcard", ".legal > div",
       ".faq__item", ".info-list > li", ".about__who > *", ".about__text > p",
       ".about__bio > *", ".prose > *", ".creds__list li", ".timeline li",
-      ".disclaimer", ".motto__rule", ".footer__grid > *"].join(",");
+      ".disclaimer", ".motto__rule", ".footer__grid > *",
+      ".checkout .fieldset", ".checkout .order"].join(",");
     $$(SEL).forEach(function (el) {
-      if (el.hasAttribute("data-reveal") || el.closest(".gate")) return;
+      // Legal text inside the checkout's scroll panels is read, not staged.
+      if (el.hasAttribute("data-reveal") || el.closest(".gate") || el.closest(".fold")) return;
       var sib = 0, p = el.previousElementSibling;
       while (p && sib < 6) { if (p.matches(SEL)) sib++; p = p.previousElementSibling; }
       el.setAttribute("data-reveal", String(sib * 80));
@@ -359,8 +361,64 @@
     $("[data-cookie-reject]", box).addEventListener("click", function () { save("necessary"); });
   }
 
+  /* ── Seminar checkout ───────────────────────────────────────────────── */
+  // Pay button unlocks only after the consent box is ticked and a seminar
+  // is chosen. While PAYMENT.action is unset (data-pending) a submit shows
+  // the note instead of posting anywhere.
+  function checkout() {
+    var form = $(".checkout");
+    if (!form) return;
+    var agree = $("#agree", form), sel = $("#seminar", form), btn = $("[type=submit]", form);
+    var amount = $("#amount", form), note = $("[data-pending-note]", form);
+    var out = function (key) { return $('[data-order="' + key + '"]', form); };
+
+    function summary() {
+      if (!sel || !sel.options.length) return;
+      var o = sel.options[sel.selectedIndex];
+      if (!o || !o.value) return;
+      out("title").textContent = o.getAttribute("data-title");
+      out("when").textContent = o.getAttribute("data-when") + " · " + o.getAttribute("data-mode");
+      out("price").textContent = o.getAttribute("data-price");
+      out("total").textContent = o.getAttribute("data-price");
+      if (amount) amount.value = o.getAttribute("data-price");
+    }
+    function sync() {
+      btn.disabled = !(agree.checked && sel && !sel.disabled && sel.value);
+    }
+    var wanted = new URLSearchParams(location.search).get("s");
+    if (wanted && sel && !sel.disabled) {
+      for (var i = 0; i < sel.options.length; i++)
+        if (sel.options[i].value === wanted) { sel.selectedIndex = i; break; }
+    }
+    if (sel) sel.addEventListener("change", function () { summary(); sync(); });
+    agree.addEventListener("change", sync);
+
+    var inv = $("#invoice", form), invFields = $(".invoice-fields", form);
+    if (inv && invFields) {
+      var toggle = function () {
+        invFields.hidden = !inv.checked;
+        $$("input", invFields).forEach(function (el) { el.required = inv.checked && el.id !== "tax-office"; });
+      };
+      inv.addEventListener("change", toggle); toggle();
+    }
+
+    form.addEventListener("submit", function (e) {
+      if (!form.checkValidity()) {
+        e.preventDefault();
+        var bad = $(":invalid", form);
+        if (bad) { bad.focus(); if (bad.reportValidity) bad.reportValidity(); }
+        return;
+      }
+      if (form.hasAttribute("data-pending")) {
+        e.preventDefault();
+        if (note) { note.hidden = false; note.scrollIntoView({ block: "nearest", behavior: "smooth" }); }
+      }
+    });
+    summary(); sync();
+  }
+
   function init() {
-    gate(); header(); futurist(); reveal(); compare(); faq(); doc(); chrome(); cookies();
+    gate(); header(); futurist(); reveal(); compare(); faq(); doc(); chrome(); cookies(); checkout();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();
