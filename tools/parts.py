@@ -159,6 +159,11 @@ def header(depth, active=""):
 {drawer(depth)}"""
 
 
+
+def _legal(key):
+    """One value from SITE["legal_rows"] (ΑΦΜ, ΓΕΜΗ…) for the footer line."""
+    return dict(SITE["legal_rows"]).get(key) or "—"
+
 def footer(depth):
     b = rel(depth)
     hours = "".join(f"<div><span>{a}</span><span>{c}</span></div>" for a, c in SITE["hours"])
@@ -195,7 +200,8 @@ def footer(depth):
       </div>
     </div>
     <div class="footer__bottom">
-      <span>© {SITE['founded']}–2026 {SITE['name']} · {PRACTITIONER['name']} · {SITE['locality']}, {SITE['region']}</span>
+      <span>© {SITE['founded']}–2026 {SITE['name']} · {PRACTITIONER['name']} · {SITE['locality']}, {SITE['region']}<br>
+        <span class="footer__legal">{SITE['legal']} · ΑΦΜ {_legal('ΑΦΜ')} · Αρ. ΓΕΜΗ {_legal('Αρ. ΓΕΜΗ')}</span></span>
       <span style="display:flex;gap:1.25rem;flex-wrap:wrap;align-items:center">
         <a href="{b}oroi-chrisis/">{T['terms']}</a>
         <a href="{b}stoicheia-epicheirisis/">{T['company']}</a>
