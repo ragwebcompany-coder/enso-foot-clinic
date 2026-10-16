@@ -64,6 +64,17 @@ python3 enso-new/tools/build.py
 
 ## Deploy
 
+### GitHub Pages (τρέχων στόχος)
+
+Το workflow `.github/workflows/pages.yml` χτίζει το `site/` σε κάθε push στο `main`
+και το δημοσιεύει. Μία φορά, στο repo: Settings → Pages → Source: **GitHub Actions**.
+Το custom domain το γράφει το build στο `site/CNAME` από το `SITE["domain"]`.
+
+Το Pages δεν κάνει server-side redirects ούτε στέλνει headers, οπότε το build
+βγάζει για κάθε παλιά διεύθυνση μια σελίδα-στέλεχος (meta refresh 0 + canonical +
+noindex) και βάζει `.nojekyll` ώστε να σερβίρεται ο φάκελος όπως είναι. Σε ιδιωτικό
+repo το Pages θέλει GitHub Pro.
+
 ### Vercel
 
 Το `vercel.json` βρίσκεται στη **ρίζα του repo** — όχι μέσα στο `site/`. Το Vercel

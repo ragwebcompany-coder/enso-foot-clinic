@@ -88,6 +88,7 @@ def head(title, desc, depth, canonical, *, jsonld=None, og_image="assets/img/og-
 <head>
 <meta charset="utf-8">
 {'<base href="/">\n<meta name="robots" content="noindex">\n' if rooted else ""}<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <link rel="canonical" href="{SITE['domain']}/{canonical.lstrip('/')}">

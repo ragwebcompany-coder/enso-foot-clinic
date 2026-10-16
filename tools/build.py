@@ -1287,6 +1287,30 @@ def build_redirects():
     rules = list(LEGACY_URLS)
 
     write("_redirects", "".join(f"{a}  {b}  301\n" for a, b in rules))
+
+    # GitHub Pages has no server-side redirects, so each legacy path gets a
+    # tiny page that forwards instantly (meta refresh 0 + canonical, which
+    # Google treats as a permanent redirect). Percent-encoded duplicates
+    # collapse onto the decoded path, since Pages decodes the request first.
+    seen = set()
+    for a, b in rules:
+        path = urllib.parse.unquote(a).strip("/")
+        if not path or path in seen:
+            continue
+        seen.add(path)
+        dest = b   # root-relative, so it works on github.io before the domain moves
+        write(path + "/index.html", f"""<!doctype html>
+<html lang="el"><head><meta charset="utf-8">
+<title>Ανακατεύθυνση…</title>
+<meta http-equiv="refresh" content="0; url={dest}">
+<link rel="canonical" href="{dest}">
+<meta name="robots" content="noindex">
+</head><body><p>Η σελίδα μεταφέρθηκε: <a href="{dest}">{dest}</a></p></body></html>
+""")
+    # Pages must serve the folder verbatim (no Jekyll, which would drop
+    # _redirects) and know the custom domain.
+    write(".nojekyll", "")
+    write("CNAME", urllib.parse.urlparse(SITE["domain"]).netloc + "\n")
     ht = ["RewriteEngine On"]
     ht += [f"RewriteRule ^{a.strip('/')}/?$ {b} [R=301,L,NE]" for a, b in rules]
     ht.append("ErrorDocument 404 /404.html")
