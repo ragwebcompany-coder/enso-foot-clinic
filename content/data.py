@@ -97,9 +97,6 @@ SITE = {
               "λειτουργικοί καθημερινά."),
     # «Made by» at the foot of every page — both studios, each with its link.
     "credits": [
-        {"name": "CLINICBRAIN",
-         "url": "https://clinicbrain.gr/?utm_source=client-site"
-                "&utm_medium=footer&utm_campaign=made-by"},
         {"name": "ASTRA",
          "url": "https://astramarketing.gr/?utm_source=client-site"
                 "&utm_medium=footer&utm_campaign=made-by"},
