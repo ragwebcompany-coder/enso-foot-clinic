@@ -452,6 +452,8 @@ def bio_block():
             {sub_}{body}
           </li>"""
 
+    profile = "".join(f'<p class="cv__profile">{x}</p>' for x in
+                      ([BIO_FULL_PROFILE] if isinstance(BIO_FULL_PROFILE, str) else BIO_FULL_PROFILE))
     sections = "".join(f"""<section class="cv__section">
           <h3>{heading}</h3>
           <ul class="cv__list">{"".join(entry(e) for e in entries)}</ul>
@@ -465,7 +467,7 @@ def bio_block():
         <summary><span class="more__open">Λεπτομέρειες</span><span class="more__shut">Λιγότερα</span>
           {I['chev']}</summary>
         <div class="cv">
-          <p class="cv__profile">{BIO_FULL_PROFILE}</p>
+          {profile}
           {sections}
         </div>
       </details>
