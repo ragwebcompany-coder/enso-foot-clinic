@@ -176,7 +176,7 @@ def write_root(path, markup):
 
 
 def page(*, path, title, desc, depth, body, active="", jsonld=None,
-         og_image="assets/img/og-enso.png", body_class=""):
+         og_image="assets/img/og-enso.png", body_class="", noindex=False):
     markup = (head(title, desc, depth, path or "", jsonld=jsonld, og_image=og_image,
                    rooted=(path == "404.html"))
               + f'\n<body{" class=" + chr(34) + body_class + chr(34) if body_class else ""}>'
@@ -185,6 +185,9 @@ def page(*, path, title, desc, depth, body, active="", jsonld=None,
               + f'\n<main id="main">\n{body}\n</main>\n'
               + footer(depth) + "\n" + overlays(depth)
               + f'\n<script src="{asset(depth, "assets/js/enso.js")}" defer></script>\n</body>\n</html>\n')
+    if noindex:
+        markup = markup.replace('<meta name="viewport"',
+                                '<meta name="robots" content="noindex">\n<meta name="viewport"', 1)
     write(path + "index.html" if path.endswith("/") or path == "" else path, markup)
     return markup
 
@@ -1068,12 +1071,34 @@ def _legal_fold(key, label_en, label_el, inner_html):
 </details>"""
 
 
-def build_checkout():
-    d = 2
-    payable = [s for s in SEMINARS if s["status"] in ("open", "announced")
-               and (s.get("price_eur") or 0) > 0]
-    crumb_html, crumb_ld = crumbs([("Σεμινάρια", rel(d) + "seminaria/"),
-                                   ("Εγγραφή & πληρωμή", None)], d)
+# The demo copy at /seminaria/egrafi/demo/ is the same page with one sample
+# seminar, so the whole flow can be shown (to Worldline, to the client) before
+# a paid seminar exists. Not indexed, not in the sitemap, charges nothing.
+DEMO_SEMINAR = dict(slug="demo", title="Δοκιμαστικό σεμινάριο ποδολογίας",
+                    human="Ενδεικτική ημερομηνία · 19:00–21:00", mode="online",
+                    price_eur=50, status="open")
+DEMO_NOTE = ("Δοκιμαστική σελίδα: σε αυτό το βήμα ο πελάτης μεταφέρεται στο ασφαλές "
+             "περιβάλλον πληρωμής της Worldline. Δεν έγινε καμία χρέωση και δεν "
+             "καταχωρίστηκε κανένα στοιχείο.")
+
+
+def build_checkout(demo=False):
+    d = 3 if demo else 2
+    if demo:
+        payable = [DEMO_SEMINAR]
+        trail = [("Σεμινάρια", rel(d) + "seminaria/"),
+                 ("Εγγραφή & πληρωμή", rel(d) + "seminaria/egrafi/"), ("Demo", None)]
+    else:
+        payable = [s for s in SEMINARS if s["status"] in ("open", "announced")
+                   and (s.get("price_eur") or 0) > 0]
+        trail = [("Σεμινάρια", rel(d) + "seminaria/"), ("Εγγραφή & πληρωμή", None)]
+    crumb_html, crumb_ld = crumbs(trail, d)
+    legal_ids = " · ".join(f"{k} {v}" for k, v in SITE["legal_rows"]
+                           if v and k in ("ΑΦΜ", "Αρ. ΓΕΜΗ"))
+    demo_banner = ('<p class="form-note" role="note" style="margin:0 0 1.5rem"><b>Δοκιμαστική '
+                   'σελίδα (demo).</b> Δείχνει τη ροή εγγραφής και πληρωμής με ενδεικτικό '
+                   'σεμινάριο και τιμή. Δεν γίνονται πραγματικές εγγραφές ή χρεώσεις.</p>'
+                   if demo else "")
     terms_html, _, _ = prose("oroi-chrisis", d)
     cancel_html, _, _ = prose("politiki-akyrosis", d)
     terms_html = (terms_html.replace("<!--LEGAL-->", legal_table())
@@ -1094,8 +1119,8 @@ def build_checkout():
                       f'ανοιχτές εγγραφές. <a href="{SEMINAR_NOTIFY}">Δηλώστε ενδιαφέρον</a> και '
                       f'θα ενημερωθείτε πρώτοι.</p>')
 
-    action = PAYMENT["action"] or ""
-    pending = "" if PAYMENT["action"] else ' data-pending="1"'
+    action = "" if demo else (PAYMENT["action"] or "")
+    pending = "" if action else ' data-pending="1"'
     body = f"""<section class="page-head">
   <div class="wrap">{crumb_html}
     <div class="sec-head sec-head--split" style="margin-bottom:0">
@@ -1109,7 +1134,7 @@ def build_checkout():
 
 <section class="section section--tight">
   <div class="wrap">
-    <form class="checkout" method="post" action="{action}"{pending} novalidate="">
+    {demo_banner}<form class="checkout" method="post" action="{action}"{pending} novalidate="">
       <input type="hidden" name="currency" value="{PAYMENT['currency']}">
       <input type="hidden" name="amount" id="amount" value="">
       <div class="checkout__main">
@@ -1191,9 +1216,9 @@ def build_checkout():
             <div><dt>Συμμετοχή</dt><dd><span data-order="price">{payable[0]['price_eur'] if payable else '—'}</span> €</dd></div>
             <div class="order__total"><dt>Σύνολο</dt><dd><span data-order="total">{payable[0]['price_eur'] if payable else '—'}</span> €</dd></div>
           </dl>
-          <p class="small muted">Τελική τιμή. Εκδίδεται νόμιμο παραστατικό από την {SITE['legal']}.</p>
+          <p class="small muted">Τελική τιμή. Εκδίδεται νόμιμο παραστατικό από την {SITE['legal']}{" (" + legal_ids + ")" if legal_ids else ""}.</p>
           <button class="btn btn--block" type="submit" disabled>Συνέχεια στην ασφαλή πληρωμή</button>
-          <p class="form-note" data-pending-note hidden>{PAYMENT['pending_note']}</p>
+          <p class="form-note" data-pending-note hidden>{DEMO_NOTE if demo else PAYMENT['pending_note']}</p>
           <p class="order__secure small">Η πληρωμή γίνεται στο περιβάλλον της {PAYMENT['provider']}
             (Visa, Mastercard). Τα στοιχεία της κάρτας σας δεν περνούν από τον ιστότοπό μας.</p>
           <p class="small"><a href="{rel(d)}oroi-chrisis/">Όροι χρήσης &amp; απόρρητο</a> ·
@@ -1203,7 +1228,8 @@ def build_checkout():
     </form>
   </div>
 </section>"""
-    page(path="seminaria/egrafi/", title="Εγγραφή & πληρωμή σεμιναρίου | Ensō Foot Clinic",
+    page(path="seminaria/egrafi/demo/" if demo else "seminaria/egrafi/", noindex=demo,
+         title=("Demo · " if demo else "") + "Εγγραφή & πληρωμή σεμιναρίου | Ensō Foot Clinic",
          desc="Δηλώστε συμμετοχή σε σεμινάριο ποδολογίας του Ensō Foot Clinic και πληρώστε "
               "με κάρτα στο ασφαλές περιβάλλον της Worldline.",
          depth=d, body=body, jsonld=[crumb_ld, org_graph()], active="seminars")
@@ -1362,6 +1388,7 @@ def main():
     for _s in SEMINARS:
         build_seminar(_s)
     build_checkout()
+    build_checkout(demo=True)
     build_contact(); build_company(); build_terms(); build_404()
     indexed = build_index_files()
     n = build_redirects()
